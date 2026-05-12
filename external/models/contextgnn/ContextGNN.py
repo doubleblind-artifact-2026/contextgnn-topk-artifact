@@ -46,6 +46,7 @@ from torch_geometric.typing import NodeType
 from torch_sparse import SparseTensor as TSSparseTensor
 import pandas as pd
 import numpy as np
+from scipy import sparse as sps
 from ast import literal_eval as make_tuple
 
 from contextlib import nullcontext
@@ -88,6 +89,26 @@ def _parse_inference_for_ranking(val):
 
     return out
 
+def _parse_negative_sampling_strategy(val):
+    strategy = "uniform" if val is None else str(val).strip().lower()
+    allowed = {"uniform", "global_model_aware", "local_model_aware"}
+
+    if strategy not in allowed:
+        raise ValueError(
+            f"negative_sampling_strategy='{strategy}' not valid. "
+            f"Admitted values: {sorted(allowed)}"
+        )
+
+    return strategy
+
+def _parse_unit_interval_float(val):
+    x = float(val)
+
+    if x < 0.0 or x > 1.0:
+        raise ValueError(f"Valore fuori da [0,1]: {x}")
+
+    return x
+
 class ContextGNN(RecMixin, BaseRecommenderModel):
     r"""
     ContextGNN: Beyond Two-Tower Recommendation Systems (https://arxiv.org/abs/2411.19513)
@@ -126,10 +147,50 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                 "full",
                 _parse_inference_for_ranking,
                 lambda x: "-".join(x)
+            ),
+            (
+                "_negative_sampling_strategy",
+                "negative_sampling_strategy",
+                "negstrat",
+                "uniform",
+                _parse_negative_sampling_strategy,
+                None
+            ),
+            (
+                "_hard_ratio",
+                "hard_ratio",
+                "hardr",
+                0.0,
+                _parse_unit_interval_float,
+                None
+            ),
+            (
+                "_warmup_epochs",
+                "warmup_epochs",
+                "warmup",
+                0,
+                int,
+                None
             )
         ]
 
         self.autoset_params()
+
+        if self._warmup_epochs < 0:
+            raise ValueError("warmup_epochs must be >= 0.")
+
+        if self._negative_sampling_strategy == "uniform":
+            if self._hard_ratio != 0.0:
+                raise ValueError("hard_ratio must be 0.0 when negative_sampling_strategy='uniform'.")
+
+            if self._warmup_epochs != 0:
+                raise ValueError("warmup_epochs must be 0 when negative_sampling_strategy='uniform'.")
+        else:
+            if self._loss != "bce":
+                raise ValueError("The model-aware strategies are implemented only for loss='bce'.")
+
+            if self._hard_ratio <= 0.0:
+                raise ValueError("hard_ratio must be > 0 when using a model-aware negative sampling strategy.")
 
         if "full" in self._inference_for_ranking:
             self._primary_inference_mode = "full"
@@ -226,7 +287,7 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
         num_neighbors = self._neigh
 
-        self._neg = self._loss in ["bpr", "bce"]
+        self._neg = self._loss == "bpr"
 
         def static_get_link_train_table_input(
             transaction_df: pd.DataFrame,
@@ -269,6 +330,17 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
         }
 
         self._eval_batch_size = getattr(self._params, "eval_batch_size", self._batch_size)
+        
+        self._train_seen_csr = self._build_train_observation_csr(
+            train_df,
+            NUM_SRC_NODES,
+            self.NUM_DST_NODES
+        )
+
+        self._item_popularity_percentile = self._build_item_popularity_percentile(self._train_seen_csr)
+
+        self._global_hard_pool_topk = 50
+        self._local_hard_pool_topk = 20
 
         for split, table in split_to_table.items():
             if split == "train":
@@ -370,31 +442,418 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             f"seed={self._seed}_"
             f"h={run_hash}"
         )
+    
+    def _build_train_observation_csr(
+        self,
+        transaction_df: pd.DataFrame,
+        num_src_nodes: int,
+        num_dst_nodes: int
+    ):
+        exploded = transaction_df[[SRC_ENTITY_COL, DST_ENTITY_COL]].explode(DST_ENTITY_COL).dropna()
 
-    def negative_sampling(self, edge_label_index):
-        users = edge_label_index[0]
-        positives = edge_label_index[1]
+        rows = exploded[SRC_ENTITY_COL].astype(np.int64).to_numpy()
+        cols = exploded[DST_ENTITY_COL].astype(np.int64).to_numpy()
+        vals = np.ones(rows.shape[0], dtype=np.int8)
 
-        negs = torch.randint(
-            low=0,
-            high=self._num_items,
-            size=positives.shape,
-            device=self.device
+        csr = sps.csr_matrix(
+            (vals, (rows, cols)),
+            shape=(num_src_nodes, num_dst_nodes),
+            dtype=np.int8
         )
 
-        mask = negs == positives
+        csr.sort_indices()
 
-        while mask.any():
-            negs[mask] = torch.randint(
-                low=0,
-                high=self._num_items,
-                size=(mask.sum(),),
-                device=self.device
+        return csr
+
+    def _build_item_popularity_percentile(self, train_csr) -> np.ndarray:
+        counts = np.asarray(train_csr.sum(axis=0)).ravel().astype(np.float32)
+
+        if counts.size == 0:
+            return counts
+
+        return pd.Series(counts).rank(method="average", pct=True).to_numpy(dtype=np.float32)
+
+    def _csr_row_indices(self, csr_mat, row_id: int) -> np.ndarray:
+        start = csr_mat.indptr[row_id]
+        end = csr_mat.indptr[row_id + 1]
+
+        return csr_mat.indices[start:end]
+
+    def _reject_seen_candidates_np(
+        self,
+        candidates: np.ndarray,
+        seen_items_sorted: np.ndarray
+    ) -> np.ndarray:
+        if candidates.size == 0 or seen_items_sorted.size == 0:
+            return candidates
+
+        pos = np.searchsorted(seen_items_sorted, candidates)
+        in_bounds = pos < seen_items_sorted.size
+
+        is_seen = np.zeros(candidates.shape[0], dtype=bool)
+        is_seen[in_bounds] = (seen_items_sorted[pos[in_bounds]] == candidates[in_bounds])
+
+        return candidates[~is_seen]
+
+    def _sample_uniform_unseen_negatives(
+        self,
+        global_users: Tensor
+    ) -> Tensor:
+        users_np = global_users.detach().cpu().numpy().astype(np.int64, copy=False)
+        neg_np = np.empty(users_np.shape[0], dtype=np.int64)
+
+        unique_users, inverse = np.unique(users_np, return_inverse=True)
+
+        for local_user_idx, u in enumerate(unique_users):
+            positions = np.flatnonzero(inverse == local_user_idx)
+            needed = positions.size
+
+            seen_items = self._csr_row_indices(self._train_seen_csr, int(u))
+
+            if seen_items.size >= self.NUM_DST_NODES:
+                raise RuntimeError(f"User {u} has no eligible unseen negatives.")
+
+            filled = 0
+
+            while filled < needed:
+                remaining = needed - filled
+                draw_size = max(32, 4 * remaining)
+
+                sampled = np.random.randint(0, self.NUM_DST_NODES, size=draw_size).astype(np.int64, copy=False)
+                valid = self._reject_seen_candidates_np(sampled, seen_items)
+
+                if valid.size == 0:
+                    continue
+
+                take = min(valid.size, remaining)
+                neg_np[positions[filled:filled + take]] = valid[:take]
+                filled += take
+
+        return torch.from_numpy(neg_np).to(global_users.device, non_blocking=True)
+    
+    def _build_local_user_item_sets(
+        self,
+        lhs_idgnn_batch: Tensor,
+        rhs_idgnn_index: Tensor,
+        batch_size: int
+    ):
+        per_user = [set() for _ in range(batch_size)]
+
+        lhs_arr = lhs_idgnn_batch.detach().cpu().numpy()
+        rhs_arr = rhs_idgnn_index.detach().cpu().numpy()
+
+        for u_pos, item_id in zip(lhs_arr, rhs_arr):
+            per_user[int(u_pos)].add(int(item_id))
+
+        return per_user
+
+    def _build_local_user_candidates(
+        self,
+        lhs_idgnn_batch: Tensor,
+        rhs_idgnn_index: Tensor,
+        idgnn_logits: Tensor,
+        batch_size: int
+    ):
+        per_user = [dict() for _ in range(batch_size)]
+
+        lhs_arr = lhs_idgnn_batch.detach().cpu().numpy()
+        rhs_arr = rhs_idgnn_index.detach().cpu().numpy()
+        score_arr = idgnn_logits.detach().cpu().numpy()
+
+        for u_pos, item_id, score in zip(lhs_arr, rhs_arr, score_arr):
+            u_pos = int(u_pos)
+            item_id = int(item_id)
+            score = float(score)
+
+            prev = per_user[u_pos].get(item_id)
+
+            if (prev is None) or (score > prev):
+                per_user[u_pos][item_id] = score
+
+        return per_user
+    
+    def _select_bce_negative_items(
+        self,
+        global_edge_label_index: torch.Tensor,
+        edge_label_index: torch.Tensor,
+        epoch_idx: int
+    ):
+        device = edge_label_index.device
+        num_pairs = int(edge_label_index.size(1))
+
+        global_users = global_edge_label_index[0]
+        local_users = edge_label_index[0]
+
+        neg_items = self._sample_uniform_unseen_negatives(global_users).to(device, non_blocking=True)
+
+        user_row_to_global = {}
+
+        for u_local, u_global in zip(
+            local_users.detach().cpu().tolist(),
+            global_users.detach().cpu().tolist()
+        ):
+            user_row_to_global[int(u_local)] = int(u_global)
+
+        stats = {
+            "user_weight": max(len(user_row_to_global), 1),
+            "hard_target_count": 0,
+            "successful_hard_count": 0,
+            "hard_ratio_applied": 0.0,
+            "fallback_uniform_ratio": 0.0,
+            "users_without_hard_candidates_ratio": 0.0,
+            "selected_neg_popularity_percentile_mean": float("nan"),
+            "duplicate_neg_ratio": float("nan"),
+            "selected_neg_emb_score_mean": float("nan"),
+            "selected_neg_outside_local_share": float("nan"),
+            "global_hard_pool_size_mean": float("nan"),
+            "local_hard_pool_size_mean": float("nan"),
+            "users_with_empty_local_pool_ratio": float("nan"),
+            "selected_neg_local_rank_mean": float("nan")
+        }
+
+        strategy = self._negative_sampling_strategy
+
+        hard_active = (
+            self._loss == "bce"
+            and strategy in {"global_model_aware", "local_model_aware"}
+            and self._hard_ratio > 0.0
+            and epoch_idx >= self._warmup_epochs
+        )
+
+        if hard_active and num_pairs > 0:
+            hard_mask = torch.rand(num_pairs, device=device) < self._hard_ratio
+
+            if not bool(hard_mask.any()):
+                hard_mask[torch.randint(0, num_pairs, (1,), device=device)] = True
+
+            hard_positions = hard_mask.nonzero(as_tuple=False).view(-1)
+            stats["hard_target_count"] = int(hard_positions.numel())
+
+            sampling_cache = getattr(self._model, "_sampling_cache", {})
+
+            cache_mode = sampling_cache.get("mode", None)
+            lhs_idgnn_batch = sampling_cache.get("lhs_idgnn_batch", None)
+            rhs_idgnn_index = sampling_cache.get("rhs_idgnn_index", None)
+
+            batch_size = int(
+                sampling_cache.get(
+                    "batch_size",
+                    int(local_users.max().item()) + 1 if local_users.numel() > 0 else 0
+                )
             )
 
-            mask = negs == positives
+            if lhs_idgnn_batch is None or rhs_idgnn_index is None:
+                raise RuntimeError(
+                    "Missing local assignment tensors in _sampling_cache. "
+                    "Make sure the model was called with sampling_cache_mode before model-aware BCE mining."
+                )
 
-        return torch.stack([users, negs], dim=0)
+            idgnn_logits = None
+            embgnn_logits_pre_override = None
+
+            if strategy == "local_model_aware":
+                idgnn_logits = sampling_cache.get("idgnn_logits", None)
+
+                if idgnn_logits is None:
+                    raise RuntimeError("Local model-aware sampling requires idgnn_logits in _sampling_cache.")
+            elif strategy == "global_model_aware":
+                embgnn_logits_pre_override = sampling_cache.get("embgnn_logits_pre_override", None)
+
+                if embgnn_logits_pre_override is None:
+                    raise RuntimeError("Global model-aware sampling requires embgnn_logits_pre_override in _sampling_cache.")
+
+            if strategy == "global_model_aware":
+                if cache_mode != "global":
+                    raise RuntimeError("Global model-aware mining requires sampling_cache_mode='global'.")
+
+                local_item_sets = self._build_local_user_item_sets(
+                    lhs_idgnn_batch,
+                    rhs_idgnn_index,
+                    batch_size
+                )
+
+                hard_positions_list = hard_positions.detach().cpu().tolist()
+
+                hard_local_user_set = {
+                    int(local_users[pos_idx].item())
+                    for pos_idx in hard_positions_list
+                }
+
+                user_context = {}
+                users_without_candidates = 0
+                user_pool_sizes = []
+
+                for u_local, u_global in user_row_to_global.items():
+                    seen_items = self._csr_row_indices(self._train_seen_csr, u_global)
+
+                    eligible_count = self.NUM_DST_NODES - int(seen_items.size)
+                    sample_pool_size = min(self._global_hard_pool_topk, max(eligible_count, 0))
+
+                    user_pool_sizes.append(float(sample_pool_size))
+
+                    if sample_pool_size == 0:
+                        users_without_candidates += 1
+                    
+                    if (u_local not in hard_local_user_set) or (sample_pool_size == 0):
+                        continue
+
+                    row_scores = embgnn_logits_pre_override[u_local]
+
+                    if seen_items.size > 0:
+                        seen_t = torch.as_tensor(seen_items, dtype=torch.long, device=device)
+                        row_scores[seen_t] = float("-inf")
+
+                    top_vals, top_items = torch.topk(
+                        row_scores,
+                        k=sample_pool_size,
+                        dim=0,
+                        largest=True,
+                        sorted=True
+                    )
+
+                    user_context[u_local] = {
+                        "sample_pool_size": sample_pool_size,
+                        "sample_items": top_items,
+                        "sample_scores": top_vals,
+                        "local_item_set": local_item_sets[u_local]
+                    }
+
+                stats["users_without_hard_candidates_ratio"] = (users_without_candidates / max(len(user_row_to_global), 1))
+                stats["global_hard_pool_size_mean"] = (float(np.mean(user_pool_sizes)) if user_pool_sizes else float("nan"))
+
+                successful_hard = 0
+                fallback_uniform = 0
+                chosen_emb_scores = []
+                chosen_outside_local = []
+
+                for pos_idx in hard_positions_list:
+                    u_local = int(local_users[pos_idx].item())
+                    ctx = user_context.get(u_local, None)
+
+                    if ctx is None or ctx["sample_pool_size"] == 0:
+                        fallback_uniform += 1
+                        continue
+
+                    draw = int(
+                        torch.randint(
+                            0,
+                            ctx["sample_pool_size"],
+                            (1,),
+                            device=device
+                        ).item()
+                    )
+
+                    chosen_item = int(ctx["sample_items"][draw].item())
+                    neg_items[pos_idx] = chosen_item
+
+                    successful_hard += 1
+                    chosen_emb_scores.append(float(ctx["sample_scores"][draw].item()))
+                    chosen_outside_local.append(float(chosen_item not in ctx["local_item_set"]))
+
+                stats["successful_hard_count"] = successful_hard
+                stats["hard_ratio_applied"] = successful_hard / max(num_pairs, 1)
+
+                stats["fallback_uniform_ratio"] = (
+                    fallback_uniform / stats["hard_target_count"]
+                    if stats["hard_target_count"] > 0 else 0.0
+                )
+
+                stats["selected_neg_emb_score_mean"] = (float(np.mean(chosen_emb_scores)) if chosen_emb_scores else float("nan"))
+                stats["selected_neg_outside_local_share"] = (float(np.mean(chosen_outside_local)) if chosen_outside_local else float("nan"))
+            elif strategy == "local_model_aware":
+                if cache_mode != "local":
+                    raise RuntimeError("Local model-aware mining requires sampling_cache_mode='local'.")
+
+                local_user_to_items = self._build_local_user_candidates(
+                    lhs_idgnn_batch,
+                    rhs_idgnn_index,
+                    idgnn_logits,
+                    batch_size
+                )
+
+                user_context = {}
+                users_without_candidates = 0
+                user_pool_sizes = []
+
+                for u_local, u_global in user_row_to_global.items():
+                    seen_items = set(self._csr_row_indices(self._train_seen_csr, u_global).tolist())
+
+                    item_to_score = local_user_to_items[u_local]
+
+                    eligible = [
+                        (item, score)
+                        for item, score in item_to_score.items()
+                        if item not in seen_items
+                    ]
+
+                    eligible.sort(key=lambda x: x[1], reverse=True)
+
+                    pool_size = len(eligible)
+                    user_pool_sizes.append(float(pool_size))
+
+                    if pool_size == 0:
+                        users_without_candidates += 1
+
+                    sample_pool = [
+                        (item, score, rank + 1)
+                        for rank, (item, score) in enumerate(eligible[:self._local_hard_pool_topk])
+                    ]
+
+                    user_context[u_local] = {
+                        "pool_size": pool_size,
+                        "sample_pool_size": len(sample_pool),
+                        "sample_pool": sample_pool
+                    }
+
+                empty_ratio = users_without_candidates / max(len(user_row_to_global), 1)
+                stats["users_without_hard_candidates_ratio"] = empty_ratio
+                stats["users_with_empty_local_pool_ratio"] = empty_ratio
+                stats["local_hard_pool_size_mean"] = (float(np.mean(user_pool_sizes)) if user_pool_sizes else float("nan"))
+
+                successful_hard = 0
+                fallback_uniform = 0
+                selected_ranks = []
+
+                for pos_idx in hard_positions.detach().cpu().tolist():
+                    u_local = int(local_users[pos_idx].item())
+                    ctx = user_context[u_local]
+
+                    if ctx["sample_pool_size"] == 0:
+                        fallback_uniform += 1
+                        continue
+
+                    draw = int(
+                        torch.randint(
+                            0,
+                            ctx["sample_pool_size"],
+                            (1,),
+                            device=device
+                        ).item()
+                    )
+
+                    chosen_item, _, chosen_rank = ctx["sample_pool"][draw]
+                    neg_items[pos_idx] = int(chosen_item)
+
+                    successful_hard += 1
+                    selected_ranks.append(float(chosen_rank))
+
+                stats["successful_hard_count"] = successful_hard
+                stats["hard_ratio_applied"] = successful_hard / max(num_pairs, 1)
+
+                stats["fallback_uniform_ratio"] = (
+                    fallback_uniform / stats["hard_target_count"]
+                    if stats["hard_target_count"] > 0 else 0.0
+                )
+
+                stats["selected_neg_local_rank_mean"] = (float(np.mean(selected_ranks)) if selected_ranks else float("nan"))
+
+        neg_items_np = neg_items.detach().cpu().numpy()
+
+        if neg_items_np.size > 0:
+            stats["selected_neg_popularity_percentile_mean"] = float(np.mean(self._item_popularity_percentile[neg_items_np]))
+            stats["duplicate_neg_ratio"] = float(1.0 - (np.unique(neg_items_np).size / max(neg_items_np.size, 1)))
+
+        return neg_items, stats
 
     def _mask_seen_items_inplace(self, preds: torch.Tensor, user_idx_np: np.ndarray, split_name: str) -> bool:
         split_name = str(split_name).lower().strip()
@@ -578,9 +1037,12 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                     supervised_edges_min = min(supervised_edges_min, num_supervised)
                     supervised_edges_max = max(supervised_edges_max, num_supervised)
 
-                    if self._neg:
-                        edge_label_index_neg = self.negative_sampling(global_edge_label_index_sample)
-                        edge_label_index_neg[0] = edge_label_index[0]
+                    edge_label_index_neg = None
+
+                    if self._loss == "bpr":
+                        neg_items = self._sample_uniform_unseen_negatives(global_edge_label_index_sample[0]).to(self.device, non_blocking=True)
+
+                        edge_label_index_neg = torch.stack([edge_label_index[0], neg_items], dim=0)
 
                     edge_type = (SRC_ENTITY_TABLE, SRC_ENTITY_COL, DST_ENTITY_TABLE)
                     edge_index = batch[edge_type].edge_index
@@ -613,7 +1075,6 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
                     if self._is_sparse_gnn():
                         adj_t_dst_src = TSSparseTensor(row=dst, col=src, value=values_f32, sparse_sizes=(num_dst, num_src)).coalesce()
-
                         adj_t_src_dst = TSSparseTensor(row=src, col=dst, value=values_f32, sparse_sizes=(num_src, num_dst)).coalesce()
 
                         batch[edge_type].edge_index = adj_t_dst_src
@@ -634,7 +1095,21 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                         batch[edge_type].edge_index = edge_index_message_passing_reverse_sparse
                         batch[reverse_edge_type].edge_index = edge_index_message_passing_sparse
 
-                    logits = self._model(batch, SRC_ENTITY_TABLE, DST_ENTITY_TABLE)
+                    sampling_cache_mode = None
+
+                    if self._loss == "bce" and it >= self._warmup_epochs:
+                        if self._negative_sampling_strategy == "global_model_aware":
+                            sampling_cache_mode = "global"
+                        elif self._negative_sampling_strategy == "local_model_aware":
+                            sampling_cache_mode = "local"
+
+                    logits = self._model(
+                        batch,
+                        SRC_ENTITY_TABLE,
+                        DST_ENTITY_TABLE,
+                        score_mode="full",
+                        sampling_cache_mode=sampling_cache_mode
+                    )
 
                     if self._loss == "ce":
                         loss = sparse_cross_entropy(logits, edge_label_index)
@@ -644,13 +1119,76 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                         
                         loss = torch.mean(torch.nn.functional.softplus(neg - pos))
                     elif self._loss == "bce":
+                        neg_items, sampling_stats = self._select_bce_negative_items(
+                            global_edge_label_index=global_edge_label_index_sample,
+                            edge_label_index=edge_label_index,
+                            epoch_idx=it
+                        )
+
+                        edge_label_index_neg = torch.stack([edge_label_index[0], neg_items], dim=0)
+
                         pos_logits = logits[edge_label_index[0], edge_label_index[1]]
                         neg_logits = logits[edge_label_index_neg[0], edge_label_index_neg[1]]
-                        
-                        logits_all = torch.cat([pos_logits, neg_logits], dim=0)
-                        labels_all = torch.cat([torch.ones_like(pos_logits), torch.zeros_like(neg_logits)], dim=0)
-                        
-                        loss = torch.nn.functional.binary_cross_entropy_with_logits(logits_all, labels_all)
+
+                        pos_targets = torch.ones_like(pos_logits)
+                        neg_targets = torch.zeros_like(neg_logits)
+
+                        pos_loss_vec = torch.nn.functional.binary_cross_entropy_with_logits(
+                            pos_logits,
+                            pos_targets,
+                            reduction="none"
+                        )
+
+                        neg_loss_vec = torch.nn.functional.binary_cross_entropy_with_logits(
+                            neg_logits,
+                            neg_targets,
+                            reduction="none"
+                        )
+
+                        loss_pos = pos_loss_vec.mean()
+                        loss_neg = neg_loss_vec.mean()
+                        loss = 0.5 * (loss_pos + loss_neg)
+
+                        margin = pos_logits - neg_logits
+
+                        pair_weight = max(int(num_supervised), 1)
+                        user_weight = max(int(sampling_stats["user_weight"]), 1)
+                        hard_target_weight = int(sampling_stats["hard_target_count"])
+                        successful_hard_weight = int(sampling_stats["successful_hard_count"])
+
+                        self._weighted_add(metric_acc, "loss_pos", loss_pos.item(), pair_weight)
+                        self._weighted_add(metric_acc, "loss_neg", loss_neg.item(), pair_weight)
+
+                        self._weighted_add(metric_acc, "selected_neg_score_mean", neg_logits.mean().item(), pair_weight)
+                        self._weighted_add(metric_acc, "selected_neg_score_std", neg_logits.std(unbiased=False).item(), pair_weight)
+
+                        self._weighted_add(metric_acc, "pos_neg_margin_mean", margin.mean().item(), pair_weight)
+                        self._weighted_add(metric_acc, "pos_neg_margin_std", margin.std(unbiased=False).item(), pair_weight)
+
+                        self._weighted_add(metric_acc, "hard_ratio_applied", sampling_stats["hard_ratio_applied"], pair_weight)
+                        self._weighted_add(metric_acc, "fallback_uniform_ratio", sampling_stats["fallback_uniform_ratio"], max(hard_target_weight, 1))
+                        self._weighted_add(metric_acc, "users_without_hard_candidates_ratio", sampling_stats["users_without_hard_candidates_ratio"], user_weight)
+                        self._weighted_add(metric_acc, "selected_neg_popularity_percentile_mean", sampling_stats["selected_neg_popularity_percentile_mean"], pair_weight)
+                        self._weighted_add(metric_acc, "duplicate_neg_ratio", sampling_stats["duplicate_neg_ratio"], pair_weight)
+
+                        if self._negative_sampling_strategy == "global_model_aware":
+                            if user_weight > 0 and not math.isnan(sampling_stats["global_hard_pool_size_mean"]):
+                                self._weighted_add(metric_acc, "global_hard_pool_size_mean", sampling_stats["global_hard_pool_size_mean"], user_weight)
+
+                            if successful_hard_weight > 0 and not math.isnan(sampling_stats["selected_neg_emb_score_mean"]):
+                                self._weighted_add(metric_acc, "selected_neg_emb_score_mean", sampling_stats["selected_neg_emb_score_mean"], successful_hard_weight)
+
+                            if successful_hard_weight > 0 and not math.isnan(sampling_stats["selected_neg_outside_local_share"]):
+                                self._weighted_add(metric_acc, "selected_neg_outside_local_share", sampling_stats["selected_neg_outside_local_share"], successful_hard_weight)
+                        elif self._negative_sampling_strategy == "local_model_aware":
+                            if user_weight > 0 and not math.isnan(sampling_stats["local_hard_pool_size_mean"]):
+                                self._weighted_add(metric_acc, "local_hard_pool_size_mean", sampling_stats["local_hard_pool_size_mean"], user_weight)
+
+                            if user_weight > 0 and not math.isnan(sampling_stats["users_with_empty_local_pool_ratio"]):
+                                self._weighted_add(metric_acc, "users_with_empty_local_pool_ratio", sampling_stats["users_with_empty_local_pool_ratio"], user_weight)
+
+                            if successful_hard_weight > 0 and not math.isnan(sampling_stats["selected_neg_local_rank_mean"]):
+                                self._weighted_add(metric_acc, "selected_neg_local_rank_mean", sampling_stats["selected_neg_local_rank_mean"], successful_hard_weight)
                     else:
                         raise NotImplementedError
 
@@ -776,36 +1314,108 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             delta_override_mean_avg = self._weighted_mean(metric_acc, "delta_override_mean")
             delta_override_std_avg = self._weighted_mean(metric_acc, "delta_override_std")
 
+            loss_pos_avg = self._weighted_mean(metric_acc, "loss_pos")
+            loss_neg_avg = self._weighted_mean(metric_acc, "loss_neg")
+
+            selected_neg_score_mean_avg = self._weighted_mean(metric_acc, "selected_neg_score_mean")
+            selected_neg_score_std_avg = self._weighted_mean(metric_acc, "selected_neg_score_std")
+
+            pos_neg_margin_mean_avg = self._weighted_mean(metric_acc, "pos_neg_margin_mean")
+            pos_neg_margin_std_avg = self._weighted_mean(metric_acc, "pos_neg_margin_std")
+
+            hard_ratio_applied_avg = self._weighted_mean(metric_acc, "hard_ratio_applied")
+            fallback_uniform_ratio_avg = self._weighted_mean(metric_acc, "fallback_uniform_ratio")
+            users_without_hard_candidates_ratio_avg = self._weighted_mean(metric_acc, "users_without_hard_candidates_ratio")
+
+            selected_neg_popularity_percentile_mean_avg = self._weighted_mean(metric_acc, "selected_neg_popularity_percentile_mean")
+            duplicate_neg_ratio_avg = self._weighted_mean(metric_acc, "duplicate_neg_ratio")
+
+            selected_neg_emb_score_mean_avg = self._weighted_mean(metric_acc, "selected_neg_emb_score_mean")
+            selected_neg_outside_local_share_avg = self._weighted_mean(metric_acc, "selected_neg_outside_local_share")
+            global_hard_pool_size_mean_avg = self._weighted_mean(metric_acc, "global_hard_pool_size_mean")
+
+            local_hard_pool_size_mean_avg = self._weighted_mean(metric_acc, "local_hard_pool_size_mean")
+            users_with_empty_local_pool_ratio_avg = self._weighted_mean(metric_acc, "users_with_empty_local_pool_ratio")
+            selected_neg_local_rank_mean_avg = self._weighted_mean(metric_acc, "selected_neg_local_rank_mean")
+
             grad_norm_mean = grad_norm_sum / grad_norm_steps if grad_norm_steps > 0 else float("nan")
             avg_supervised_edges = supervised_edges_sum / max(steps, 1) if supervised_edges_sum > 0 else 0.0
 
             epoch_time = time.perf_counter() - epoch_start
             avg_batch_time = epoch_time / max(steps, 1)
 
-            self.logger.info(
-                f"[EPOCH {it + 1}/{self._epochs}] "
-                f"train_loss={epoch_loss:.5f}; "
-                f"train_loss_min={batch_loss_min:.5f}; train_loss_max={batch_loss_max:.5f}; train_loss_std={epoch_loss_std:.5f}; "
-                f"grad_norm_mean={grad_norm_mean:.4f}; grad_norm_max={grad_norm_max:.4f}; "
-                f"emb_logits_mean={emb_logit_mean_avg:.4f}; emb_logits_std={emb_logit_std_avg:.4f}; "
-                f"emb_logits_pre_mean={emb_logit_pre_mean_avg:.4f}; emb_logits_pre_std={emb_logit_pre_std_avg:.4f}; "
-                f"override_ratio={override_ratio_avg:.6f}; "
-                f"local_items_per_user_mean={local_items_per_user_mean_avg:.2f}; local_items_per_user_std={local_items_per_user_std_avg:.2f}; "
-                f"delta_override_mean={delta_override_mean_avg:.4f}; delta_override_std={delta_override_std_avg:.4f}; "
-                f"id_logits_mean={id_logit_mean_avg:.4f}; id_logits_std={id_logit_std_avg:.4f}; "
-                f"user_norm_mean={lhs_norm_mean_avg:.4f}; user_norm_std={lhs_norm_std_avg:.4f}; "
-                f"user_dispersion={lhs_disp_avg:.4e}; "
-                f"item_loc_norm_mean={rhs_gnn_norm_mean_avg:.4f}; item_loc_norm_std={rhs_gnn_norm_std_avg:.4f}; "
-                f"item_loc_dispersion={rhs_gnn_disp_avg:.4e}; "
-                f"rhs_emb_norm_mean={rhs_emb_norm_mean_avg:.4f}; rhs_emb_norm_std={rhs_emb_norm_std_avg:.4f}; "
-                f"rhs_emb_dispersion={rhs_emb_disp_avg:.4e}; "
-                f"offset_emb_mean={offset_emb_mean_avg:.4f}; offset_emb_std={offset_emb_std_avg:.4f}; "
-                f"offset_id_mean={offset_id_mean_avg:.4f}; offset_id_std={offset_id_std_avg:.4f}; "
-                f"supervised_edges_avg={avg_supervised_edges:.1f}; "
-                f"supervised_edges_min={supervised_edges_min}; supervised_edges_max={supervised_edges_max}; "
-                f"cpu_mem_max={max_cpu_mem:.2f}GB, gpu_mem_max={max_gpu_mem:.2f}GB; "
-                f"epoch_time={epoch_time:.2f}s; batch_time_avg={avg_batch_time:.4f}s"
-            )
+            loss_name = "loss_total" if self._loss == "bce" else "train_loss"
+
+            log_parts = [
+                f"[EPOCH {it + 1}/{self._epochs}]",
+                f"{loss_name}={epoch_loss:.5f}",
+                f"{loss_name}_min={batch_loss_min:.5f}",
+                f"{loss_name}_max={batch_loss_max:.5f}",
+                f"{loss_name}_std={epoch_loss_std:.5f}",
+                f"grad_norm_mean={grad_norm_mean:.4f}",
+                f"grad_norm_max={grad_norm_max:.4f}",
+                f"emb_logits_mean={emb_logit_mean_avg:.4f}",
+                f"emb_logits_std={emb_logit_std_avg:.4f}",
+                f"emb_logits_pre_mean={emb_logit_pre_mean_avg:.4f}",
+                f"emb_logits_pre_std={emb_logit_pre_std_avg:.4f}",
+                f"override_ratio={override_ratio_avg:.6f}",
+                f"local_items_per_user_mean={local_items_per_user_mean_avg:.2f}",
+                f"local_items_per_user_std={local_items_per_user_std_avg:.2f}",
+                f"delta_override_mean={delta_override_mean_avg:.4f}",
+                f"delta_override_std={delta_override_std_avg:.4f}",
+                f"id_logits_mean={id_logit_mean_avg:.4f}",
+                f"id_logits_std={id_logit_std_avg:.4f}",
+                f"user_norm_mean={lhs_norm_mean_avg:.4f}",
+                f"user_norm_std={lhs_norm_std_avg:.4f}",
+                f"user_dispersion={lhs_disp_avg:.4e}",
+                f"item_loc_norm_mean={rhs_gnn_norm_mean_avg:.4f}",
+                f"item_loc_norm_std={rhs_gnn_norm_std_avg:.4f}",
+                f"item_loc_dispersion={rhs_gnn_disp_avg:.4e}",
+                f"rhs_emb_norm_mean={rhs_emb_norm_mean_avg:.4f}",
+                f"rhs_emb_norm_std={rhs_emb_norm_std_avg:.4f}",
+                f"rhs_emb_dispersion={rhs_emb_disp_avg:.4e}",
+                f"offset_emb_mean={offset_emb_mean_avg:.4f}",
+                f"offset_emb_std={offset_emb_std_avg:.4f}",
+                f"offset_id_mean={offset_id_mean_avg:.4f}",
+                f"offset_id_std={offset_id_std_avg:.4f}",
+                f"supervised_edges_avg={avg_supervised_edges:.1f}",
+                f"supervised_edges_min={supervised_edges_min}",
+                f"supervised_edges_max={supervised_edges_max}",
+                f"cpu_mem_max={max_cpu_mem:.2f}GB",
+                f"gpu_mem_max={max_gpu_mem:.2f}GB",
+                f"epoch_time={epoch_time:.2f}s",
+                f"batch_time_avg={avg_batch_time:.4f}s"
+            ]
+
+            if self._loss == "bce":
+                log_parts.extend([
+                    f"loss_pos={loss_pos_avg:.5f}",
+                    f"loss_neg={loss_neg_avg:.5f}",
+                    f"selected_neg_score_mean={selected_neg_score_mean_avg:.4f}",
+                    f"selected_neg_score_std={selected_neg_score_std_avg:.4f}",
+                    f"pos_neg_margin_mean={pos_neg_margin_mean_avg:.4f}",
+                    f"pos_neg_margin_std={pos_neg_margin_std_avg:.4f}",
+                    f"hard_ratio_applied={hard_ratio_applied_avg:.4f}",
+                    f"fallback_uniform_ratio={fallback_uniform_ratio_avg:.4f}",
+                    f"users_without_hard_candidates_ratio={users_without_hard_candidates_ratio_avg:.4f}",
+                    f"selected_neg_popularity_percentile_mean={selected_neg_popularity_percentile_mean_avg:.4f}",
+                    f"duplicate_neg_ratio={duplicate_neg_ratio_avg:.4f}"
+                ])
+
+                if self._negative_sampling_strategy == "global_model_aware":
+                    log_parts.extend([
+                        f"selected_neg_emb_score_mean={selected_neg_emb_score_mean_avg:.4f}",
+                        f"selected_neg_outside_local_share={selected_neg_outside_local_share_avg:.4f}",
+                        f"global_hard_pool_size_mean={global_hard_pool_size_mean_avg:.2f}"
+                    ])
+                elif self._negative_sampling_strategy == "local_model_aware":
+                    log_parts.extend([
+                        f"local_hard_pool_size_mean={local_hard_pool_size_mean_avg:.2f}",
+                        f"users_with_empty_local_pool_ratio={users_with_empty_local_pool_ratio_avg:.4f}",
+                        f"selected_neg_local_rank_mean={selected_neg_local_rank_mean_avg:.4f}"
+                    ])
+
+            self.logger.info("; ".join(log_parts))
 
             self.evaluate(it, epoch_loss)
             self._save_resume_checkpoint(last_completed_epoch=it)
