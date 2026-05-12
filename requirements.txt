@@ -1,0 +1,20 @@
+--extra-index-url https://download.pytorch.org/whl/cu121
+-f https://data.pyg.org/whl/torch-2.4.0+cu121.html
+
+Cython
+hyperopt==0.2.5
+Pillow
+PyYAML
+scikit_learn
+relbench==1.1.0
+sentence-transformers
+
+torch==2.4.0+cu121
+torchvision==0.19.0+cu121
+torchaudio==2.4.0+cu121
+
+torch_geometric
+pyg_lib
+torch_scatter
+torch_sparse
+pytorch-frame

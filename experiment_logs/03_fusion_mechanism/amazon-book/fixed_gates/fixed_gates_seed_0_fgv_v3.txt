@@ -1,0 +1,139 @@
+2026-04-11 14:26:38.591801: I Start experiment
+WARNING: Your Python version is lower than 3.8. Consequently, Custom class objects created in Side Information Namespace will be created swallowly!!!!
+2026-04-11 14:26:39.188177: I /home/ANONYMIZED_USER/contextgnn-through-elliot/data/amazon-book/train_elliot.tsv - Loaded
+2026-04-11 14:26:39.611971: I Test Fold 0 - Validation Fold 0
+2026-04-11 14:27:16.115152: I Statistics	Users:	52643	Items:	91599	Transactions:	2328087	Sparsity:	0.9995171993539257
+2026-04-11 14:27:47.938215: I Training begun for ContextGNN
+
+2026-04-11 14:27:47.938131: I Loading parameters
+2026-04-11 14:27:47.938312: I Parameter lr set to 0.001
+2026-04-11 14:27:47.938454: I Hyperparameters:
+2026-04-11 14:27:47.938418: I Parameter factors set to 128
+2026-04-11 14:27:47.938557: I meta set to namespace(hyper_opt_alg='grid', verbose=False, save_weights=True, save_resume=True, validation_rate=1, validation_metric='Recall@20', restore=True, write_best_iterations=True)
+2026-04-11 14:27:47.938528: I Parameter n_layers set to 4
+2026-04-11 14:27:47.938654: I epochs set to 999
+2026-04-11 14:27:47.938625: I Parameter norm set to layer_norm
+2026-04-11 14:27:47.938749: I max_steps set to 2000
+2026-04-11 14:27:47.938721: I Parameter sup_rat set to 0.5
+2026-04-11 14:27:47.938840: I lr set to 0.001
+2026-04-11 14:27:47.938813: I Parameter channels set to 128
+2026-04-11 14:27:47.938930: I acc_steps set to 4
+2026-04-11 14:27:47.938903: I Parameter max_steps set to 2000
+2026-04-11 14:27:47.939020: I batch_size set to 32
+2026-04-11 14:27:47.938993: I Parameter gnn set to GraphSAGE
+2026-04-11 14:27:47.939146: I eval_batch_size set to 64
+2026-04-11 14:27:47.939105: I Parameter mess_drop set to 0.5
+2026-04-11 14:27:47.939266: I inference_for_ranking set to full,global,local
+2026-04-11 14:27:47.939229: I Parameter eps set to 1e-05
+2026-04-11 14:27:47.939380: I seed set to 0
+2026-04-11 14:27:47.939342: I Parameter t_eps set to True
+2026-04-11 14:27:47.939496: I early_stopping set to {'monitor': 'Recall@20', 'min_delta': 0, 'patience': 10, 'verbose': True, 'mode': 'auto'}
+2026-04-11 14:27:47.939455: I Parameter adj_norm set to True
+2026-04-11 14:27:47.939607: I gnn set to GraphSAGE
+2026-04-11 14:27:47.939570: I Parameter loss set to ce
+2026-04-11 14:27:47.939718: I loss set to ce
+2026-04-11 14:27:47.939681: I Parameter aggr set to sum
+2026-04-11 14:27:47.939870: I n_layers set to 4
+2026-04-11 14:27:47.939839: I Parameter neigh set to [16, 16, 8, 8]
+2026-04-11 14:27:47.939987: I aggr set to sum
+2026-04-11 14:27:47.939947: I Parameter acc_steps set to 4
+2026-04-11 14:27:47.940117: I factors set to 128
+2026-04-11 14:27:47.940079: I Parameter inference_for_ranking set to ['full', 'global', 'local']
+2026-04-11 14:27:47.940208: I Parameter fusion_gate_version set to v3
+2026-04-11 14:27:47.940333: I channels set to 128
+2026-04-11 14:27:47.940283: I Parameter lambda_entropy set to 1e-05
+2026-04-11 14:27:47.940416: I neigh set to (16,16,8,8)
+2026-04-11 14:27:47.940531: I fusion_gate_version set to v3
+2026-04-11 14:27:47.940494: I Parameter gate_temperature set to 1.0
+2026-04-11 14:27:47.940757: I lambda_entropy set to 1e-5
+2026-04-11 14:27:47.940819: I gate_temperature set to 1.0
+2026-04-11 14:27:47.940893: I fixed_gates set to True
+2026-04-11 14:27:47.940947: I fixed_gates_weights_name set to best-weights_amazon-book_seed_0_fgv_v3
+2026-04-11 14:27:47.940990: I Exploration: Test Fold exploration number 1
+2026-04-11 14:27:47.941057: I Exploration: Train-Validation Fold exploration number 1
+2026-04-11 14:27:53.325285: I fixed_gates=True detected: skipping training and running fixed-gate test on explicitly selected best weights only.
+2026-04-11 14:27:53.325414: I Fixed-gates best checkpoint path: '/home/ANONYMIZED_USER/contextgnn-through-elliot/results/weights/best-weights_amazon-book_seed_0_fgv_v3'
+2026-04-11 14:27:53.496740: I Best checkpoint correctly restored from '/home/ANONYMIZED_USER/contextgnn-through-elliot/results/weights/best-weights_amazon-book_seed_0_fgv_v3'
+2026-04-11 14:27:53.497275: I *** FIXED GATES TEST START ***
+2026-04-11 14:30:22.820529: I [BRANCH USAGE@20, fixed_g=0.25, mode=full] local_topk_share=0.7731; global_topk_share=0.2269
+2026-04-11 14:30:22.820685: I [GATE TOPK@20, fixed_g=0.25, mode=full] topk_local_gate_mean@20=0.2500; topk_local_with_gate_high_share@20=0.0000
+2026-04-11 14:30:22.822046: I 
+2026-04-11 14:30:22.822503: I Test Evaluation results
+2026-04-11 14:30:22.822804: I Cut-off: 20
+2026-04-11 14:30:22.823300: I Eval Time: 2.2221157550811768
+2026-04-11 14:30:22.823545: I Results
+2026-04-11 14:30:22.823842: I Recall	0.02845
+2026-04-11 14:30:22.824309: I nDCG	0.0221
+2026-04-11 14:32:02.269038: I 
+2026-04-11 14:32:02.268928: I [BRANCH USAGE@20, fixed_g=0.25, mode=global] local_topk_share=0.5840; global_topk_share=0.4160
+2026-04-11 14:32:02.270694: I Test Evaluation results
+2026-04-11 14:32:02.270845: I Cut-off: 20
+2026-04-11 14:32:02.271254: I Eval Time: 1.8562262058258057
+2026-04-11 14:32:02.271468: I Results
+2026-04-11 14:32:02.271510: I Recall	0.02019
+2026-04-11 14:32:02.271547: I nDCG	0.01624
+2026-04-11 14:33:42.334254: I [BRANCH USAGE@20, fixed_g=0.25, mode=local] local_topk_share=1.0000; global_topk_share=0.0000
+2026-04-11 14:33:42.334403: I 
+2026-04-11 14:33:42.345034: I Test Evaluation results
+2026-04-11 14:33:42.355275: I Cut-off: 20
+2026-04-11 14:33:42.360434: I Eval Time: 1.8831593990325928
+2026-04-11 14:33:42.366427: I Results
+2026-04-11 14:33:42.376683: I Recall	0.01855
+2026-04-11 14:33:42.381824: I nDCG	0.01355
+2026-04-11 14:33:44.414538: I [RANKING OVERLAP, fixed_g=0.25] Jaccard@20(Full, Local)=0.0072; Jaccard@20(Full, Global)=0.4129
+2026-04-11 14:33:44.414689: I [FIXED GATE SUMMARY, g=0.25, primary_mode=full] {'Recall': np.float64(0.028445763943779127), 'nDCG': np.float64(0.022101788052086867)}
+2026-04-11 14:35:48.486927: I [BRANCH USAGE@20, fixed_g=0.50, mode=full] local_topk_share=0.9408; global_topk_share=0.0592
+2026-04-11 14:35:48.487056: I [GATE TOPK@20, fixed_g=0.50, mode=full] topk_local_gate_mean@20=0.5000; topk_local_with_gate_high_share@20=0.0000
+2026-04-11 14:35:48.488870: I 
+2026-04-11 14:35:48.489115: I Test Evaluation results
+2026-04-11 14:35:48.489161: I Cut-off: 20
+2026-04-11 14:35:48.489197: I Eval Time: 1.8793823719024658
+2026-04-11 14:35:48.489230: I Results
+2026-04-11 14:35:48.489263: I Recall	0.03277
+2026-04-11 14:35:48.489312: I nDCG	0.02455
+2026-04-11 14:37:28.655285: I 
+2026-04-11 14:37:28.655159: I [BRANCH USAGE@20, fixed_g=0.50, mode=global] local_topk_share=0.5826; global_topk_share=0.4174
+2026-04-11 14:37:28.657323: I Test Evaluation results
+2026-04-11 14:37:28.657662: I Cut-off: 20
+2026-04-11 14:37:28.657832: I Eval Time: 1.8593895435333252
+2026-04-11 14:37:28.657873: I Results
+2026-04-11 14:37:28.657908: I Recall	0.02028
+2026-04-11 14:37:28.658089: I nDCG	0.01627
+2026-04-11 14:39:09.091230: I 
+2026-04-11 14:39:09.091104: I [BRANCH USAGE@20, fixed_g=0.50, mode=local] local_topk_share=1.0000; global_topk_share=0.0000
+2026-04-11 14:39:09.102018: I Test Evaluation results
+2026-04-11 14:39:09.112387: I Cut-off: 20
+2026-04-11 14:39:09.122803: I Eval Time: 1.8964452743530273
+2026-04-11 14:39:09.141887: I Results
+2026-04-11 14:39:09.152292: I Recall	0.01853
+2026-04-11 14:39:09.162839: I nDCG	0.01351
+2026-04-11 14:39:11.262023: I [RANKING OVERLAP, fixed_g=0.50] Jaccard@20(Full, Local)=0.0323; Jaccard@20(Full, Global)=0.1574
+2026-04-11 14:39:11.333915: I [FIXED GATE SUMMARY, g=0.50, primary_mode=full] {'Recall': np.float64(0.0327729094158869), 'nDCG': np.float64(0.024545450919884308)}
+2026-04-11 14:41:26.295773: I [BRANCH USAGE@20, fixed_g=0.75, mode=full] local_topk_share=0.9924; global_topk_share=0.0076
+2026-04-11 14:41:26.295903: I [GATE TOPK@20, fixed_g=0.75, mode=full] topk_local_gate_mean@20=0.7500; topk_local_with_gate_high_share@20=1.0000
+2026-04-11 14:41:26.297271: I 
+2026-04-11 14:41:26.297805: I Test Evaluation results
+2026-04-11 14:41:26.298131: I Cut-off: 20
+2026-04-11 14:41:26.298604: I Eval Time: 1.902787208557129
+2026-04-11 14:41:26.298865: I Results
+2026-04-11 14:41:26.298983: I Recall	0.02433
+2026-04-11 14:41:26.299093: I nDCG	0.01741
+2026-04-11 14:43:11.137082: I 
+2026-04-11 14:43:11.136962: I [BRANCH USAGE@20, fixed_g=0.75, mode=global] local_topk_share=0.5830; global_topk_share=0.4170
+2026-04-11 14:43:11.138920: I Test Evaluation results
+2026-04-11 14:43:11.139230: I Cut-off: 20
+2026-04-11 14:43:11.139624: I Eval Time: 1.8672034740447998
+2026-04-11 14:43:11.139796: I Results
+2026-04-11 14:43:11.140275: I Recall	0.02031
+2026-04-11 14:43:11.140741: I nDCG	0.01632
+2026-04-11 14:44:53.536131: I 
+2026-04-11 14:44:53.536008: I [BRANCH USAGE@20, fixed_g=0.75, mode=local] local_topk_share=1.0000; global_topk_share=0.0000
+2026-04-11 14:44:53.546759: I Test Evaluation results
+2026-04-11 14:44:53.557150: I Cut-off: 20
+2026-04-11 14:44:53.567726: I Eval Time: 1.8842673301696777
+2026-04-11 14:44:53.586566: I Results
+2026-04-11 14:44:53.596914: I Recall	0.01834
+2026-04-11 14:44:53.607528: I nDCG	0.01339
+2026-04-11 14:44:55.794739: I [RANKING OVERLAP, fixed_g=0.75] Jaccard@20(Full, Local)=0.0507; Jaccard@20(Full, Global)=0.0252
+2026-04-11 14:44:55.866768: I [FIXED GATE SUMMARY, g=0.75, primary_mode=full] {'Recall': np.float64(0.024334462891500645), 'nDCG': np.float64(0.01741191509131115)}
+2026-04-11 14:44:55.866880: I *** FIXED GATES TEST END ***

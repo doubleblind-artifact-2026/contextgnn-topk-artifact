@@ -1,0 +1,1196 @@
+2026-04-16 13:19:08.693359: I Start experiment
+WARNING: Your Python version is lower than 3.8. Consequently, Custom class objects created in Side Information Namespace will be created swallowly!!!!
+2026-04-16 13:19:09.235657: I /kaggle/working/contextgnn-through-elliot/data/yelp-2018/train_elliot.tsv - Loaded
+2026-04-16 13:19:09.537797: I Test Fold 0 - Validation Fold 0
+2026-04-16 13:19:31.006102: I Statistics	Users:	31668	Items:	38048	Transactions:	1205591	Sparsity:	0.9989994298832409
+2026-04-16 13:19:49.517611: I Tuning begun for ContextGNN
+
+2026-04-16 13:19:49.517495: I Loading parameters
+2026-04-16 13:19:49.517779: I Parameter lr set to 0.0005
+2026-04-16 13:19:49.518008: I Parameter factors set to 128
+2026-04-16 13:19:49.518132: I Hyperparameter tuning exploration:
+2026-04-16 13:19:49.518264: I Parameter n_layers set to 4
+2026-04-16 13:19:49.518476: I Exploration for seed. Value extracted: 2
+2026-04-16 13:19:49.518662: I Exploration: Hyperparameter exploration number 1
+2026-04-16 13:19:49.518558: I Parameter norm set to layer_norm
+2026-04-16 13:19:49.518818: I Parameter sup_rat set to 0.5
+2026-04-16 13:19:49.518934: I Exploration: Test Fold exploration number 1
+2026-04-16 13:19:49.519031: I Parameter channels set to 128
+2026-04-16 13:19:49.519269: I Exploration: Train-Validation Fold exploration number 1
+2026-04-16 13:19:49.519185: I Parameter max_steps set to 2000
+2026-04-16 13:19:49.519412: I Parameter gnn set to NGCF
+2026-04-16 13:19:49.519594: I Parameter mess_drop set to 0.5
+2026-04-16 13:19:49.519700: I Parameter eps set to 1e-05
+2026-04-16 13:19:49.519782: I Parameter t_eps set to True
+2026-04-16 13:19:49.519849: I Parameter adj_norm set to True
+2026-04-16 13:19:49.519910: I Parameter loss set to ce
+2026-04-16 13:19:49.519972: I Parameter aggr set to sum
+2026-04-16 13:19:49.520134: I Parameter neigh set to [16, 16, 16, 16]
+2026-04-16 13:19:49.520188: I Parameter acc_steps set to 4
+2026-04-16 13:19:49.520309: I Parameter inference_for_ranking set to ['full', 'global', 'local']
+2026-04-16 13:19:53.267999: I No resume checkpoint found at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt'. Starting training from scratch.
+2026-04-16 13:19:53.268136: I No valid resume checkpoint restored. Starting training from scratch.
+2026-04-16 13:25:53.770798: I [EPOCH 1/999] train_loss=210.30043; train_loss_min=76.50909; train_loss_max=726.95636; train_loss_std=88.72562; grad_norm_mean=201.9580; grad_norm_max=2076.9237; emb_logits_mean=-7.8057; emb_logits_std=4.2783; emb_logits_pre_mean=-8.3698; emb_logits_pre_std=3.7158; override_ratio=0.059201; local_items_per_user_mean=2252.47; local_items_per_user_std=398.31; delta_override_mean=9.5289; delta_override_std=3.9210; id_logits_mean=1.1625; id_logits_std=1.1162; user_norm_mean=9.5623; user_norm_std=0.1829; user_dispersion=3.7521e-01; item_loc_norm_mean=10.0072; item_loc_norm_std=0.1703; item_loc_dispersion=4.5090e-01; rhs_emb_norm_mean=15.9806; rhs_emb_norm_std=0.8697; rhs_emb_dispersion=9.9356e-01; offset_emb_mean=-0.1087; offset_emb_std=0.1549; offset_id_mean=0.0404; offset_id_std=0.1736; supervised_edges_avg=608.6; supervised_edges_min=288; supervised_edges_max=1395; cpu_mem_max=4.91GB, gpu_mem_max=15.54GB; epoch_time=360.50s; batch_time_avg=0.3641s
+2026-04-16 13:30:57.446965: I Epoch 1/999 eval_loss=210.30043
+2026-04-16 13:30:57.447725: I 
+2026-04-16 13:30:57.447569: I ******************************************
+2026-04-16 13:30:57.448181: I Validation Evaluation results
+2026-04-16 13:30:57.448498: I Cut-off: 20
+2026-04-16 13:30:57.448701: I Eval Time: 1.2500767707824707
+2026-04-16 13:30:57.448907: I Results
+2026-04-16 13:30:57.449056: I Recall	0.00527
+2026-04-16 13:30:57.449166: I nDCG	0.00183
+2026-04-16 13:30:57.896752: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=1).
+2026-04-16 13:36:56.977440: I [EPOCH 2/999] train_loss=153.63725; train_loss_min=67.26849; train_loss_max=476.63531; train_loss_std=45.86607; grad_norm_mean=78.4883; grad_norm_max=250.5694; emb_logits_mean=-4.9499; emb_logits_std=2.0218; emb_logits_pre_mean=-5.2093; emb_logits_pre_std=1.7553; override_ratio=0.059201; local_items_per_user_mean=2252.49; local_items_per_user_std=398.70; delta_override_mean=4.3826; delta_override_std=1.7864; id_logits_mean=-0.8096; id_logits_std=1.3005; user_norm_mean=8.1374; user_norm_std=0.8514; user_dispersion=2.6870e-01; item_loc_norm_mean=10.0813; item_loc_norm_std=0.1876; item_loc_dispersion=4.5225e-01; rhs_emb_norm_mean=16.0464; rhs_emb_norm_std=0.8691; rhs_emb_dispersion=9.8709e-01; offset_emb_mean=-0.1265; offset_emb_std=0.0525; offset_id_mean=0.0247; offset_id_std=0.0694; supervised_edges_avg=608.6; supervised_edges_min=290; supervised_edges_max=1609; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.08s; batch_time_avg=0.3627s
+2026-04-16 13:41:58.701560: I 
+2026-04-16 13:41:58.701389: I Epoch 2/999 eval_loss=153.63725
+2026-04-16 13:41:58.701847: I ******************************************
+2026-04-16 13:41:58.702155: I Validation Evaluation results
+2026-04-16 13:41:58.702431: I Cut-off: 20
+2026-04-16 13:41:58.702660: I Eval Time: 1.2130093574523926
+2026-04-16 13:41:58.702898: I Results
+2026-04-16 13:41:58.703034: I Recall	0.00739
+2026-04-16 13:41:58.703171: I nDCG	0.00229
+2026-04-16 13:41:59.314288: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=2).
+2026-04-16 13:47:58.681797: I [EPOCH 3/999] train_loss=147.03070; train_loss_min=64.34706; train_loss_max=433.53595; train_loss_std=45.47779; grad_norm_mean=84.0524; grad_norm_max=448.6503; emb_logits_mean=-4.8223; emb_logits_std=1.5655; emb_logits_pre_mean=-5.0505; emb_logits_pre_std=1.2742; override_ratio=0.059195; local_items_per_user_mean=2252.26; local_items_per_user_std=398.45; delta_override_mean=3.8553; delta_override_std=1.2327; id_logits_mean=-1.1663; id_logits_std=1.0347; user_norm_mean=8.1589; user_norm_std=1.0078; user_dispersion=2.6981e-01; item_loc_norm_mean=9.8643; item_loc_norm_std=0.1491; item_loc_dispersion=4.1274e-01; rhs_emb_norm_mean=16.1055; rhs_emb_norm_std=0.8701; rhs_emb_dispersion=9.8602e-01; offset_emb_mean=-0.1520; offset_emb_std=0.0306; offset_id_mean=0.0444; offset_id_std=0.0419; supervised_edges_avg=608.6; supervised_edges_min=335; supervised_edges_max=1454; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.37s; batch_time_avg=0.3630s
+2026-04-16 13:52:58.464440: I 
+2026-04-16 13:52:58.464264: I Epoch 3/999 eval_loss=147.03070
+2026-04-16 13:52:58.464954: I Validation Evaluation results
+2026-04-16 13:52:58.464842: I ******************************************
+2026-04-16 13:52:58.465360: I Cut-off: 20
+2026-04-16 13:52:58.465518: I Eval Time: 1.217369794845581
+2026-04-16 13:52:58.465822: I Results
+2026-04-16 13:52:58.466042: I Recall	0.00799
+2026-04-16 13:52:58.466161: I nDCG	0.00276
+2026-04-16 13:52:59.056338: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=3).
+2026-04-16 13:58:57.703602: I [EPOCH 4/999] train_loss=144.19372; train_loss_min=62.59735; train_loss_max=443.19855; train_loss_std=44.36628; grad_norm_mean=67.2841; grad_norm_max=214.2756; emb_logits_mean=-4.9764; emb_logits_std=1.4264; emb_logits_pre_mean=-5.2033; emb_logits_pre_std=1.0997; override_ratio=0.059180; local_items_per_user_mean=2251.67; local_items_per_user_std=399.34; delta_override_mean=3.8348; delta_override_std=1.1465; id_logits_mean=-1.3220; id_logits_std=0.8496; user_norm_mean=8.1412; user_norm_std=0.9284; user_dispersion=2.6610e-01; item_loc_norm_mean=9.6381; item_loc_norm_std=0.1418; item_loc_dispersion=3.8760e-01; rhs_emb_norm_mean=16.1616; rhs_emb_norm_std=0.8723; rhs_emb_dispersion=9.8570e-01; offset_emb_mean=-0.1733; offset_emb_std=0.0252; offset_id_mean=0.0654; offset_id_std=0.0326; supervised_edges_avg=608.6; supervised_edges_min=293; supervised_edges_max=1546; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.65s; batch_time_avg=0.3623s
+2026-04-16 14:03:57.461598: I Epoch 4/999 eval_loss=144.19372
+2026-04-16 14:03:57.461867: I ******************************************
+2026-04-16 14:03:57.461962: I 
+2026-04-16 14:03:57.462380: I Validation Evaluation results
+2026-04-16 14:03:57.462552: I Cut-off: 20
+2026-04-16 14:03:57.462703: I Eval Time: 1.2083632946014404
+2026-04-16 14:03:57.462838: I Results
+2026-04-16 14:03:57.463110: I Recall	0.0095
+2026-04-16 14:03:57.463395: I nDCG	0.0032
+2026-04-16 14:03:58.075190: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=4).
+2026-04-16 14:09:56.709332: I [EPOCH 5/999] train_loss=142.38458; train_loss_min=59.81209; train_loss_max=389.82327; train_loss_std=43.60467; grad_norm_mean=60.1683; grad_norm_max=275.7801; emb_logits_mean=-4.9778; emb_logits_std=1.3727; emb_logits_pre_mean=-5.2029; emb_logits_pre_std=1.0310; override_ratio=0.059189; local_items_per_user_mean=2252.01; local_items_per_user_std=399.44; delta_override_mean=3.8037; delta_override_std=1.1222; id_logits_mean=-1.3387; id_logits_std=0.8220; user_norm_mean=7.9864; user_norm_std=0.8539; user_dispersion=2.5518e-01; item_loc_norm_mean=9.4575; item_loc_norm_std=0.1523; item_loc_dispersion=3.7021e-01; rhs_emb_norm_mean=16.2166; rhs_emb_norm_std=0.8737; rhs_emb_dispersion=9.8554e-01; offset_emb_mean=-0.1936; offset_emb_std=0.0243; offset_id_mean=0.0881; offset_id_std=0.0278; supervised_edges_avg=608.6; supervised_edges_min=281; supervised_edges_max=1371; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.63s; batch_time_avg=0.3623s
+2026-04-16 14:14:56.553115: I 
+2026-04-16 14:14:56.552929: I Epoch 5/999 eval_loss=142.38458
+2026-04-16 14:14:56.553479: I Validation Evaluation results
+2026-04-16 14:14:56.553627: I ******************************************
+2026-04-16 14:14:56.553976: I Cut-off: 20
+2026-04-16 14:14:56.554129: I Eval Time: 1.1975438594818115
+2026-04-16 14:14:56.554460: I Results
+2026-04-16 14:14:56.554588: I Recall	0.01055
+2026-04-16 14:14:56.554760: I nDCG	0.00343
+2026-04-16 14:14:57.161603: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=5).
+2026-04-16 14:20:56.170067: I [EPOCH 6/999] train_loss=142.14106; train_loss_min=60.82720; train_loss_max=460.14148; train_loss_std=46.33535; grad_norm_mean=56.3820; grad_norm_max=261.1982; emb_logits_mean=-4.9188; emb_logits_std=1.3293; emb_logits_pre_mean=-5.1410; emb_logits_pre_std=0.9776; override_ratio=0.059178; local_items_per_user_mean=2251.60; local_items_per_user_std=398.51; delta_override_mean=3.7539; delta_override_std=1.0907; id_logits_mean=-1.3165; id_logits_std=0.8289; user_norm_mean=7.7805; user_norm_std=0.7736; user_dispersion=2.4131e-01; item_loc_norm_mean=9.2994; item_loc_norm_std=0.1608; item_loc_dispersion=3.5613e-01; rhs_emb_norm_mean=16.2704; rhs_emb_norm_std=0.8761; rhs_emb_dispersion=9.8544e-01; offset_emb_mean=-0.2136; offset_emb_std=0.0223; offset_id_mean=0.1054; offset_id_std=0.0251; supervised_edges_avg=608.6; supervised_edges_min=364; supervised_edges_max=1609; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.01s; batch_time_avg=0.3626s
+2026-04-16 14:26:00.443678: I 
+2026-04-16 14:26:00.443470: I Epoch 6/999 eval_loss=142.14106
+2026-04-16 14:26:00.444024: I ******************************************
+2026-04-16 14:26:00.444478: I Validation Evaluation results
+2026-04-16 14:26:00.444704: I Cut-off: 20
+2026-04-16 14:26:00.445078: I Eval Time: 1.2248435020446777
+2026-04-16 14:26:00.445285: I Results
+2026-04-16 14:26:00.445562: I Recall	0.01213
+2026-04-16 14:26:00.445757: I nDCG	0.0042
+2026-04-16 14:26:01.059199: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=6).
+2026-04-16 14:32:00.926640: I [EPOCH 7/999] train_loss=141.95711; train_loss_min=49.96597; train_loss_max=432.22266; train_loss_std=47.86279; grad_norm_mean=49.9797; grad_norm_max=165.6128; emb_logits_mean=-4.8630; emb_logits_std=1.3228; emb_logits_pre_mean=-5.0815; emb_logits_pre_std=0.9765; override_ratio=0.059172; local_items_per_user_mean=2251.38; local_items_per_user_std=397.03; delta_override_mean=3.6910; delta_override_std=1.1115; id_logits_mean=-1.3096; id_logits_std=0.8972; user_norm_mean=7.5212; user_norm_std=0.7536; user_dispersion=2.2526e-01; item_loc_norm_mean=9.1197; item_loc_norm_std=0.1749; item_loc_dispersion=3.4276e-01; rhs_emb_norm_mean=16.3224; rhs_emb_norm_std=0.8789; rhs_emb_dispersion=9.8538e-01; offset_emb_mean=-0.2288; offset_emb_std=0.0231; offset_id_mean=0.1249; offset_id_std=0.0239; supervised_edges_avg=608.6; supervised_edges_min=305; supervised_edges_max=1533; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.87s; batch_time_avg=0.3635s
+2026-04-16 14:37:03.353860: I 
+2026-04-16 14:37:03.353663: I Epoch 7/999 eval_loss=141.95711
+2026-04-16 14:37:03.354218: I ******************************************
+2026-04-16 14:37:03.354563: I Validation Evaluation results
+2026-04-16 14:37:03.354730: I Cut-off: 20
+2026-04-16 14:37:03.354852: I Eval Time: 1.2562377452850342
+2026-04-16 14:37:03.355034: I Results
+2026-04-16 14:37:03.355156: I Recall	0.01219
+2026-04-16 14:37:03.355277: I nDCG	0.00411
+2026-04-16 14:37:03.972963: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=7).
+2026-04-16 14:43:02.650517: I [EPOCH 8/999] train_loss=139.95540; train_loss_min=61.80931; train_loss_max=370.57428; train_loss_std=42.32814; grad_norm_mean=47.1203; grad_norm_max=171.4545; emb_logits_mean=-4.8139; emb_logits_std=1.2924; emb_logits_pre_mean=-5.0272; emb_logits_pre_std=0.9467; override_ratio=0.059171; local_items_per_user_mean=2251.32; local_items_per_user_std=399.68; delta_override_mean=3.6040; delta_override_std=1.1303; id_logits_mean=-1.3315; id_logits_std=0.9614; user_norm_mean=7.2413; user_norm_std=0.7677; user_dispersion=2.0865e-01; item_loc_norm_mean=8.9107; item_loc_norm_std=0.1984; item_loc_dispersion=3.2820e-01; rhs_emb_norm_mean=16.3727; rhs_emb_norm_std=0.8816; rhs_emb_dispersion=9.8534e-01; offset_emb_mean=-0.2406; offset_emb_std=0.0222; offset_id_mean=0.1415; offset_id_std=0.0238; supervised_edges_avg=608.6; supervised_edges_min=381; supervised_edges_max=1347; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.68s; batch_time_avg=0.3623s
+2026-04-16 14:48:05.802448: I 
+2026-04-16 14:48:05.802252: I Epoch 8/999 eval_loss=139.95540
+2026-04-16 14:48:05.802845: I ******************************************
+2026-04-16 14:48:05.803317: I Validation Evaluation results
+2026-04-16 14:48:05.803685: I Cut-off: 20
+2026-04-16 14:48:05.803892: I Eval Time: 1.236126184463501
+2026-04-16 14:48:05.804064: I Results
+2026-04-16 14:48:05.804218: I Recall	0.01386
+2026-04-16 14:48:05.804390: I nDCG	0.00443
+2026-04-16 14:48:06.426054: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=8).
+2026-04-16 14:54:05.658390: I [EPOCH 9/999] train_loss=139.84763; train_loss_min=55.39685; train_loss_max=418.63541; train_loss_std=45.15174; grad_norm_mean=42.4193; grad_norm_max=109.3772; emb_logits_mean=-4.8624; emb_logits_std=1.2825; emb_logits_pre_mean=-5.0726; emb_logits_pre_std=0.9380; override_ratio=0.059210; local_items_per_user_mean=2252.81; local_items_per_user_std=397.86; delta_override_mean=3.5505; delta_override_std=1.1661; id_logits_mean=-1.4172; id_logits_std=1.0157; user_norm_mean=7.0070; user_norm_std=0.7812; user_dispersion=1.9616e-01; item_loc_norm_mean=8.7325; item_loc_norm_std=0.2204; item_loc_dispersion=3.1605e-01; rhs_emb_norm_mean=16.4175; rhs_emb_norm_std=0.8853; rhs_emb_dispersion=9.8531e-01; offset_emb_mean=-0.2532; offset_emb_std=0.0223; offset_id_mean=0.1512; offset_id_std=0.0225; supervised_edges_avg=608.6; supervised_edges_min=303; supervised_edges_max=1494; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.23s; batch_time_avg=0.3629s
+2026-04-16 14:59:06.250853: I 
+2026-04-16 14:59:06.250659: I Epoch 9/999 eval_loss=139.84763
+2026-04-16 14:59:06.251467: I Validation Evaluation results
+2026-04-16 14:59:06.251655: I Cut-off: 20
+2026-04-16 14:59:06.251960: I Eval Time: 1.2209277153015137
+2026-04-16 14:59:06.318082: I Results
+2026-04-16 14:59:06.318296: I Recall	0.01307
+2026-04-16 14:59:06.318538: I nDCG	0.00427
+2026-04-16 14:59:06.607346: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=9).
+2026-04-16 14:59:06.608404: I EarlyStopping: current=0.01307, best=0.01386, bad_epochs=1/10
+2026-04-16 15:05:05.558594: I [EPOCH 10/999] train_loss=139.43933; train_loss_min=57.14484; train_loss_max=399.49997; train_loss_std=44.36833; grad_norm_mean=43.1117; grad_norm_max=116.9041; emb_logits_mean=-4.9046; emb_logits_std=1.2625; emb_logits_pre_mean=-5.1097; emb_logits_pre_std=0.9211; override_ratio=0.059188; local_items_per_user_mean=2252.00; local_items_per_user_std=397.79; delta_override_mean=3.4639; delta_override_std=1.2104; id_logits_mean=-1.5247; id_logits_std=1.0778; user_norm_mean=6.7531; user_norm_std=0.8177; user_dispersion=1.8249e-01; item_loc_norm_mean=8.5653; item_loc_norm_std=0.2452; item_loc_dispersion=3.0536e-01; rhs_emb_norm_mean=16.4627; rhs_emb_norm_std=0.8891; rhs_emb_dispersion=9.8532e-01; offset_emb_mean=-0.2626; offset_emb_std=0.0219; offset_id_mean=0.1634; offset_id_std=0.0219; supervised_edges_avg=608.6; supervised_edges_min=365; supervised_edges_max=1421; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.95s; batch_time_avg=0.3626s
+2026-04-16 15:10:05.020602: I 
+2026-04-16 15:10:05.020404: I Epoch 10/999 eval_loss=139.43933
+2026-04-16 15:10:05.020950: I ******************************************
+2026-04-16 15:10:05.021322: I Validation Evaluation results
+2026-04-16 15:10:05.021533: I Cut-off: 20
+2026-04-16 15:10:05.021745: I Eval Time: 1.3343863487243652
+2026-04-16 15:10:05.021854: I Results
+2026-04-16 15:10:05.022032: I Recall	0.01727
+2026-04-16 15:10:05.022385: I nDCG	0.00598
+2026-04-16 15:10:05.831493: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=10).
+2026-04-16 15:16:04.797455: I [EPOCH 11/999] train_loss=138.94885; train_loss_min=61.19026; train_loss_max=418.96313; train_loss_std=44.31726; grad_norm_mean=38.7349; grad_norm_max=142.3501; emb_logits_mean=-4.9768; emb_logits_std=1.2425; emb_logits_pre_mean=-5.1785; emb_logits_pre_std=0.8974; override_ratio=0.059193; local_items_per_user_mean=2252.19; local_items_per_user_std=399.04; delta_override_mean=3.4067; delta_override_std=1.2492; id_logits_mean=-1.6305; id_logits_std=1.1194; user_norm_mean=6.4520; user_norm_std=0.8550; user_dispersion=1.6715e-01; item_loc_norm_mean=8.4099; item_loc_norm_std=0.2692; item_loc_dispersion=2.9586e-01; rhs_emb_norm_mean=16.5008; rhs_emb_norm_std=0.8926; rhs_emb_dispersion=9.8537e-01; offset_emb_mean=-0.2691; offset_emb_std=0.0209; offset_id_mean=0.1698; offset_id_std=0.0207; supervised_edges_avg=608.6; supervised_edges_min=337; supervised_edges_max=1475; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.97s; batch_time_avg=0.3626s
+2026-04-16 15:21:04.856020: I 
+2026-04-16 15:21:04.855858: I Epoch 11/999 eval_loss=138.94885
+2026-04-16 15:21:04.856690: I Validation Evaluation results
+2026-04-16 15:21:04.917908: I Cut-off: 20
+2026-04-16 15:21:04.918501: I Eval Time: 1.2110295295715332
+2026-04-16 15:21:04.918648: I Results
+2026-04-16 15:21:04.918767: I Recall	0.01702
+2026-04-16 15:21:04.918960: I nDCG	0.00565
+2026-04-16 15:21:05.194471: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=11).
+2026-04-16 15:21:05.195534: I EarlyStopping: current=0.01702, best=0.01727, bad_epochs=1/10
+2026-04-16 15:27:03.873752: I [EPOCH 12/999] train_loss=138.80147; train_loss_min=56.74198; train_loss_max=439.85840; train_loss_std=44.50553; grad_norm_mean=39.7558; grad_norm_max=112.8463; emb_logits_mean=-5.0478; emb_logits_std=1.2322; emb_logits_pre_mean=-5.2442; emb_logits_pre_std=0.8933; override_ratio=0.059179; local_items_per_user_mean=2251.65; local_items_per_user_std=397.90; delta_override_mean=3.3198; delta_override_std=1.2938; id_logits_mean=-1.7636; id_logits_std=1.1783; user_norm_mean=6.0999; user_norm_std=0.8991; user_dispersion=1.5097e-01; item_loc_norm_mean=8.2699; item_loc_norm_std=0.2953; item_loc_dispersion=2.8804e-01; rhs_emb_norm_mean=16.5348; rhs_emb_norm_std=0.8960; rhs_emb_dispersion=9.8546e-01; offset_emb_mean=-0.2741; offset_emb_std=0.0189; offset_id_mean=0.1794; offset_id_std=0.0200; supervised_edges_avg=608.6; supervised_edges_min=372; supervised_edges_max=1580; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.68s; batch_time_avg=0.3623s
+2026-04-16 15:32:04.772116: I 
+2026-04-16 15:32:04.771912: I Epoch 12/999 eval_loss=138.80147
+2026-04-16 15:32:04.772594: I ******************************************
+2026-04-16 15:32:04.772900: I Validation Evaluation results
+2026-04-16 15:32:04.773163: I Cut-off: 20
+2026-04-16 15:32:04.773427: I Eval Time: 1.2379298210144043
+2026-04-16 15:32:04.773538: I Results
+2026-04-16 15:32:04.773646: I Recall	0.02071
+2026-04-16 15:32:04.773754: I nDCG	0.00706
+2026-04-16 15:32:05.382839: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=12).
+2026-04-16 15:38:04.166991: I [EPOCH 13/999] train_loss=138.66207; train_loss_min=53.70858; train_loss_max=462.43338; train_loss_std=46.20286; grad_norm_mean=34.3553; grad_norm_max=101.4037; emb_logits_mean=-5.1578; emb_logits_std=1.2367; emb_logits_pre_mean=-5.3494; emb_logits_pre_std=0.9060; override_ratio=0.059186; local_items_per_user_mean=2251.91; local_items_per_user_std=398.26; delta_override_mean=3.2380; delta_override_std=1.3644; id_logits_mean=-1.9239; id_logits_std=1.2536; user_norm_mean=5.7236; user_norm_std=0.9527; user_dispersion=1.3407e-01; item_loc_norm_mean=8.1478; item_loc_norm_std=0.3270; item_loc_dispersion=2.8276e-01; rhs_emb_norm_mean=16.5745; rhs_emb_norm_std=0.8995; rhs_emb_dispersion=9.8558e-01; offset_emb_mean=-0.2826; offset_emb_std=0.0190; offset_id_mean=0.1805; offset_id_std=0.0189; supervised_edges_avg=608.6; supervised_edges_min=363; supervised_edges_max=1668; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.78s; batch_time_avg=0.3624s
+2026-04-16 15:43:03.511519: I 
+2026-04-16 15:43:03.511298: I Epoch 13/999 eval_loss=138.66207
+2026-04-16 15:43:03.511875: I ******************************************
+2026-04-16 15:43:03.512100: I Validation Evaluation results
+2026-04-16 15:43:03.512221: I Cut-off: 20
+2026-04-16 15:43:03.512535: I Eval Time: 1.2413978576660156
+2026-04-16 15:43:03.512672: I Results
+2026-04-16 15:43:03.512786: I Recall	0.02703
+2026-04-16 15:43:03.512945: I nDCG	0.00982
+2026-04-16 15:43:04.070022: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=13).
+2026-04-16 15:49:02.613583: I [EPOCH 14/999] train_loss=137.84937; train_loss_min=52.31572; train_loss_max=371.11316; train_loss_std=43.39530; grad_norm_mean=41.8618; grad_norm_max=234.5201; emb_logits_mean=-5.2441; emb_logits_std=1.2393; emb_logits_pre_mean=-5.4316; emb_logits_pre_std=0.9140; override_ratio=0.059168; local_items_per_user_mean=2251.21; local_items_per_user_std=399.45; delta_override_mean=3.1694; delta_override_std=1.4088; id_logits_mean=-2.0446; id_logits_std=1.2976; user_norm_mean=5.3333; user_norm_std=0.9972; user_dispersion=1.1764e-01; item_loc_norm_mean=8.0268; item_loc_norm_std=0.3535; item_loc_dispersion=2.7719e-01; rhs_emb_norm_mean=16.6111; rhs_emb_norm_std=0.9027; rhs_emb_dispersion=9.8573e-01; offset_emb_mean=-0.2855; offset_emb_std=0.0175; offset_id_mean=0.1833; offset_id_std=0.0184; supervised_edges_avg=608.6; supervised_edges_min=353; supervised_edges_max=1370; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.54s; batch_time_avg=0.3622s
+2026-04-16 15:54:01.414405: I 
+2026-04-16 15:54:01.414218: I Epoch 14/999 eval_loss=137.84937
+2026-04-16 15:54:01.414668: I Validation Evaluation results
+2026-04-16 15:54:01.414776: I Cut-off: 20
+2026-04-16 15:54:01.415011: I ******************************************
+2026-04-16 15:54:01.415222: I Eval Time: 1.2036738395690918
+2026-04-16 15:54:01.415550: I Results
+2026-04-16 15:54:01.415836: I Recall	0.03
+2026-04-16 15:54:01.415997: I nDCG	0.01091
+2026-04-16 15:54:01.999795: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=14).
+2026-04-16 16:00:01.055942: I [EPOCH 15/999] train_loss=136.85260; train_loss_min=56.77563; train_loss_max=436.02527; train_loss_std=42.11794; grad_norm_mean=32.5741; grad_norm_max=132.2656; emb_logits_mean=-5.3293; emb_logits_std=1.2544; emb_logits_pre_mean=-5.5110; emb_logits_pre_std=0.9430; override_ratio=0.059187; local_items_per_user_mean=2251.94; local_items_per_user_std=398.92; delta_override_mean=3.0690; delta_override_std=1.4758; id_logits_mean=-2.1881; id_logits_std=1.3711; user_norm_mean=4.8764; user_norm_std=1.0748; user_dispersion=1.0113e-01; item_loc_norm_mean=7.9077; item_loc_norm_std=0.4005; item_loc_dispersion=2.7323e-01; rhs_emb_norm_mean=16.6483; rhs_emb_norm_std=0.9041; rhs_emb_dispersion=9.8590e-01; offset_emb_mean=-0.2858; offset_emb_std=0.0161; offset_id_mean=0.1890; offset_id_std=0.0177; supervised_edges_avg=608.6; supervised_edges_min=272; supervised_edges_max=1566; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.06s; batch_time_avg=0.3627s
+2026-04-16 16:05:01.894848: I Epoch 15/999 eval_loss=136.85260
+2026-04-16 16:05:01.895054: I 
+2026-04-16 16:05:01.895553: I Validation Evaluation results
+2026-04-16 16:05:01.895693: I Cut-off: 20
+2026-04-16 16:05:01.895441: I ******************************************
+2026-04-16 16:05:01.896035: I Eval Time: 1.1870272159576416
+2026-04-16 16:05:01.896275: I Results
+2026-04-16 16:05:01.896664: I Recall	0.03717
+2026-04-16 16:05:01.896897: I nDCG	0.01428
+2026-04-16 16:05:02.528184: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=15).
+2026-04-16 16:11:01.076101: I [EPOCH 16/999] train_loss=136.62067; train_loss_min=60.24761; train_loss_max=409.73901; train_loss_std=42.41726; grad_norm_mean=37.1977; grad_norm_max=108.7812; emb_logits_mean=-5.4353; emb_logits_std=1.2874; emb_logits_pre_mean=-5.6146; emb_logits_pre_std=0.9877; override_ratio=0.059188; local_items_per_user_mean=2251.97; local_items_per_user_std=398.97; delta_override_mean=3.0289; delta_override_std=1.4915; id_logits_mean=-2.2923; id_logits_std=1.3856; user_norm_mean=4.4485; user_norm_std=1.1449; user_dispersion=8.6787e-02; item_loc_norm_mean=7.7988; item_loc_norm_std=0.4400; item_loc_dispersion=2.6917e-01; rhs_emb_norm_mean=16.6842; rhs_emb_norm_std=0.9056; rhs_emb_dispersion=9.8609e-01; offset_emb_mean=-0.2918; offset_emb_std=0.0158; offset_id_mean=0.1907; offset_id_std=0.0174; supervised_edges_avg=608.6; supervised_edges_min=374; supervised_edges_max=1497; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.55s; batch_time_avg=0.3622s
+2026-04-16 16:16:03.387967: I 
+2026-04-16 16:16:03.387752: I Epoch 16/999 eval_loss=136.62067
+2026-04-16 16:16:03.388501: I Validation Evaluation results
+2026-04-16 16:16:03.388301: I ******************************************
+2026-04-16 16:16:03.388926: I Cut-off: 20
+2026-04-16 16:16:03.389163: I Eval Time: 1.238469123840332
+2026-04-16 16:16:03.389335: I Results
+2026-04-16 16:16:03.389518: I Recall	0.04964
+2026-04-16 16:16:03.389665: I nDCG	0.01889
+2026-04-16 16:16:03.987272: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=16).
+2026-04-16 16:22:03.499182: I [EPOCH 17/999] train_loss=136.77617; train_loss_min=55.02214; train_loss_max=398.28119; train_loss_std=43.77828; grad_norm_mean=31.2147; grad_norm_max=130.9362; emb_logits_mean=-5.5161; emb_logits_std=1.3027; emb_logits_pre_mean=-5.6911; emb_logits_pre_std=1.0119; override_ratio=0.059179; local_items_per_user_mean=2251.65; local_items_per_user_std=397.70; delta_override_mean=2.9568; delta_override_std=1.5331; id_logits_mean=-2.3919; id_logits_std=1.4126; user_norm_mean=4.0009; user_norm_std=1.1949; user_dispersion=7.3356e-02; item_loc_norm_mean=7.6965; item_loc_norm_std=0.4873; item_loc_dispersion=2.6628e-01; rhs_emb_norm_mean=16.7258; rhs_emb_norm_std=0.9064; rhs_emb_dispersion=9.8629e-01; offset_emb_mean=-0.2889; offset_emb_std=0.0152; offset_id_mean=0.1945; offset_id_std=0.0170; supervised_edges_avg=608.6; supervised_edges_min=295; supervised_edges_max=1447; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.51s; batch_time_avg=0.3631s
+2026-04-16 16:27:07.685124: I 
+2026-04-16 16:27:07.684951: I Epoch 17/999 eval_loss=136.77617
+2026-04-16 16:27:07.685690: I Validation Evaluation results
+2026-04-16 16:27:07.751223: I Cut-off: 20
+2026-04-16 16:27:07.751667: I Eval Time: 1.1997027397155762
+2026-04-16 16:27:07.751906: I Results
+2026-04-16 16:27:07.752104: I Recall	0.045
+2026-04-16 16:27:07.752211: I nDCG	0.01703
+2026-04-16 16:27:08.024562: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=17).
+2026-04-16 16:27:08.025807: I EarlyStopping: current=0.04500, best=0.04964, bad_epochs=1/10
+2026-04-16 16:33:07.454428: I [EPOCH 18/999] train_loss=136.39135; train_loss_min=51.88235; train_loss_max=458.05304; train_loss_std=45.76817; grad_norm_mean=28.7420; grad_norm_max=73.6134; emb_logits_mean=-5.5921; emb_logits_std=1.3493; emb_logits_pre_mean=-5.7621; emb_logits_pre_std=1.0762; override_ratio=0.059170; local_items_per_user_mean=2251.29; local_items_per_user_std=398.54; delta_override_mean=2.8723; delta_override_std=1.5679; id_logits_mean=-2.4820; id_logits_std=1.4453; user_norm_mean=3.7247; user_norm_std=1.2584; user_dispersion=6.6620e-02; item_loc_norm_mean=7.5985; item_loc_norm_std=0.5320; item_loc_dispersion=2.6364e-01; rhs_emb_norm_mean=16.7668; rhs_emb_norm_std=0.9055; rhs_emb_dispersion=9.8648e-01; offset_emb_mean=-0.2907; offset_emb_std=0.0140; offset_id_mean=0.1953; offset_id_std=0.0175; supervised_edges_avg=608.6; supervised_edges_min=353; supervised_edges_max=1651; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.43s; batch_time_avg=0.3631s
+2026-04-16 16:38:11.977450: I 
+2026-04-16 16:38:11.977275: I Epoch 18/999 eval_loss=136.39135
+2026-04-16 16:38:11.978095: I Validation Evaluation results
+2026-04-16 16:38:11.978279: I Cut-off: 20
+2026-04-16 16:38:11.978443: I Eval Time: 1.2236297130584717
+2026-04-16 16:38:12.040513: I Results
+2026-04-16 16:38:12.040832: I Recall	0.04411
+2026-04-16 16:38:12.041013: I nDCG	0.01681
+2026-04-16 16:38:12.320890: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=18).
+2026-04-16 16:38:12.322086: I EarlyStopping: current=0.04411, best=0.04964, bad_epochs=2/10
+2026-04-16 16:44:11.561126: I [EPOCH 19/999] train_loss=136.43103; train_loss_min=52.32473; train_loss_max=462.33978; train_loss_std=45.80146; grad_norm_mean=31.1957; grad_norm_max=113.1876; emb_logits_mean=-5.6428; emb_logits_std=1.3874; emb_logits_pre_mean=-5.8085; emb_logits_pre_std=1.1261; override_ratio=0.059184; local_items_per_user_mean=2251.85; local_items_per_user_std=397.37; delta_override_mean=2.7987; delta_override_std=1.5876; id_logits_mean=-2.5264; id_logits_std=1.4539; user_norm_mean=3.5841; user_norm_std=1.2752; user_dispersion=6.3722e-02; item_loc_norm_mean=7.4971; item_loc_norm_std=0.5658; item_loc_dispersion=2.5965e-01; rhs_emb_norm_mean=16.8237; rhs_emb_norm_std=0.9034; rhs_emb_dispersion=9.8669e-01; offset_emb_mean=-0.3006; offset_emb_std=0.0161; offset_id_mean=0.2003; offset_id_std=0.0195; supervised_edges_avg=608.6; supervised_edges_min=344; supervised_edges_max=1656; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.24s; batch_time_avg=0.3629s
+2026-04-16 16:49:15.147171: I 
+2026-04-16 16:49:15.146987: I Epoch 19/999 eval_loss=136.43103
+2026-04-16 16:49:15.147509: I ******************************************
+2026-04-16 16:49:15.147909: I Validation Evaluation results
+2026-04-16 16:49:15.148065: I Cut-off: 20
+2026-04-16 16:49:15.148283: I Eval Time: 1.2075676918029785
+2026-04-16 16:49:15.148660: I Results
+2026-04-16 16:49:15.148886: I Recall	0.05375
+2026-04-16 16:49:15.149058: I nDCG	0.02104
+2026-04-16 16:49:15.720278: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=19).
+2026-04-16 16:55:14.769354: I [EPOCH 20/999] train_loss=135.92601; train_loss_min=55.36084; train_loss_max=499.12579; train_loss_std=45.89070; grad_norm_mean=28.6864; grad_norm_max=64.7205; emb_logits_mean=-5.7020; emb_logits_std=1.4446; emb_logits_pre_mean=-5.8642; emb_logits_pre_std=1.1947; override_ratio=0.059192; local_items_per_user_mean=2252.15; local_items_per_user_std=399.00; delta_override_mean=2.7399; delta_override_std=1.6012; id_logits_mean=-2.5470; id_logits_std=1.4604; user_norm_mean=3.5285; user_norm_std=1.2911; user_dispersion=6.2781e-02; item_loc_norm_mean=7.3714; item_loc_norm_std=0.6059; item_loc_dispersion=2.5373e-01; rhs_emb_norm_mean=16.8965; rhs_emb_norm_std=0.9008; rhs_emb_dispersion=9.8682e-01; offset_emb_mean=-0.3075; offset_emb_std=0.0187; offset_id_mean=0.2010; offset_id_std=0.0220; supervised_edges_avg=608.6; supervised_edges_min=278; supervised_edges_max=1808; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.05s; batch_time_avg=0.3627s
+2026-04-16 17:00:17.465128: I 
+2026-04-16 17:00:17.465424: I Validation Evaluation results
+2026-04-16 17:00:17.464939: I Epoch 20/999 eval_loss=135.92601
+2026-04-16 17:00:17.465968: I Cut-off: 20
+2026-04-16 17:00:17.466185: I Eval Time: 1.188908338546753
+2026-04-16 17:00:17.466569: I Results
+2026-04-16 17:00:17.466677: I Recall	0.0425
+2026-04-16 17:00:17.466773: I nDCG	0.01654
+2026-04-16 17:00:17.782594: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=20).
+2026-04-16 17:00:17.783783: I EarlyStopping: current=0.04250, best=0.05375, bad_epochs=1/10
+2026-04-16 17:06:17.061354: I [EPOCH 21/999] train_loss=134.74812; train_loss_min=53.26415; train_loss_max=440.49356; train_loss_std=42.85323; grad_norm_mean=24.6022; grad_norm_max=111.1564; emb_logits_mean=-5.7145; emb_logits_std=1.4846; emb_logits_pre_mean=-5.8726; emb_logits_pre_std=1.2438; override_ratio=0.059188; local_items_per_user_mean=2251.99; local_items_per_user_std=399.11; delta_override_mean=2.6711; delta_override_std=1.6231; id_logits_mean=-2.5494; id_logits_std=1.4865; user_norm_mean=3.4132; user_norm_std=1.2916; user_dispersion=6.0357e-02; item_loc_norm_mean=7.2562; item_loc_norm_std=0.6277; item_loc_dispersion=2.4815e-01; rhs_emb_norm_mean=16.9624; rhs_emb_norm_std=0.8978; rhs_emb_dispersion=9.8682e-01; offset_emb_mean=-0.3097; offset_emb_std=0.0202; offset_id_mean=0.2094; offset_id_std=0.0254; supervised_edges_avg=608.6; supervised_edges_min=250; supervised_edges_max=1580; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.28s; batch_time_avg=0.3629s
+2026-04-16 17:11:20.484685: I Epoch 21/999 eval_loss=134.74812
+2026-04-16 17:11:20.484939: I 
+2026-04-16 17:11:20.485308: I ******************************************
+2026-04-16 17:11:20.485434: I Validation Evaluation results
+2026-04-16 17:11:20.485831: I Cut-off: 20
+2026-04-16 17:11:20.486127: I Eval Time: 1.2831411361694336
+2026-04-16 17:11:20.486317: I Results
+2026-04-16 17:11:20.486471: I Recall	0.05507
+2026-04-16 17:11:20.486601: I nDCG	0.02178
+2026-04-16 17:11:21.076777: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=21).
+2026-04-16 17:17:20.386371: I [EPOCH 22/999] train_loss=134.72962; train_loss_min=47.95921; train_loss_max=424.97723; train_loss_std=43.70606; grad_norm_mean=26.7820; grad_norm_max=67.2099; emb_logits_mean=-5.7279; emb_logits_std=1.5173; emb_logits_pre_mean=-5.8821; emb_logits_pre_std=1.2832; override_ratio=0.059189; local_items_per_user_mean=2252.02; local_items_per_user_std=398.13; delta_override_mean=2.6047; delta_override_std=1.6272; id_logits_mean=-2.5446; id_logits_std=1.4984; user_norm_mean=3.3525; user_norm_std=1.2779; user_dispersion=5.8927e-02; item_loc_norm_mean=7.1544; item_loc_norm_std=0.6593; item_loc_dispersion=2.4385e-01; rhs_emb_norm_mean=17.0352; rhs_emb_norm_std=0.8963; rhs_emb_dispersion=9.8685e-01; offset_emb_mean=-0.3167; offset_emb_std=0.0227; offset_id_mean=0.2135; offset_id_std=0.0304; supervised_edges_avg=608.6; supervised_edges_min=280; supervised_edges_max=1552; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.31s; batch_time_avg=0.3629s
+2026-04-16 17:22:24.200484: I Epoch 22/999 eval_loss=134.72962
+2026-04-16 17:22:24.200846: I ******************************************
+2026-04-16 17:22:24.201152: I 
+2026-04-16 17:22:24.201448: I Validation Evaluation results
+2026-04-16 17:22:24.201588: I Cut-off: 20
+2026-04-16 17:22:24.201746: I Eval Time: 1.216066598892212
+2026-04-16 17:22:24.201914: I Results
+2026-04-16 17:22:24.202049: I Recall	0.05678
+2026-04-16 17:22:24.202194: I nDCG	0.02253
+2026-04-16 17:22:24.800148: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=22).
+2026-04-16 17:28:24.153301: I [EPOCH 23/999] train_loss=134.22096; train_loss_min=58.85911; train_loss_max=386.04102; train_loss_std=42.32776; grad_norm_mean=25.7922; grad_norm_max=82.2665; emb_logits_mean=-5.7625; emb_logits_std=1.5566; emb_logits_pre_mean=-5.9135; emb_logits_pre_std=1.3287; override_ratio=0.059202; local_items_per_user_mean=2252.53; local_items_per_user_std=398.22; delta_override_mean=2.5497; delta_override_std=1.6369; id_logits_mean=-2.5534; id_logits_std=1.5125; user_norm_mean=3.2431; user_norm_std=1.2486; user_dispersion=5.5852e-02; item_loc_norm_mean=7.0362; item_loc_norm_std=0.6809; item_loc_dispersion=2.3770e-01; rhs_emb_norm_mean=17.1046; rhs_emb_norm_std=0.8954; rhs_emb_dispersion=9.8682e-01; offset_emb_mean=-0.3214; offset_emb_std=0.0262; offset_id_mean=0.2152; offset_id_std=0.0371; supervised_edges_avg=608.6; supervised_edges_min=377; supervised_edges_max=1421; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.35s; batch_time_avg=0.3630s
+2026-04-16 17:33:25.610611: I Epoch 23/999 eval_loss=134.22096
+2026-04-16 17:33:25.611159: I 
+2026-04-16 17:33:25.611363: I Validation Evaluation results
+2026-04-16 17:33:25.611654: I Cut-off: 20
+2026-04-16 17:33:25.676084: I Eval Time: 1.221660852432251
+2026-04-16 17:33:25.676228: I Results
+2026-04-16 17:33:25.676493: I Recall	0.05444
+2026-04-16 17:33:25.676571: I nDCG	0.02171
+2026-04-16 17:33:25.933089: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=23).
+2026-04-16 17:33:25.934119: I EarlyStopping: current=0.05444, best=0.05678, bad_epochs=1/10
+2026-04-16 17:39:24.808789: I [EPOCH 24/999] train_loss=134.68176; train_loss_min=61.11019; train_loss_max=458.28976; train_loss_std=46.71531; grad_norm_mean=25.4635; grad_norm_max=86.3576; emb_logits_mean=-5.8105; emb_logits_std=1.6134; emb_logits_pre_mean=-5.9585; emb_logits_pre_std=1.3933; override_ratio=0.059164; local_items_per_user_mean=2251.08; local_items_per_user_std=398.00; delta_override_mean=2.5010; delta_override_std=1.6377; id_logits_mean=-2.5594; id_logits_std=1.5204; user_norm_mean=3.2046; user_norm_std=1.2587; user_dispersion=5.5644e-02; item_loc_norm_mean=6.9349; item_loc_norm_std=0.7059; item_loc_dispersion=2.3257e-01; rhs_emb_norm_mean=17.1623; rhs_emb_norm_std=0.8950; rhs_emb_dispersion=9.8679e-01; offset_emb_mean=-0.3257; offset_emb_std=0.0321; offset_id_mean=0.2247; offset_id_std=0.0457; supervised_edges_avg=608.6; supervised_edges_min=380; supervised_edges_max=1681; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.87s; batch_time_avg=0.3625s
+2026-04-16 17:44:25.115296: I 
+2026-04-16 17:44:25.115096: I Epoch 24/999 eval_loss=134.68176
+2026-04-16 17:44:25.115854: I Validation Evaluation results
+2026-04-16 17:44:25.116098: I Cut-off: 20
+2026-04-16 17:44:25.116264: I Eval Time: 1.285294771194458
+2026-04-16 17:44:25.116541: I Results
+2026-04-16 17:44:25.181714: I Recall	0.05191
+2026-04-16 17:44:25.181935: I nDCG	0.02024
+2026-04-16 17:44:25.446988: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=24).
+2026-04-16 17:44:25.448296: I EarlyStopping: current=0.05191, best=0.05678, bad_epochs=2/10
+2026-04-16 17:50:24.256170: I [EPOCH 25/999] train_loss=134.16466; train_loss_min=60.07674; train_loss_max=375.22882; train_loss_std=44.00139; grad_norm_mean=27.5526; grad_norm_max=92.5178; emb_logits_mean=-5.8184; emb_logits_std=1.6461; emb_logits_pre_mean=-5.9635; emb_logits_pre_std=1.4312; override_ratio=0.059189; local_items_per_user_mean=2252.04; local_items_per_user_std=398.27; delta_override_mean=2.4526; delta_override_std=1.6411; id_logits_mean=-2.5511; id_logits_std=1.5261; user_norm_mean=3.1292; user_norm_std=1.2297; user_dispersion=5.3533e-02; item_loc_norm_mean=6.8467; item_loc_norm_std=0.7223; item_loc_dispersion=2.2817e-01; rhs_emb_norm_mean=17.2242; rhs_emb_norm_std=0.8944; rhs_emb_dispersion=9.8675e-01; offset_emb_mean=-0.3312; offset_emb_std=0.0376; offset_id_mean=0.2350; offset_id_std=0.0557; supervised_edges_avg=608.6; supervised_edges_min=301; supervised_edges_max=1446; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.81s; batch_time_avg=0.3624s
+2026-04-16 17:55:21.813763: I 
+2026-04-16 17:55:21.813574: I Epoch 25/999 eval_loss=134.16466
+2026-04-16 17:55:21.814524: I Validation Evaluation results
+2026-04-16 17:55:21.814706: I Cut-off: 20
+2026-04-16 17:55:21.814777: I Eval Time: 1.175783634185791
+2026-04-16 17:55:21.814914: I Results
+2026-04-16 17:55:21.815091: I Recall	0.05349
+2026-04-16 17:55:21.815308: I nDCG	0.02167
+2026-04-16 17:55:22.143627: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=25).
+2026-04-16 17:55:22.144661: I EarlyStopping: current=0.05349, best=0.05678, bad_epochs=3/10
+2026-04-16 18:01:20.982988: I [EPOCH 26/999] train_loss=134.32131; train_loss_min=59.92159; train_loss_max=440.95953; train_loss_std=46.59790; grad_norm_mean=23.2896; grad_norm_max=59.4437; emb_logits_mean=-5.9076; emb_logits_std=1.7188; emb_logits_pre_mean=-6.0501; emb_logits_pre_std=1.5128; override_ratio=0.059189; local_items_per_user_mean=2252.04; local_items_per_user_std=397.86; delta_override_mean=2.4068; delta_override_std=1.6413; id_logits_mean=-2.5820; id_logits_std=1.5258; user_norm_mean=3.0660; user_norm_std=1.2025; user_dispersion=5.2041e-02; item_loc_norm_mean=6.7373; item_loc_norm_std=0.7394; item_loc_dispersion=2.2230e-01; rhs_emb_norm_mean=17.2774; rhs_emb_norm_std=0.8950; rhs_emb_dispersion=9.8671e-01; offset_emb_mean=-0.3367; offset_emb_std=0.0459; offset_id_mean=0.2374; offset_id_std=0.0662; supervised_edges_avg=608.6; supervised_edges_min=381; supervised_edges_max=1675; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.84s; batch_time_avg=0.3625s
+2026-04-16 18:06:16.468706: I 
+2026-04-16 18:06:16.468492: I Epoch 26/999 eval_loss=134.32131
+2026-04-16 18:06:16.469031: I ******************************************
+2026-04-16 18:06:16.469337: I Validation Evaluation results
+2026-04-16 18:06:16.469518: I Cut-off: 20
+2026-04-16 18:06:16.469875: I Eval Time: 1.175335168838501
+2026-04-16 18:06:16.470059: I Results
+2026-04-16 18:06:16.470228: I Recall	0.06214
+2026-04-16 18:06:16.470412: I nDCG	0.02389
+2026-04-16 18:06:17.071730: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=26).
+2026-04-16 18:12:15.336147: I [EPOCH 27/999] train_loss=133.38830; train_loss_min=51.12251; train_loss_max=397.30179; train_loss_std=43.47482; grad_norm_mean=23.0886; grad_norm_max=72.2884; emb_logits_mean=-5.9435; emb_logits_std=1.7644; emb_logits_pre_mean=-6.0826; emb_logits_pre_std=1.5639; override_ratio=0.059197; local_items_per_user_mean=2252.33; local_items_per_user_std=398.25; delta_override_mean=2.3505; delta_override_std=1.6586; id_logits_mean=-2.5915; id_logits_std=1.5496; user_norm_mean=3.0360; user_norm_std=1.1883; user_dispersion=5.1610e-02; item_loc_norm_mean=6.6481; item_loc_norm_std=0.7606; item_loc_dispersion=2.1763e-01; rhs_emb_norm_mean=17.3331; rhs_emb_norm_std=0.8961; rhs_emb_dispersion=9.8668e-01; offset_emb_mean=-0.3403; offset_emb_std=0.0544; offset_id_mean=0.2478; offset_id_std=0.0817; supervised_edges_avg=608.6; supervised_edges_min=359; supervised_edges_max=1461; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=358.26s; batch_time_avg=0.3619s
+2026-04-16 18:16:59.848207: I Epoch 27/999 eval_loss=133.38830
+2026-04-16 18:16:59.848788: I 
+2026-04-16 18:16:59.849000: I Validation Evaluation results
+2026-04-16 18:16:59.849080: I Cut-off: 20
+2026-04-16 18:16:59.849182: I Eval Time: 1.1833982467651367
+2026-04-16 18:16:59.849353: I Results
+2026-04-16 18:16:59.906108: I Recall	0.05128
+2026-04-16 18:16:59.906327: I nDCG	0.02
+2026-04-16 18:17:00.180179: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=27).
+2026-04-16 18:17:00.181140: I EarlyStopping: current=0.05128, best=0.06214, bad_epochs=1/10
+2026-04-16 18:22:57.977736: I [EPOCH 28/999] train_loss=132.92089; train_loss_min=60.99549; train_loss_max=411.41534; train_loss_std=42.58615; grad_norm_mean=25.1308; grad_norm_max=58.4612; emb_logits_mean=-5.9808; emb_logits_std=1.7956; emb_logits_pre_mean=-6.1186; emb_logits_pre_std=1.5972; override_ratio=0.059185; local_items_per_user_mean=2251.87; local_items_per_user_std=397.73; delta_override_mean=2.3282; delta_override_std=1.6589; id_logits_mean=-2.5951; id_logits_std=1.5552; user_norm_mean=2.9848; user_norm_std=1.1590; user_dispersion=4.9964e-02; item_loc_norm_mean=6.5483; item_loc_norm_std=0.7804; item_loc_dispersion=2.1268e-01; rhs_emb_norm_mean=17.3871; rhs_emb_norm_std=0.8976; rhs_emb_dispersion=9.8667e-01; offset_emb_mean=-0.3465; offset_emb_std=0.0616; offset_id_mean=0.2487; offset_id_std=0.0935; supervised_edges_avg=608.6; supervised_edges_min=383; supervised_edges_max=1577; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=357.80s; batch_time_avg=0.3614s
+2026-04-16 18:27:47.579162: I 
+2026-04-16 18:27:47.578987: I Epoch 28/999 eval_loss=132.92089
+2026-04-16 18:27:47.579833: I Validation Evaluation results
+2026-04-16 18:27:47.580150: I Cut-off: 20
+2026-04-16 18:27:47.580448: I Eval Time: 1.1638131141662598
+2026-04-16 18:27:47.641496: I Results
+2026-04-16 18:27:47.641558: I Recall	0.06038
+2026-04-16 18:27:47.641798: I nDCG	0.02348
+2026-04-16 18:27:47.897747: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=28).
+2026-04-16 18:27:47.898742: I EarlyStopping: current=0.06038, best=0.06214, bad_epochs=2/10
+2026-04-16 18:33:44.724822: I [EPOCH 29/999] train_loss=132.91925; train_loss_min=55.93150; train_loss_max=384.46375; train_loss_std=42.79602; grad_norm_mean=24.6300; grad_norm_max=62.5375; emb_logits_mean=-6.0383; emb_logits_std=1.8512; emb_logits_pre_mean=-6.1737; emb_logits_pre_std=1.6578; override_ratio=0.059171; local_items_per_user_mean=2251.34; local_items_per_user_std=398.70; delta_override_mean=2.2870; delta_override_std=1.6680; id_logits_mean=-2.6092; id_logits_std=1.5764; user_norm_mean=2.9394; user_norm_std=1.1313; user_dispersion=4.8862e-02; item_loc_norm_mean=6.4688; item_loc_norm_std=0.8057; item_loc_dispersion=2.0875e-01; rhs_emb_norm_mean=17.4456; rhs_emb_norm_std=0.8991; rhs_emb_dispersion=9.8670e-01; offset_emb_mean=-0.3546; offset_emb_std=0.0721; offset_id_mean=0.2584; offset_id_std=0.1068; supervised_edges_avg=608.6; supervised_edges_min=317; supervised_edges_max=1436; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.83s; batch_time_avg=0.3604s
+2026-04-16 18:38:15.019013: I 
+2026-04-16 18:38:15.018883: I Epoch 29/999 eval_loss=132.91925
+2026-04-16 18:38:15.019419: I ******************************************
+2026-04-16 18:38:15.019695: I Validation Evaluation results
+2026-04-16 18:38:15.019975: I Cut-off: 20
+2026-04-16 18:38:15.020138: I Eval Time: 1.087634563446045
+2026-04-16 18:38:15.020261: I Results
+2026-04-16 18:38:15.020337: I Recall	0.06549
+2026-04-16 18:38:15.020429: I nDCG	0.02598
+2026-04-16 18:38:15.551978: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=29).
+2026-04-16 18:44:12.035177: I [EPOCH 30/999] train_loss=132.28335; train_loss_min=50.62856; train_loss_max=404.49036; train_loss_std=42.69558; grad_norm_mean=23.5104; grad_norm_max=69.6876; emb_logits_mean=-6.1037; emb_logits_std=1.9116; emb_logits_pre_mean=-6.2369; emb_logits_pre_std=1.7240; override_ratio=0.059174; local_items_per_user_mean=2251.44; local_items_per_user_std=398.96; delta_override_mean=2.2523; delta_override_std=1.6732; id_logits_mean=-2.6222; id_logits_std=1.5724; user_norm_mean=2.9099; user_norm_std=1.0952; user_dispersion=4.8012e-02; item_loc_norm_mean=6.3976; item_loc_norm_std=0.8199; item_loc_dispersion=2.0520e-01; rhs_emb_norm_mean=17.4868; rhs_emb_norm_std=0.8997; rhs_emb_dispersion=9.8674e-01; offset_emb_mean=-0.3606; offset_emb_std=0.0800; offset_id_mean=0.2663; offset_id_std=0.1225; supervised_edges_avg=608.6; supervised_edges_min=343; supervised_edges_max=1567; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.48s; batch_time_avg=0.3601s
+2026-04-16 18:48:46.988572: I 
+2026-04-16 18:48:46.988412: I Epoch 30/999 eval_loss=132.28335
+2026-04-16 18:48:46.988916: I ******************************************
+2026-04-16 18:48:46.989139: I Validation Evaluation results
+2026-04-16 18:48:46.989435: I Cut-off: 20
+2026-04-16 18:48:46.989575: I Eval Time: 1.1129143238067627
+2026-04-16 18:48:46.989731: I Results
+2026-04-16 18:48:46.989866: I Recall	0.06597
+2026-04-16 18:48:46.989999: I nDCG	0.02602
+2026-04-16 18:48:47.561449: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=30).
+2026-04-16 18:54:44.163584: I [EPOCH 31/999] train_loss=132.68428; train_loss_min=59.32951; train_loss_max=406.43011; train_loss_std=44.00664; grad_norm_mean=23.5260; grad_norm_max=69.7865; emb_logits_mean=-6.1787; emb_logits_std=1.9800; emb_logits_pre_mean=-6.3097; emb_logits_pre_std=1.7970; override_ratio=0.059189; local_items_per_user_mean=2252.02; local_items_per_user_std=399.75; delta_override_mean=2.2132; delta_override_std=1.6909; id_logits_mean=-2.6389; id_logits_std=1.5899; user_norm_mean=2.8642; user_norm_std=1.0641; user_dispersion=4.6862e-02; item_loc_norm_mean=6.3261; item_loc_norm_std=0.8481; item_loc_dispersion=2.0168e-01; rhs_emb_norm_mean=17.5163; rhs_emb_norm_std=0.9004; rhs_emb_dispersion=9.8679e-01; offset_emb_mean=-0.3672; offset_emb_std=0.0963; offset_id_mean=0.2732; offset_id_std=0.1436; supervised_edges_avg=608.6; supervised_edges_min=386; supervised_edges_max=1591; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.60s; batch_time_avg=0.3602s
+2026-04-16 18:59:17.563681: I 
+2026-04-16 18:59:17.563531: I Epoch 31/999 eval_loss=132.68428
+2026-04-16 18:59:17.564026: I ******************************************
+2026-04-16 18:59:17.564417: I Validation Evaluation results
+2026-04-16 18:59:17.564570: I Cut-off: 20
+2026-04-16 18:59:17.564814: I Eval Time: 1.1478767395019531
+2026-04-16 18:59:17.564917: I Results
+2026-04-16 18:59:17.564991: I Recall	0.06729
+2026-04-16 18:59:17.565253: I nDCG	0.02717
+2026-04-16 18:59:18.188414: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=31).
+2026-04-16 19:05:15.203684: I [EPOCH 32/999] train_loss=131.84871; train_loss_min=57.83794; train_loss_max=392.67059; train_loss_std=41.50394; grad_norm_mean=23.7477; grad_norm_max=129.3399; emb_logits_mean=-6.2570; emb_logits_std=2.0480; emb_logits_pre_mean=-6.3859; emb_logits_pre_std=1.8699; override_ratio=0.059175; local_items_per_user_mean=2251.50; local_items_per_user_std=398.95; delta_override_mean=2.1791; delta_override_std=1.6948; id_logits_mean=-2.6579; id_logits_std=1.5975; user_norm_mean=2.8674; user_norm_std=1.0333; user_dispersion=4.6743e-02; item_loc_norm_mean=6.2577; item_loc_norm_std=0.8498; item_loc_dispersion=1.9803e-01; rhs_emb_norm_mean=17.5566; rhs_emb_norm_std=0.9014; rhs_emb_dispersion=9.8684e-01; offset_emb_mean=-0.3683; offset_emb_std=0.1028; offset_id_mean=0.2786; offset_id_std=0.1546; supervised_edges_avg=608.6; supervised_edges_min=374; supervised_edges_max=1491; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=357.01s; batch_time_avg=0.3606s
+2026-04-16 19:09:46.112325: I Epoch 32/999 eval_loss=131.84871
+2026-04-16 19:09:46.112620: I 
+2026-04-16 19:09:46.113463: I Validation Evaluation results
+2026-04-16 19:09:46.113656: I Cut-off: 20
+2026-04-16 19:09:46.113831: I Eval Time: 1.2392656803131104
+2026-04-16 19:09:46.173015: I Results
+2026-04-16 19:09:46.173358: I Recall	0.0582
+2026-04-16 19:09:46.173662: I nDCG	0.02201
+2026-04-16 19:09:46.450720: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=32).
+2026-04-16 19:09:46.451693: I EarlyStopping: current=0.05820, best=0.06729, bad_epochs=1/10
+2026-04-16 19:15:43.169457: I [EPOCH 33/999] train_loss=131.46863; train_loss_min=56.79039; train_loss_max=394.36871; train_loss_std=41.25049; grad_norm_mean=23.9311; grad_norm_max=59.9124; emb_logits_mean=-6.2891; emb_logits_std=2.1129; emb_logits_pre_mean=-6.4147; emb_logits_pre_std=1.9410; override_ratio=0.059199; local_items_per_user_mean=2252.42; local_items_per_user_std=396.98; delta_override_mean=2.1218; delta_override_std=1.7123; id_logits_mean=-2.6365; id_logits_std=1.6056; user_norm_mean=2.8589; user_norm_std=1.0016; user_dispersion=4.6812e-02; item_loc_norm_mean=6.1891; item_loc_norm_std=0.8670; item_loc_dispersion=1.9446e-01; rhs_emb_norm_mean=17.5936; rhs_emb_norm_std=0.9017; rhs_emb_dispersion=9.8687e-01; offset_emb_mean=-0.3746; offset_emb_std=0.1109; offset_id_mean=0.2934; offset_id_std=0.1670; supervised_edges_avg=608.6; supervised_edges_min=284; supervised_edges_max=1503; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.72s; batch_time_avg=0.3603s
+2026-04-16 19:20:16.206366: I Epoch 33/999 eval_loss=131.46863
+2026-04-16 19:20:16.206591: I 
+2026-04-16 19:20:16.207217: I Validation Evaluation results
+2026-04-16 19:20:16.207681: I Cut-off: 20
+2026-04-16 19:20:16.259823: I Eval Time: 1.1106441020965576
+2026-04-16 19:20:16.260034: I Results
+2026-04-16 19:20:16.260356: I Recall	0.06445
+2026-04-16 19:20:16.260498: I nDCG	0.02437
+2026-04-16 19:20:16.537299: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=33).
+2026-04-16 19:20:16.538209: I EarlyStopping: current=0.06445, best=0.06729, bad_epochs=2/10
+2026-04-16 19:26:12.685783: I [EPOCH 34/999] train_loss=131.33984; train_loss_min=60.05772; train_loss_max=415.40512; train_loss_std=41.49623; grad_norm_mean=21.4121; grad_norm_max=52.4777; emb_logits_mean=-6.3574; emb_logits_std=2.1594; emb_logits_pre_mean=-6.4811; emb_logits_pre_std=1.9909; override_ratio=0.059192; local_items_per_user_mean=2252.12; local_items_per_user_std=398.52; delta_override_mean=2.0894; delta_override_std=1.7255; id_logits_mean=-2.6536; id_logits_std=1.6179; user_norm_mean=2.8039; user_norm_std=0.9576; user_dispersion=4.5079e-02; item_loc_norm_mean=6.0928; item_loc_norm_std=0.8719; item_loc_dispersion=1.8896e-01; rhs_emb_norm_mean=17.6360; rhs_emb_norm_std=0.9021; rhs_emb_dispersion=9.8688e-01; offset_emb_mean=-0.3825; offset_emb_std=0.1120; offset_id_mean=0.2986; offset_id_std=0.1745; supervised_edges_avg=608.6; supervised_edges_min=279; supervised_edges_max=1584; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.15s; batch_time_avg=0.3597s
+2026-04-16 19:30:45.053227: I Epoch 34/999 eval_loss=131.33984
+2026-04-16 19:30:45.053527: I 
+2026-04-16 19:30:45.053759: I Validation Evaluation results
+2026-04-16 19:30:45.054325: I Cut-off: 20
+2026-04-16 19:30:45.107745: I Eval Time: 1.1203603744506836
+2026-04-16 19:30:45.108038: I Results
+2026-04-16 19:30:45.108414: I Recall	0.06464
+2026-04-16 19:30:45.108700: I nDCG	0.02485
+2026-04-16 19:30:45.360677: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=34).
+2026-04-16 19:30:45.361579: I EarlyStopping: current=0.06464, best=0.06729, bad_epochs=3/10
+2026-04-16 19:36:42.070664: I [EPOCH 35/999] train_loss=130.48330; train_loss_min=58.76923; train_loss_max=353.17105; train_loss_std=39.54597; grad_norm_mean=24.2429; grad_norm_max=69.8867; emb_logits_mean=-6.4362; emb_logits_std=2.2523; emb_logits_pre_mean=-6.5582; emb_logits_pre_std=2.0890; override_ratio=0.059181; local_items_per_user_mean=2251.73; local_items_per_user_std=397.92; delta_override_mean=2.0618; delta_override_std=1.7411; id_logits_mean=-2.6393; id_logits_std=1.6183; user_norm_mean=2.7891; user_norm_std=0.9134; user_dispersion=4.4583e-02; item_loc_norm_mean=6.0146; item_loc_norm_std=0.8717; item_loc_dispersion=1.8427e-01; rhs_emb_norm_mean=17.6575; rhs_emb_norm_std=0.9013; rhs_emb_dispersion=9.8686e-01; offset_emb_mean=-0.3876; offset_emb_std=0.1207; offset_id_mean=0.2944; offset_id_std=0.1910; supervised_edges_avg=608.6; supervised_edges_min=382; supervised_edges_max=1380; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.71s; batch_time_avg=0.3603s
+2026-04-16 19:41:16.689865: I 
+2026-04-16 19:41:16.689714: I Epoch 35/999 eval_loss=130.48330
+2026-04-16 19:41:16.690568: I Validation Evaluation results
+2026-04-16 19:41:16.690748: I Cut-off: 20
+2026-04-16 19:41:16.741566: I Eval Time: 1.1066374778747559
+2026-04-16 19:41:16.742109: I Results
+2026-04-16 19:41:16.742427: I Recall	0.06593
+2026-04-16 19:41:16.742644: I nDCG	0.02572
+2026-04-16 19:41:17.004486: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=35).
+2026-04-16 19:41:17.005519: I EarlyStopping: current=0.06593, best=0.06729, bad_epochs=4/10
+2026-04-16 19:47:13.500829: I [EPOCH 36/999] train_loss=130.79793; train_loss_min=59.32548; train_loss_max=432.81555; train_loss_std=41.61648; grad_norm_mean=22.0717; grad_norm_max=66.1809; emb_logits_mean=-6.4775; emb_logits_std=2.3017; emb_logits_pre_mean=-6.5964; emb_logits_pre_std=2.1436; override_ratio=0.059186; local_items_per_user_mean=2251.92; local_items_per_user_std=397.93; delta_override_mean=2.0089; delta_override_std=1.7526; id_logits_mean=-2.6365; id_logits_std=1.6328; user_norm_mean=2.7686; user_norm_std=0.8780; user_dispersion=4.4003e-02; item_loc_norm_mean=5.9454; item_loc_norm_std=0.8947; item_loc_dispersion=1.8103e-01; rhs_emb_norm_mean=17.6927; rhs_emb_norm_std=0.9016; rhs_emb_dispersion=9.8684e-01; offset_emb_mean=-0.3921; offset_emb_std=0.1242; offset_id_mean=0.2993; offset_id_std=0.2038; supervised_edges_avg=608.7; supervised_edges_min=355; supervised_edges_max=1668; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.50s; batch_time_avg=0.3601s
+2026-04-16 19:51:45.580043: I 
+2026-04-16 19:51:45.579865: I Epoch 36/999 eval_loss=130.79793
+2026-04-16 19:51:45.580772: I Validation Evaluation results
+2026-04-16 19:51:45.580960: I Cut-off: 20
+2026-04-16 19:51:45.635901: I Eval Time: 1.0951025485992432
+2026-04-16 19:51:45.636181: I Results
+2026-04-16 19:51:45.636433: I Recall	0.0624
+2026-04-16 19:51:45.636781: I nDCG	0.02451
+2026-04-16 19:51:45.888701: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=36).
+2026-04-16 19:51:45.890599: I EarlyStopping: current=0.06240, best=0.06729, bad_epochs=5/10
+2026-04-16 19:57:42.585803: I [EPOCH 37/999] train_loss=131.37583; train_loss_min=57.78844; train_loss_max=484.64212; train_loss_std=45.35912; grad_norm_mean=21.2413; grad_norm_max=74.2952; emb_logits_mean=-6.5414; emb_logits_std=2.3839; emb_logits_pre_mean=-6.6583; emb_logits_pre_std=2.2307; override_ratio=0.059190; local_items_per_user_mean=2252.07; local_items_per_user_std=397.97; delta_override_mean=1.9749; delta_override_std=1.7684; id_logits_mean=-2.6295; id_logits_std=1.6392; user_norm_mean=2.7136; user_norm_std=0.8347; user_dispersion=4.2267e-02; item_loc_norm_mean=5.9072; item_loc_norm_std=0.9171; item_loc_dispersion=1.7951e-01; rhs_emb_norm_mean=17.7336; rhs_emb_norm_std=0.9020; rhs_emb_dispersion=9.8680e-01; offset_emb_mean=-0.3987; offset_emb_std=0.1319; offset_id_mean=0.3042; offset_id_std=0.2195; supervised_edges_avg=608.6; supervised_edges_min=373; supervised_edges_max=1832; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.70s; batch_time_avg=0.3603s
+2026-04-16 20:02:14.623599: I 
+2026-04-16 20:02:14.623813: I Validation Evaluation results
+2026-04-16 20:02:14.623440: I Epoch 37/999 eval_loss=131.37583
+2026-04-16 20:02:14.624124: I ******************************************
+2026-04-16 20:02:14.624334: I Cut-off: 20
+2026-04-16 20:02:14.624557: I Eval Time: 1.0755665302276611
+2026-04-16 20:02:14.624785: I Results
+2026-04-16 20:02:14.624946: I Recall	0.06897
+2026-04-16 20:02:14.625051: I nDCG	0.02767
+2026-04-16 20:02:15.169085: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=37).
+2026-04-16 20:08:11.600532: I [EPOCH 38/999] train_loss=130.48337; train_loss_min=50.94911; train_loss_max=399.35828; train_loss_std=41.43896; grad_norm_mean=22.1131; grad_norm_max=68.1401; emb_logits_mean=-6.5910; emb_logits_std=2.4309; emb_logits_pre_mean=-6.7062; emb_logits_pre_std=2.2807; override_ratio=0.059174; local_items_per_user_mean=2251.45; local_items_per_user_std=398.54; delta_override_mean=1.9463; delta_override_std=1.7803; id_logits_mean=-2.6327; id_logits_std=1.6546; user_norm_mean=2.6752; user_norm_std=0.8042; user_dispersion=4.1432e-02; item_loc_norm_mean=5.8642; item_loc_norm_std=0.9221; item_loc_dispersion=1.7728e-01; rhs_emb_norm_mean=17.7667; rhs_emb_norm_std=0.9025; rhs_emb_dispersion=9.8679e-01; offset_emb_mean=-0.4026; offset_emb_std=0.1425; offset_id_mean=0.3081; offset_id_std=0.2303; supervised_edges_avg=608.6; supervised_edges_min=356; supervised_edges_max=1549; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.43s; batch_time_avg=0.3600s
+2026-04-16 20:12:42.224297: I 
+2026-04-16 20:12:42.224111: I Epoch 38/999 eval_loss=130.48337
+2026-04-16 20:12:42.224830: I Validation Evaluation results
+2026-04-16 20:12:42.224986: I Cut-off: 20
+2026-04-16 20:12:42.225102: I Eval Time: 1.1121516227722168
+2026-04-16 20:12:42.225187: I Results
+2026-04-16 20:12:42.225429: I Recall	0.06666
+2026-04-16 20:12:42.278746: I nDCG	0.02669
+2026-04-16 20:12:42.570681: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=38).
+2026-04-16 20:12:42.571702: I EarlyStopping: current=0.06666, best=0.06897, bad_epochs=1/10
+2026-04-16 20:18:39.131810: I [EPOCH 39/999] train_loss=129.89892; train_loss_min=46.52484; train_loss_max=359.80832; train_loss_std=39.80168; grad_norm_mean=21.3149; grad_norm_max=77.4891; emb_logits_mean=-6.6771; emb_logits_std=2.5494; emb_logits_pre_mean=-6.7898; emb_logits_pre_std=2.4052; override_ratio=0.059195; local_items_per_user_mean=2252.26; local_items_per_user_std=397.67; delta_override_mean=1.9037; delta_override_std=1.8028; id_logits_mean=-2.6064; id_logits_std=1.6551; user_norm_mean=2.6333; user_norm_std=0.7739; user_dispersion=4.0418e-02; item_loc_norm_mean=5.7932; item_loc_norm_std=0.9258; item_loc_dispersion=1.7328e-01; rhs_emb_norm_mean=17.8084; rhs_emb_norm_std=0.9030; rhs_emb_dispersion=9.8678e-01; offset_emb_mean=-0.4057; offset_emb_std=0.1519; offset_id_mean=0.3161; offset_id_std=0.2451; supervised_edges_avg=608.6; supervised_edges_min=344; supervised_edges_max=1443; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.56s; batch_time_avg=0.3602s
+2026-04-16 20:23:10.225018: I Epoch 39/999 eval_loss=129.89892
+2026-04-16 20:23:10.225490: I ******************************************
+2026-04-16 20:23:10.225605: I 
+2026-04-16 20:23:10.226057: I Validation Evaluation results
+2026-04-16 20:23:10.226306: I Cut-off: 20
+2026-04-16 20:23:10.226590: I Eval Time: 1.1084365844726562
+2026-04-16 20:23:10.226842: I Results
+2026-04-16 20:23:10.227037: I Recall	0.06912
+2026-04-16 20:23:10.227200: I nDCG	0.02742
+2026-04-16 20:23:10.770746: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=39).
+2026-04-16 20:29:07.076878: I [EPOCH 40/999] train_loss=129.71171; train_loss_min=55.21817; train_loss_max=391.27817; train_loss_std=39.62028; grad_norm_mean=23.0974; grad_norm_max=89.8356; emb_logits_mean=-6.7095; emb_logits_std=2.5938; emb_logits_pre_mean=-6.8214; emb_logits_pre_std=2.4509; override_ratio=0.059176; local_items_per_user_mean=2251.54; local_items_per_user_std=397.72; delta_override_mean=1.8918; delta_override_std=1.8091; id_logits_mean=-2.5866; id_logits_std=1.6611; user_norm_mean=2.5825; user_norm_std=0.7331; user_dispersion=3.8884e-02; item_loc_norm_mean=5.7347; item_loc_norm_std=0.9231; item_loc_dispersion=1.6985e-01; rhs_emb_norm_mean=17.8360; rhs_emb_norm_std=0.9031; rhs_emb_dispersion=9.8676e-01; offset_emb_mean=-0.4122; offset_emb_std=0.1570; offset_id_mean=0.3219; offset_id_std=0.2508; supervised_edges_avg=608.6; supervised_edges_min=289; supervised_edges_max=1535; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.31s; batch_time_avg=0.3599s
+2026-04-16 20:33:38.912183: I Epoch 40/999 eval_loss=129.71171
+2026-04-16 20:33:38.912443: I 
+2026-04-16 20:33:38.912669: I Validation Evaluation results
+2026-04-16 20:33:38.912954: I Cut-off: 20
+2026-04-16 20:33:38.913403: I Eval Time: 1.1526570320129395
+2026-04-16 20:33:38.913594: I Results
+2026-04-16 20:33:38.913845: I Recall	0.06562
+2026-04-16 20:33:38.966703: I nDCG	0.02641
+2026-04-16 20:33:39.235079: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=40).
+2026-04-16 20:33:39.236103: I EarlyStopping: current=0.06562, best=0.06912, bad_epochs=1/10
+2026-04-16 20:39:35.854654: I [EPOCH 41/999] train_loss=129.64323; train_loss_min=54.22591; train_loss_max=359.82574; train_loss_std=40.56819; grad_norm_mean=21.2425; grad_norm_max=55.7371; emb_logits_mean=-6.7775; emb_logits_std=2.6653; emb_logits_pre_mean=-6.8867; emb_logits_pre_std=2.5273; override_ratio=0.059194; local_items_per_user_mean=2252.22; local_items_per_user_std=398.69; delta_override_mean=1.8432; delta_override_std=1.8174; id_logits_mean=-2.6004; id_logits_std=1.6814; user_norm_mean=2.5468; user_norm_std=0.6938; user_dispersion=3.8040e-02; item_loc_norm_mean=5.6713; item_loc_norm_std=0.9199; item_loc_dispersion=1.6630e-01; rhs_emb_norm_mean=17.8557; rhs_emb_norm_std=0.9028; rhs_emb_dispersion=9.8674e-01; offset_emb_mean=-0.4124; offset_emb_std=0.1671; offset_id_mean=0.3154; offset_id_std=0.2657; supervised_edges_avg=608.6; supervised_edges_min=365; supervised_edges_max=1433; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.62s; batch_time_avg=0.3602s
+2026-04-16 20:44:08.778513: I 
+2026-04-16 20:44:08.778371: I Epoch 41/999 eval_loss=129.64323
+2026-04-16 20:44:08.779069: I Validation Evaluation results
+2026-04-16 20:44:08.779301: I Cut-off: 20
+2026-04-16 20:44:08.828314: I Eval Time: 1.0907528400421143
+2026-04-16 20:44:08.828739: I Results
+2026-04-16 20:44:08.828869: I Recall	0.06031
+2026-04-16 20:44:08.829001: I nDCG	0.02443
+2026-04-16 20:44:09.078503: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=41).
+2026-04-16 20:44:09.080445: I EarlyStopping: current=0.06031, best=0.06912, bad_epochs=2/10
+2026-04-16 20:50:05.776205: I [EPOCH 42/999] train_loss=130.21001; train_loss_min=52.41825; train_loss_max=403.30206; train_loss_std=44.00588; grad_norm_mean=23.4749; grad_norm_max=85.2095; emb_logits_mean=-6.8308; emb_logits_std=2.7107; emb_logits_pre_mean=-6.9383; emb_logits_pre_std=2.5749; override_ratio=0.059204; local_items_per_user_mean=2252.59; local_items_per_user_std=398.01; delta_override_mean=1.8162; delta_override_std=1.8271; id_logits_mean=-2.5949; id_logits_std=1.6755; user_norm_mean=2.5464; user_norm_std=0.6680; user_dispersion=3.7910e-02; item_loc_norm_mean=5.6465; item_loc_norm_std=0.9265; item_loc_dispersion=1.6553e-01; rhs_emb_norm_mean=17.8729; rhs_emb_norm_std=0.9028; rhs_emb_dispersion=9.8671e-01; offset_emb_mean=-0.4073; offset_emb_std=0.1669; offset_id_mean=0.3206; offset_id_std=0.2668; supervised_edges_avg=608.6; supervised_edges_min=363; supervised_edges_max=1578; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.70s; batch_time_avg=0.3603s
+2026-04-16 20:54:37.951425: I Epoch 42/999 eval_loss=130.21001
+2026-04-16 20:54:37.951615: I 
+2026-04-16 20:54:37.951833: I Validation Evaluation results
+2026-04-16 20:54:37.952521: I Cut-off: 20
+2026-04-16 20:54:38.005439: I Eval Time: 1.1001498699188232
+2026-04-16 20:54:38.005829: I Results
+2026-04-16 20:54:38.006184: I Recall	0.06492
+2026-04-16 20:54:38.006454: I nDCG	0.02664
+2026-04-16 20:54:38.263676: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=42).
+2026-04-16 20:54:38.265754: I EarlyStopping: current=0.06492, best=0.06912, bad_epochs=3/10
+2026-04-16 21:00:34.743651: I [EPOCH 43/999] train_loss=129.38195; train_loss_min=58.60488; train_loss_max=376.12302; train_loss_std=40.35958; grad_norm_mean=20.4314; grad_norm_max=78.8676; emb_logits_mean=-6.8998; emb_logits_std=2.7759; emb_logits_pre_mean=-7.0058; emb_logits_pre_std=2.6441; override_ratio=0.059192; local_items_per_user_mean=2252.12; local_items_per_user_std=398.23; delta_override_mean=1.7901; delta_override_std=1.8321; id_logits_mean=-2.6092; id_logits_std=1.6735; user_norm_mean=2.4741; user_norm_std=0.6456; user_dispersion=3.6122e-02; item_loc_norm_mean=5.5954; item_loc_norm_std=0.9342; item_loc_dispersion=1.6285e-01; rhs_emb_norm_mean=17.8983; rhs_emb_norm_std=0.9034; rhs_emb_dispersion=9.8668e-01; offset_emb_mean=-0.4113; offset_emb_std=0.1677; offset_id_mean=0.3173; offset_id_std=0.2688; supervised_edges_avg=608.6; supervised_edges_min=385; supervised_edges_max=1513; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.48s; batch_time_avg=0.3601s
+2026-04-16 21:05:10.641415: I 
+2026-04-16 21:05:10.641210: I Epoch 43/999 eval_loss=129.38195
+2026-04-16 21:05:10.641990: I Validation Evaluation results
+2026-04-16 21:05:10.642190: I Cut-off: 20
+2026-04-16 21:05:10.702436: I Eval Time: 1.115036964416504
+2026-04-16 21:05:10.702749: I Results
+2026-04-16 21:05:10.702821: I Recall	0.06426
+2026-04-16 21:05:10.702956: I nDCG	0.02615
+2026-04-16 21:05:10.968281: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=43).
+2026-04-16 21:05:10.969355: I EarlyStopping: current=0.06426, best=0.06912, bad_epochs=4/10
+2026-04-16 21:11:07.645214: I [EPOCH 44/999] train_loss=129.15241; train_loss_min=56.87502; train_loss_max=383.93109; train_loss_std=39.87556; grad_norm_mean=22.6544; grad_norm_max=122.0014; emb_logits_mean=-6.9452; emb_logits_std=2.8063; emb_logits_pre_mean=-7.0500; emb_logits_pre_std=2.6755; override_ratio=0.059183; local_items_per_user_mean=2251.81; local_items_per_user_std=399.14; delta_override_mean=1.7713; delta_override_std=1.8388; id_logits_mean=-2.6097; id_logits_std=1.6817; user_norm_mean=2.4309; user_norm_std=0.6272; user_dispersion=3.5190e-02; item_loc_norm_mean=5.5185; item_loc_norm_std=0.9177; item_loc_dispersion=1.5803e-01; rhs_emb_norm_mean=17.9020; rhs_emb_norm_std=0.9039; rhs_emb_dispersion=9.8666e-01; offset_emb_mean=-0.4180; offset_emb_std=0.1754; offset_id_mean=0.3219; offset_id_std=0.2755; supervised_edges_avg=608.6; supervised_edges_min=385; supervised_edges_max=1499; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.68s; batch_time_avg=0.3603s
+2026-04-16 21:15:40.277679: I 
+2026-04-16 21:15:40.277524: I Epoch 44/999 eval_loss=129.15241
+2026-04-16 21:15:40.278037: I ******************************************
+2026-04-16 21:15:40.278445: I Validation Evaluation results
+2026-04-16 21:15:40.278723: I Cut-off: 20
+2026-04-16 21:15:40.279004: I Eval Time: 1.1352338790893555
+2026-04-16 21:15:40.279139: I Results
+2026-04-16 21:15:40.279381: I Recall	0.07026
+2026-04-16 21:15:40.279595: I nDCG	0.02808
+2026-04-16 21:15:40.831388: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=44).
+2026-04-16 21:21:37.451029: I [EPOCH 45/999] train_loss=128.97634; train_loss_min=49.81447; train_loss_max=374.46585; train_loss_std=40.21720; grad_norm_mean=21.0294; grad_norm_max=62.7609; emb_logits_mean=-7.0294; emb_logits_std=2.8716; emb_logits_pre_mean=-7.1333; emb_logits_pre_std=2.7434; override_ratio=0.059189; local_items_per_user_mean=2252.01; local_items_per_user_std=398.21; delta_override_mean=1.7552; delta_override_std=1.8413; id_logits_mean=-2.6168; id_logits_std=1.6758; user_norm_mean=2.4194; user_norm_std=0.6110; user_dispersion=3.4956e-02; item_loc_norm_mean=5.4985; item_loc_norm_std=0.9181; item_loc_dispersion=1.5689e-01; rhs_emb_norm_mean=17.9137; rhs_emb_norm_std=0.9043; rhs_emb_dispersion=9.8664e-01; offset_emb_mean=-0.4202; offset_emb_std=0.1782; offset_id_mean=0.3216; offset_id_std=0.2808; supervised_edges_avg=608.6; supervised_edges_min=334; supervised_edges_max=1497; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.62s; batch_time_avg=0.3602s
+2026-04-16 21:26:11.680105: I Epoch 45/999 eval_loss=128.97634
+2026-04-16 21:26:11.680697: I 
+2026-04-16 21:26:11.681012: I Validation Evaluation results
+2026-04-16 21:26:11.681182: I Cut-off: 20
+2026-04-16 21:26:11.735347: I Eval Time: 1.140148639678955
+2026-04-16 21:26:11.735700: I Results
+2026-04-16 21:26:11.735964: I Recall	0.06483
+2026-04-16 21:26:11.736257: I nDCG	0.02631
+2026-04-16 21:26:12.023546: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=45).
+2026-04-16 21:26:12.025418: I EarlyStopping: current=0.06483, best=0.07026, bad_epochs=1/10
+2026-04-16 21:32:08.698662: I [EPOCH 46/999] train_loss=129.06735; train_loss_min=52.88979; train_loss_max=355.16321; train_loss_std=39.90483; grad_norm_mean=21.7388; grad_norm_max=100.4647; emb_logits_mean=-7.0658; emb_logits_std=2.9103; emb_logits_pre_mean=-7.1677; emb_logits_pre_std=2.7847; override_ratio=0.059171; local_items_per_user_mean=2251.33; local_items_per_user_std=398.56; delta_override_mean=1.7214; delta_override_std=1.8503; id_logits_mean=-2.6123; id_logits_std=1.6878; user_norm_mean=2.3620; user_norm_std=0.5845; user_dispersion=3.3391e-02; item_loc_norm_mean=5.4631; item_loc_norm_std=0.9232; item_loc_dispersion=1.5537e-01; rhs_emb_norm_mean=17.9219; rhs_emb_norm_std=0.9047; rhs_emb_dispersion=9.8661e-01; offset_emb_mean=-0.4227; offset_emb_std=0.1815; offset_id_mean=0.3192; offset_id_std=0.2805; supervised_edges_avg=608.6; supervised_edges_min=352; supervised_edges_max=1404; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.67s; batch_time_avg=0.3603s
+2026-04-16 21:36:47.036981: I 
+2026-04-16 21:36:47.036828: I Epoch 46/999 eval_loss=129.06735
+2026-04-16 21:36:47.037269: I Validation Evaluation results
+2026-04-16 21:36:47.093131: I Cut-off: 20
+2026-04-16 21:36:47.093499: I Eval Time: 1.1555919647216797
+2026-04-16 21:36:47.093596: I Results
+2026-04-16 21:36:47.093826: I Recall	0.06966
+2026-04-16 21:36:47.094114: I nDCG	0.02779
+2026-04-16 21:36:47.362488: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=46).
+2026-04-16 21:36:47.364492: I EarlyStopping: current=0.06966, best=0.07026, bad_epochs=2/10
+2026-04-16 21:42:44.501671: I [EPOCH 47/999] train_loss=128.86905; train_loss_min=54.41266; train_loss_max=369.07306; train_loss_std=40.70524; grad_norm_mean=21.5890; grad_norm_max=76.9127; emb_logits_mean=-7.1009; emb_logits_std=2.9402; emb_logits_pre_mean=-7.2003; emb_logits_pre_std=2.8176; override_ratio=0.059194; local_items_per_user_mean=2252.22; local_items_per_user_std=398.38; delta_override_mean=1.6783; delta_override_std=1.8591; id_logits_mean=-2.6248; id_logits_std=1.7061; user_norm_mean=2.3639; user_norm_std=0.5823; user_dispersion=3.3480e-02; item_loc_norm_mean=5.4029; item_loc_norm_std=0.9088; item_loc_dispersion=1.5186e-01; rhs_emb_norm_mean=17.9300; rhs_emb_norm_std=0.9050; rhs_emb_dispersion=9.8658e-01; offset_emb_mean=-0.4214; offset_emb_std=0.1825; offset_id_mean=0.3164; offset_id_std=0.2836; supervised_edges_avg=608.6; supervised_edges_min=370; supervised_edges_max=1488; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=357.14s; batch_time_avg=0.3607s
+2026-04-16 21:47:22.583137: I 
+2026-04-16 21:47:22.582949: I Epoch 47/999 eval_loss=128.86905
+2026-04-16 21:47:22.583762: I Validation Evaluation results
+2026-04-16 21:47:22.583986: I Cut-off: 20
+2026-04-16 21:47:22.638520: I Eval Time: 1.2817480564117432
+2026-04-16 21:47:22.638902: I Results
+2026-04-16 21:47:22.639051: I Recall	0.06167
+2026-04-16 21:47:22.639281: I nDCG	0.02459
+2026-04-16 21:47:22.893929: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=47).
+2026-04-16 21:47:22.895988: I EarlyStopping: current=0.06167, best=0.07026, bad_epochs=3/10
+2026-04-16 21:53:20.122766: I [EPOCH 48/999] train_loss=129.28305; train_loss_min=51.88361; train_loss_max=396.77805; train_loss_std=42.79920; grad_norm_mean=20.2871; grad_norm_max=69.8184; emb_logits_mean=-7.1728; emb_logits_std=2.9755; emb_logits_pre_mean=-7.2722; emb_logits_pre_std=2.8536; override_ratio=0.059196; local_items_per_user_mean=2252.29; local_items_per_user_std=399.28; delta_override_mean=1.6791; delta_override_std=1.8547; id_logits_mean=-2.6356; id_logits_std=1.6901; user_norm_mean=2.3592; user_norm_std=0.5829; user_dispersion=3.3582e-02; item_loc_norm_mean=5.3582; item_loc_norm_std=0.9181; item_loc_dispersion=1.4958e-01; rhs_emb_norm_mean=17.9540; rhs_emb_norm_std=0.9059; rhs_emb_dispersion=9.8656e-01; offset_emb_mean=-0.4303; offset_emb_std=0.1900; offset_id_mean=0.3238; offset_id_std=0.2875; supervised_edges_avg=608.6; supervised_edges_min=367; supervised_edges_max=1583; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=357.23s; batch_time_avg=0.3608s
+2026-04-16 21:57:55.297354: I Epoch 48/999 eval_loss=129.28305
+2026-04-16 21:57:55.297700: I 
+2026-04-16 21:57:55.298287: I Validation Evaluation results
+2026-04-16 21:57:55.298404: I Cut-off: 20
+2026-04-16 21:57:55.298524: I Eval Time: 1.226719856262207
+2026-04-16 21:57:55.298614: I Results
+2026-04-16 21:57:55.298951: I Recall	0.06729
+2026-04-16 21:57:55.356527: I nDCG	0.02694
+2026-04-16 21:57:55.639365: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=48).
+2026-04-16 21:57:55.640323: I EarlyStopping: current=0.06729, best=0.07026, bad_epochs=4/10
+2026-04-16 22:03:52.757643: I [EPOCH 49/999] train_loss=128.21936; train_loss_min=56.23029; train_loss_max=331.87793; train_loss_std=38.51202; grad_norm_mean=21.9963; grad_norm_max=65.2035; emb_logits_mean=-7.2019; emb_logits_std=2.9995; emb_logits_pre_mean=-7.3005; emb_logits_pre_std=2.8786; override_ratio=0.059203; local_items_per_user_mean=2252.54; local_items_per_user_std=398.56; delta_override_mean=1.6652; delta_override_std=1.8525; id_logits_mean=-2.6262; id_logits_std=1.6881; user_norm_mean=2.3188; user_norm_std=0.5765; user_dispersion=3.2749e-02; item_loc_norm_mean=5.3024; item_loc_norm_std=0.9176; item_loc_dispersion=1.4647e-01; rhs_emb_norm_mean=17.9712; rhs_emb_norm_std=0.9069; rhs_emb_dispersion=9.8653e-01; offset_emb_mean=-0.4309; offset_emb_std=0.1958; offset_id_mean=0.3250; offset_id_std=0.2915; supervised_edges_avg=608.6; supervised_edges_min=318; supervised_edges_max=1366; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=357.12s; batch_time_avg=0.3607s
+2026-04-16 22:08:30.274043: I 
+2026-04-16 22:08:30.273877: I Epoch 49/999 eval_loss=128.21936
+2026-04-16 22:08:30.274664: I Validation Evaluation results
+2026-04-16 22:08:30.274805: I Cut-off: 20
+2026-04-16 22:08:30.275011: I Eval Time: 1.1407740116119385
+2026-04-16 22:08:30.329554: I Results
+2026-04-16 22:08:30.329837: I Recall	0.06316
+2026-04-16 22:08:30.330024: I nDCG	0.0258
+2026-04-16 22:08:30.590861: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=49).
+2026-04-16 22:08:30.591949: I EarlyStopping: current=0.06316, best=0.07026, bad_epochs=5/10
+2026-04-16 22:14:27.514559: I [EPOCH 50/999] train_loss=128.52063; train_loss_min=56.72645; train_loss_max=373.72165; train_loss_std=40.48366; grad_norm_mean=20.9847; grad_norm_max=71.0560; emb_logits_mean=-7.2264; emb_logits_std=3.0191; emb_logits_pre_mean=-7.3226; emb_logits_pre_std=2.9006; override_ratio=0.059199; local_items_per_user_mean=2252.41; local_items_per_user_std=398.13; delta_override_mean=1.6257; delta_override_std=1.8656; id_logits_mean=-2.6339; id_logits_std=1.7119; user_norm_mean=2.3061; user_norm_std=0.5686; user_dispersion=3.2427e-02; item_loc_norm_mean=5.2608; item_loc_norm_std=0.9236; item_loc_dispersion=1.4481e-01; rhs_emb_norm_mean=17.9847; rhs_emb_norm_std=0.9076; rhs_emb_dispersion=9.8652e-01; offset_emb_mean=-0.4305; offset_emb_std=0.1968; offset_id_mean=0.3234; offset_id_std=0.2924; supervised_edges_avg=608.6; supervised_edges_min=338; supervised_edges_max=1500; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.92s; batch_time_avg=0.3605s
+2026-04-16 22:19:03.961781: I 
+2026-04-16 22:19:03.961608: I Epoch 50/999 eval_loss=128.52063
+2026-04-16 22:19:03.962531: I Validation Evaluation results
+2026-04-16 22:19:04.018433: I Cut-off: 20
+2026-04-16 22:19:04.019045: I Eval Time: 1.114208459854126
+2026-04-16 22:19:04.019196: I Results
+2026-04-16 22:19:04.019433: I Recall	0.06559
+2026-04-16 22:19:04.019698: I nDCG	0.02707
+2026-04-16 22:19:04.275759: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=50).
+2026-04-16 22:19:04.276674: I EarlyStopping: current=0.06559, best=0.07026, bad_epochs=6/10
+2026-04-16 22:25:01.088995: I [EPOCH 51/999] train_loss=128.38541; train_loss_min=53.70876; train_loss_max=351.35095; train_loss_std=39.80792; grad_norm_mean=19.4719; grad_norm_max=53.9521; emb_logits_mean=-7.2591; emb_logits_std=3.0296; emb_logits_pre_mean=-7.3540; emb_logits_pre_std=2.9124; override_ratio=0.059186; local_items_per_user_mean=2251.92; local_items_per_user_std=398.87; delta_override_mean=1.6040; delta_override_std=1.8683; id_logits_mean=-2.6508; id_logits_std=1.7248; user_norm_mean=2.2797; user_norm_std=0.5619; user_dispersion=3.1790e-02; item_loc_norm_mean=5.1934; item_loc_norm_std=0.9150; item_loc_dispersion=1.4121e-01; rhs_emb_norm_mean=17.9928; rhs_emb_norm_std=0.9085; rhs_emb_dispersion=9.8652e-01; offset_emb_mean=-0.4285; offset_emb_std=0.2045; offset_id_mean=0.3262; offset_id_std=0.2949; supervised_edges_avg=608.6; supervised_edges_min=376; supervised_edges_max=1407; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=356.81s; batch_time_avg=0.3604s
+2026-04-16 22:29:35.430680: I 
+2026-04-16 22:29:35.430516: I Epoch 51/999 eval_loss=128.38541
+2026-04-16 22:29:35.431326: I Validation Evaluation results
+2026-04-16 22:29:35.485362: I Cut-off: 20
+2026-04-16 22:29:35.485742: I Eval Time: 1.108520269393921
+2026-04-16 22:29:35.485862: I Results
+2026-04-16 22:29:35.486110: I Recall	0.06442
+2026-04-16 22:29:35.486331: I nDCG	0.02606
+2026-04-16 22:29:35.734390: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=51).
+2026-04-16 22:29:35.735401: I EarlyStopping: current=0.06442, best=0.07026, bad_epochs=7/10
+2026-04-16 22:35:31.453827: I [EPOCH 52/999] train_loss=128.44707; train_loss_min=59.88567; train_loss_max=363.68512; train_loss_std=41.24874; grad_norm_mean=22.3599; grad_norm_max=91.6374; emb_logits_mean=-7.2700; emb_logits_std=3.0513; emb_logits_pre_mean=-7.3651; emb_logits_pre_std=2.9343; override_ratio=0.059179; local_items_per_user_mean=2251.65; local_items_per_user_std=397.51; delta_override_mean=1.6071; delta_override_std=1.8676; id_logits_mean=-2.6320; id_logits_std=1.7206; user_norm_mean=2.2484; user_norm_std=0.5595; user_dispersion=3.1035e-02; item_loc_norm_mean=5.1732; item_loc_norm_std=0.9026; item_loc_dispersion=1.3977e-01; rhs_emb_norm_mean=17.9974; rhs_emb_norm_std=0.9100; rhs_emb_dispersion=9.8651e-01; offset_emb_mean=-0.4287; offset_emb_std=0.1989; offset_id_mean=0.3201; offset_id_std=0.2925; supervised_edges_avg=608.6; supervised_edges_min=394; supervised_edges_max=1466; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=355.72s; batch_time_avg=0.3593s
+2026-04-16 22:40:25.761721: I Epoch 52/999 eval_loss=128.44707
+2026-04-16 22:40:25.761992: I 
+2026-04-16 22:40:25.762726: I Validation Evaluation results
+2026-04-16 22:40:25.762911: I Cut-off: 20
+2026-04-16 22:40:25.763125: I Eval Time: 1.2017252445220947
+2026-04-16 22:40:25.763547: I Results
+2026-04-16 22:40:25.763674: I Recall	0.06808
+2026-04-16 22:40:25.830215: I nDCG	0.02687
+2026-04-16 22:40:26.125605: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=52).
+2026-04-16 22:40:26.126799: I EarlyStopping: current=0.06808, best=0.07026, bad_epochs=8/10
+2026-04-16 22:46:25.879205: I [EPOCH 53/999] train_loss=128.96018; train_loss_min=47.00910; train_loss_max=424.29871; train_loss_std=42.95890; grad_norm_mean=19.2416; grad_norm_max=53.7308; emb_logits_mean=-7.3300; emb_logits_std=3.0866; emb_logits_pre_mean=-7.4244; emb_logits_pre_std=2.9702; override_ratio=0.059189; local_items_per_user_mean=2252.01; local_items_per_user_std=398.73; delta_override_mean=1.5961; delta_override_std=1.8811; id_logits_mean=-2.6244; id_logits_std=1.7297; user_norm_mean=2.2692; user_norm_std=0.5680; user_dispersion=3.1804e-02; item_loc_norm_mean=5.1288; item_loc_norm_std=0.9069; item_loc_dispersion=1.3794e-01; rhs_emb_norm_mean=18.0143; rhs_emb_norm_std=0.9110; rhs_emb_dispersion=9.8652e-01; offset_emb_mean=-0.4342; offset_emb_std=0.2136; offset_id_mean=0.3273; offset_id_std=0.3052; supervised_edges_avg=608.6; supervised_edges_min=337; supervised_edges_max=1689; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=359.75s; batch_time_avg=0.3634s
+2026-04-16 22:51:35.250082: I 
+2026-04-16 22:51:35.249896: I Epoch 53/999 eval_loss=128.96018
+2026-04-16 22:51:35.250994: I Validation Evaluation results
+2026-04-16 22:51:35.251206: I Cut-off: 20
+2026-04-16 22:51:35.251498: I Eval Time: 1.122549295425415
+2026-04-16 22:51:35.251673: I Results
+2026-04-16 22:51:35.305772: I Recall	0.06644
+2026-04-16 22:51:35.306118: I nDCG	0.02742
+2026-04-16 22:51:35.561673: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=53).
+2026-04-16 22:51:35.562685: I EarlyStopping: current=0.06644, best=0.07026, bad_epochs=9/10
+2026-04-16 22:57:32.816853: I [EPOCH 54/999] train_loss=128.16779; train_loss_min=54.14886; train_loss_max=321.75818; train_loss_std=39.22183; grad_norm_mean=20.7909; grad_norm_max=57.4552; emb_logits_mean=-7.3261; emb_logits_std=3.0743; emb_logits_pre_mean=-7.4184; emb_logits_pre_std=2.9598; override_ratio=0.059193; local_items_per_user_mean=2252.17; local_items_per_user_std=398.40; delta_override_mean=1.5596; delta_override_std=1.8808; id_logits_mean=-2.6383; id_logits_std=1.7425; user_norm_mean=2.2374; user_norm_std=0.5693; user_dispersion=3.1317e-02; item_loc_norm_mean=5.0925; item_loc_norm_std=0.9167; item_loc_dispersion=1.3636e-01; rhs_emb_norm_mean=18.0249; rhs_emb_norm_std=0.9122; rhs_emb_dispersion=9.8652e-01; offset_emb_mean=-0.4366; offset_emb_std=0.2118; offset_id_mean=0.3296; offset_id_std=0.2995; supervised_edges_avg=608.6; supervised_edges_min=376; supervised_edges_max=1315; cpu_mem_max=5.06GB, gpu_mem_max=15.54GB; epoch_time=357.25s; batch_time_avg=0.3609s
+2026-04-16 23:02:31.091703: I Epoch 54/999 eval_loss=128.16779
+2026-04-16 23:02:31.091966: I 
+2026-04-16 23:02:31.092809: I Validation Evaluation results
+2026-04-16 23:02:31.164178: I Cut-off: 20
+2026-04-16 23:02:31.164700: I Eval Time: 1.2490754127502441
+2026-04-16 23:02:31.165013: I Results
+2026-04-16 23:02:31.165368: I Recall	0.06552
+2026-04-16 23:02:31.165498: I nDCG	0.02653
+2026-04-16 23:02:31.443394: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/resume-state-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f.pt' (last_completed_epoch=54).
+2026-04-16 23:02:31.444453: I EarlyStopping: current=0.06552, best=0.07026, bad_epochs=10/10
+2026-04-16 23:02:31.444714: I Met Early Stopping conditions: logger: <Logger EarlyStopping (DEBUG)>, validation_metric: Recall, validation_k: 20, cutoffs: [20], simple_metrics: ['Recall', 'nDCG'], monitor: Recall@20, patience: 10, mode: max, metric_k: 20, metric: Recall, min_delta: 0, verbose: True, active: True, _best: 0.0702601995705444, _bad_epochs: 10
+2026-04-16 23:02:31.648633: I Best checkpoint correctly restored from '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=2_h=af5b5efd846f/best-weights-ContextGNN_yelp-2018_seed=2_h=af5b5efd846f'
+2026-04-16 23:08:24.348989: I 
+2026-04-16 23:08:24.348387: I [BRANCH USAGE@20, mode=full] local_topk_share=0.8206; global_topk_share=0.1794
+2026-04-16 23:08:24.351816: I Test Evaluation results
+2026-04-16 23:08:24.352627: I Cut-off: 20
+2026-04-16 23:08:24.352872: I Eval Time: 2.011918783187866
+2026-04-16 23:08:24.352987: I Results
+2026-04-16 23:08:24.353104: I Recall	0.04327
+2026-04-16 23:08:24.354618: I nDCG	0.03394
+2026-04-16 23:14:10.509975: I [BRANCH USAGE@20, mode=global] local_topk_share=0.6853; global_topk_share=0.3147
+2026-04-16 23:14:10.510302: I 
+2026-04-16 23:14:10.512524: I Test Evaluation results
+2026-04-16 23:14:10.514332: I Cut-off: 20
+2026-04-16 23:14:10.514748: I Eval Time: 1.5523583889007568
+2026-04-16 23:14:10.515595: I Results
+2026-04-16 23:14:10.518892: I Recall	0.00849
+2026-04-16 23:14:10.519060: I nDCG	0.00732
+2026-04-16 23:19:45.792525: I [BRANCH USAGE@20, mode=local] local_topk_share=1.0000; global_topk_share=0.0000
+2026-04-16 23:19:45.792742: I 
+2026-04-16 23:19:45.798501: I Test Evaluation results
+2026-04-16 23:19:45.803970: I Cut-off: 20
+2026-04-16 23:19:45.816737: I Eval Time: 1.5469322204589844
+2026-04-16 23:19:45.828120: I Results
+2026-04-16 23:19:45.838748: I Recall	0.04868
+2026-04-16 23:19:45.849352: I nDCG	0.03951
+2026-04-16 23:19:47.241506: I [RANKING OVERLAP - TEST] Jaccard@20(Full, Local)=0.1754; Jaccard@20(Full, Global)=0.0390
+2026-04-16 23:19:47.335600: I Loading parameters
+2026-04-16 23:19:47.335792: I Hyperparameter tuning exploration:
+2026-04-16 23:19:47.336057: I Parameter lr set to 0.0005
+2026-04-16 23:19:47.336201: I Exploration for seed. Value extracted: 1
+2026-04-16 23:19:47.336411: I Parameter factors set to 128
+2026-04-16 23:19:47.336549: I Exploration: Hyperparameter exploration number 2
+2026-04-16 23:19:47.336707: I Parameter n_layers set to 4
+2026-04-16 23:19:47.336802: I Exploration: Test Fold exploration number 1
+2026-04-16 23:19:47.336932: I Parameter norm set to layer_norm
+2026-04-16 23:19:47.337383: I Exploration: Train-Validation Fold exploration number 1
+2026-04-16 23:19:47.337287: I Parameter sup_rat set to 0.5
+2026-04-16 23:19:47.337855: I Parameter channels set to 128
+2026-04-16 23:19:47.337939: I Parameter max_steps set to 2000
+2026-04-16 23:19:47.338050: I Parameter gnn set to NGCF
+2026-04-16 23:19:47.338151: I Parameter mess_drop set to 0.5
+2026-04-16 23:19:47.338263: I Parameter eps set to 1e-05
+2026-04-16 23:19:47.338366: I Parameter t_eps set to True
+2026-04-16 23:19:47.338615: I Parameter adj_norm set to True
+2026-04-16 23:19:47.338738: I Parameter loss set to ce
+2026-04-16 23:19:47.338790: I Parameter aggr set to sum
+2026-04-16 23:19:47.339088: I Parameter neigh set to [16, 16, 16, 16]
+2026-04-16 23:19:47.339158: I Parameter acc_steps set to 4
+2026-04-16 23:19:47.339331: I Parameter inference_for_ranking set to ['full', 'global', 'local']
+2026-04-16 23:20:52.088049: I No resume checkpoint found at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt'. Starting training from scratch.
+2026-04-16 23:20:52.088411: I No valid resume checkpoint restored. Starting training from scratch.
+2026-04-16 23:26:51.605489: I [EPOCH 1/999] train_loss=212.90469; train_loss_min=92.45470; train_loss_max=701.55139; train_loss_std=86.50038; grad_norm_mean=225.0950; grad_norm_max=2440.6223; emb_logits_mean=-8.3373; emb_logits_std=4.4278; emb_logits_pre_mean=-8.9215; emb_logits_pre_std=3.8403; override_ratio=0.059182; local_items_per_user_mean=2251.77; local_items_per_user_std=399.08; delta_override_mean=9.8714; delta_override_std=4.0546; id_logits_mean=0.9587; id_logits_std=1.1491; user_norm_mean=9.6161; user_norm_std=0.2216; user_dispersion=3.8616e-01; item_loc_norm_mean=9.9482; item_loc_norm_std=0.1676; item_loc_dispersion=4.3943e-01; rhs_emb_norm_mean=15.9819; rhs_emb_norm_std=0.8649; rhs_emb_dispersion=9.9347e-01; offset_emb_mean=-0.0396; offset_emb_std=0.2094; offset_id_mean=0.0919; offset_id_std=0.1364; supervised_edges_avg=608.6; supervised_edges_min=287; supervised_edges_max=1696; cpu_mem_max=5.24GB, gpu_mem_max=15.54GB; epoch_time=359.52s; batch_time_avg=0.3631s
+2026-04-16 23:31:50.695130: I 
+2026-04-16 23:31:50.694865: I Epoch 1/999 eval_loss=212.90469
+2026-04-16 23:31:50.695546: I ******************************************
+2026-04-16 23:31:50.696049: I Validation Evaluation results
+2026-04-16 23:31:50.696201: I Cut-off: 20
+2026-04-16 23:31:50.696377: I Eval Time: 1.277048110961914
+2026-04-16 23:31:50.696491: I Results
+2026-04-16 23:31:50.696708: I Recall	0.006
+2026-04-16 23:31:50.696885: I nDCG	0.00218
+2026-04-16 23:31:51.157203: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=1).
+2026-04-16 23:37:54.132755: I [EPOCH 2/999] train_loss=156.91565; train_loss_min=72.76789; train_loss_max=489.30942; train_loss_std=49.65169; grad_norm_mean=81.2396; grad_norm_max=343.3275; emb_logits_mean=-5.5328; emb_logits_std=2.0652; emb_logits_pre_mean=-5.7864; emb_logits_pre_std=1.8085; override_ratio=0.059199; local_items_per_user_mean=2252.40; local_items_per_user_std=398.57; delta_override_mean=4.2848; delta_override_std=1.9030; id_logits_mean=-1.4793; id_logits_std=1.5483; user_norm_mean=8.3979; user_norm_std=0.8348; user_dispersion=2.8680e-01; item_loc_norm_mean=10.0263; item_loc_norm_std=0.2474; item_loc_dispersion=4.5440e-01; rhs_emb_norm_mean=16.0556; rhs_emb_norm_std=0.8652; rhs_emb_dispersion=9.8700e-01; offset_emb_mean=-0.0482; offset_emb_std=0.0756; offset_id_mean=0.1436; offset_id_std=0.0502; supervised_edges_avg=608.6; supervised_edges_min=344; supervised_edges_max=1636; cpu_mem_max=5.21GB, gpu_mem_max=15.54GB; epoch_time=362.97s; batch_time_avg=0.3666s
+2026-04-16 23:43:19.465059: I Epoch 2/999 eval_loss=156.91565
+2026-04-16 23:43:19.465360: I 
+2026-04-16 23:43:19.465730: I ******************************************
+2026-04-16 23:43:19.465919: I Validation Evaluation results
+2026-04-16 23:43:19.466342: I Cut-off: 20
+2026-04-16 23:43:19.466529: I Eval Time: 1.3883745670318604
+2026-04-16 23:43:19.466653: I Results
+2026-04-16 23:43:19.466842: I Recall	0.00685
+2026-04-16 23:43:19.467015: I nDCG	0.00227
+2026-04-16 23:43:20.099219: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=2).
+2026-04-16 23:49:32.036554: I [EPOCH 3/999] train_loss=147.64217; train_loss_min=61.17137; train_loss_max=399.00861; train_loss_std=45.16860; grad_norm_mean=87.8035; grad_norm_max=322.2027; emb_logits_mean=-5.2001; emb_logits_std=1.5069; emb_logits_pre_mean=-5.4214; emb_logits_pre_std=1.2147; override_ratio=0.059178; local_items_per_user_mean=2251.59; local_items_per_user_std=398.66; delta_override_mean=3.7385; delta_override_std=1.2123; id_logits_mean=-1.6479; id_logits_std=1.0743; user_norm_mean=8.3171; user_norm_std=1.0951; user_dispersion=2.8036e-01; item_loc_norm_mean=9.8224; item_loc_norm_std=0.1972; item_loc_dispersion=4.1402e-01; rhs_emb_norm_mean=16.1325; rhs_emb_norm_std=0.8668; rhs_emb_dispersion=9.8606e-01; offset_emb_mean=-0.0778; offset_emb_std=0.0358; offset_id_mean=0.1767; offset_id_std=0.0264; supervised_edges_avg=608.6; supervised_edges_min=344; supervised_edges_max=1375; cpu_mem_max=5.21GB, gpu_mem_max=15.54GB; epoch_time=371.94s; batch_time_avg=0.3757s
+2026-04-16 23:55:14.117118: I 
+2026-04-16 23:55:14.116856: I Epoch 3/999 eval_loss=147.64217
+2026-04-16 23:55:14.117541: I ******************************************
+2026-04-16 23:55:14.117722: I Validation Evaluation results
+2026-04-16 23:55:14.118124: I Cut-off: 20
+2026-04-16 23:55:14.118386: I Eval Time: 1.4145948886871338
+2026-04-16 23:55:14.118582: I Results
+2026-04-16 23:55:14.118783: I Recall	0.00745
+2026-04-16 23:55:14.118962: I nDCG	0.00247
+2026-04-16 23:55:14.783051: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=3).
+2026-04-17 00:01:22.525813: I [EPOCH 4/999] train_loss=144.81603; train_loss_min=65.46517; train_loss_max=427.24890; train_loss_std=44.03806; grad_norm_mean=78.2288; grad_norm_max=296.5898; emb_logits_mean=-5.2683; emb_logits_std=1.3930; emb_logits_pre_mean=-5.4899; emb_logits_pre_std=1.0684; override_ratio=0.059191; local_items_per_user_mean=2252.10; local_items_per_user_std=397.67; delta_override_mean=3.7433; delta_override_std=1.1615; id_logits_mean=-1.6914; id_logits_std=0.8827; user_norm_mean=8.2148; user_norm_std=1.1741; user_dispersion=2.7579e-01; item_loc_norm_mean=9.6951; item_loc_norm_std=0.1952; item_loc_dispersion=3.9498e-01; rhs_emb_norm_mean=16.2045; rhs_emb_norm_std=0.8702; rhs_emb_dispersion=9.8592e-01; offset_emb_mean=-0.1019; offset_emb_std=0.0302; offset_id_mean=0.2002; offset_id_std=0.0237; supervised_edges_avg=608.6; supervised_edges_min=335; supervised_edges_max=1456; cpu_mem_max=5.20GB, gpu_mem_max=15.54GB; epoch_time=367.74s; batch_time_avg=0.3715s
+2026-04-17 00:06:52.526941: I Epoch 4/999 eval_loss=144.81603
+2026-04-17 00:06:52.527210: I 
+2026-04-17 00:06:52.527909: I Validation Evaluation results
+2026-04-17 00:06:52.528054: I Cut-off: 20
+2026-04-17 00:06:52.527776: I ******************************************
+2026-04-17 00:06:52.528296: I Eval Time: 1.3316888809204102
+2026-04-17 00:06:52.528656: I Results
+2026-04-17 00:06:52.528735: I Recall	0.00878
+2026-04-17 00:06:52.528828: I nDCG	0.00311
+2026-04-17 00:06:53.168331: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=4).
+2026-04-17 00:12:56.591583: I [EPOCH 5/999] train_loss=143.54841; train_loss_min=64.61776; train_loss_max=400.38956; train_loss_std=45.82207; grad_norm_mean=65.0655; grad_norm_max=192.5220; emb_logits_mean=-5.3101; emb_logits_std=1.3853; emb_logits_pre_mean=-5.5342; emb_logits_pre_std=1.0477; override_ratio=0.059180; local_items_per_user_mean=2251.68; local_items_per_user_std=398.68; delta_override_mean=3.7866; delta_override_std=1.1730; id_logits_mean=-1.6739; id_logits_std=0.8280; user_norm_mean=7.9616; user_norm_std=1.1697; user_dispersion=2.5887e-01; item_loc_norm_mean=9.5981; item_loc_norm_std=0.2020; item_loc_dispersion=3.8177e-01; rhs_emb_norm_mean=16.2657; rhs_emb_norm_std=0.8742; rhs_emb_dispersion=9.8583e-01; offset_emb_mean=-0.1266; offset_emb_std=0.0304; offset_id_mean=0.2244; offset_id_std=0.0234; supervised_edges_avg=608.6; supervised_edges_min=379; supervised_edges_max=1430; cpu_mem_max=5.20GB, gpu_mem_max=15.54GB; epoch_time=363.42s; batch_time_avg=0.3671s
+2026-04-17 00:17:59.208082: I Epoch 5/999 eval_loss=143.54841
+2026-04-17 00:17:59.208368: I 
+2026-04-17 00:17:59.208700: I ******************************************
+2026-04-17 00:17:59.208910: I Validation Evaluation results
+2026-04-17 00:17:59.209270: I Cut-off: 20
+2026-04-17 00:17:59.209362: I Eval Time: 1.3324270248413086
+2026-04-17 00:17:59.209448: I Results
+2026-04-17 00:17:59.209605: I Recall	0.009
+2026-04-17 00:17:59.209792: I nDCG	0.00353
+2026-04-17 00:17:59.804078: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=5).
+2026-04-17 00:23:59.709046: I [EPOCH 6/999] train_loss=141.60842; train_loss_min=55.63698; train_loss_max=430.04572; train_loss_std=43.96104; grad_norm_mean=53.8889; grad_norm_max=183.0863; emb_logits_mean=-5.1843; emb_logits_std=1.3966; emb_logits_pre_mean=-5.4086; emb_logits_pre_std=1.0593; override_ratio=0.059183; local_items_per_user_mean=2251.80; local_items_per_user_std=398.83; delta_override_mean=3.7908; delta_override_std=1.1559; id_logits_mean=-1.5317; id_logits_std=0.8618; user_norm_mean=7.5779; user_norm_std=1.1213; user_dispersion=2.3336e-01; item_loc_norm_mean=9.4259; item_loc_norm_std=0.2077; item_loc_dispersion=3.6581e-01; rhs_emb_norm_mean=16.3193; rhs_emb_norm_std=0.8783; rhs_emb_dispersion=9.8570e-01; offset_emb_mean=-0.1459; offset_emb_std=0.0328; offset_id_mean=0.2358; offset_id_std=0.0244; supervised_edges_avg=608.6; supervised_edges_min=355; supervised_edges_max=1517; cpu_mem_max=5.20GB, gpu_mem_max=15.54GB; epoch_time=359.90s; batch_time_avg=0.3635s
+2026-04-17 00:29:14.141583: I 
+2026-04-17 00:29:14.141372: I Epoch 6/999 eval_loss=141.60842
+2026-04-17 00:29:14.141929: I ******************************************
+2026-04-17 00:29:14.142368: I Validation Evaluation results
+2026-04-17 00:29:14.142534: I Cut-off: 20
+2026-04-17 00:29:14.142656: I Eval Time: 1.292088508605957
+2026-04-17 00:29:14.142918: I Results
+2026-04-17 00:29:14.143126: I Recall	0.00944
+2026-04-17 00:29:14.143354: I nDCG	0.00322
+2026-04-17 00:29:14.765962: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=6).
+2026-04-17 00:35:18.023964: I [EPOCH 7/999] train_loss=141.55235; train_loss_min=61.42508; train_loss_max=433.68582; train_loss_std=46.55962; grad_norm_mean=48.5620; grad_norm_max=199.8191; emb_logits_mean=-4.9534; emb_logits_std=1.3654; emb_logits_pre_mean=-5.1729; emb_logits_pre_std=1.0296; override_ratio=0.059178; local_items_per_user_mean=2251.62; local_items_per_user_std=399.23; delta_override_mean=3.7084; delta_override_std=1.1234; id_logits_mean=-1.3704; id_logits_std=0.9004; user_norm_mean=7.1596; user_norm_std=1.1315; user_dispersion=2.0924e-01; item_loc_norm_mean=9.2012; item_loc_norm_std=0.2069; item_loc_dispersion=3.4792e-01; rhs_emb_norm_mean=16.3723; rhs_emb_norm_std=0.8828; rhs_emb_dispersion=9.8560e-01; offset_emb_mean=-0.1590; offset_emb_std=0.0319; offset_id_mean=0.2550; offset_id_std=0.0241; supervised_edges_avg=608.7; supervised_edges_min=340; supervised_edges_max=1550; cpu_mem_max=5.20GB, gpu_mem_max=15.54GB; epoch_time=363.26s; batch_time_avg=0.3669s
+2026-04-17 00:40:41.706020: I 
+2026-04-17 00:40:41.705803: I Epoch 7/999 eval_loss=141.55235
+2026-04-17 00:40:41.706383: I ******************************************
+2026-04-17 00:40:41.706555: I Validation Evaluation results
+2026-04-17 00:40:41.706942: I Cut-off: 20
+2026-04-17 00:40:41.707196: I Eval Time: 1.2929348945617676
+2026-04-17 00:40:41.707508: I Results
+2026-04-17 00:40:41.707732: I Recall	0.01269
+2026-04-17 00:40:41.708025: I nDCG	0.00425
+2026-04-17 00:40:42.334409: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=7).
+2026-04-17 00:46:46.448001: I [EPOCH 8/999] train_loss=140.23654; train_loss_min=64.13367; train_loss_max=426.15790; train_loss_std=44.17496; grad_norm_mean=45.1007; grad_norm_max=131.6890; emb_logits_mean=-4.8590; emb_logits_std=1.3318; emb_logits_pre_mean=-5.0746; emb_logits_pre_std=0.9926; override_ratio=0.059188; local_items_per_user_mean=2251.97; local_items_per_user_std=398.96; delta_override_mean=3.6425; delta_override_std=1.1378; id_logits_mean=-1.3268; id_logits_std=0.9442; user_norm_mean=6.7687; user_norm_std=1.1401; user_dispersion=1.8772e-01; item_loc_norm_mean=8.9904; item_loc_norm_std=0.2072; item_loc_dispersion=3.3267e-01; rhs_emb_norm_mean=16.4167; rhs_emb_norm_std=0.8882; rhs_emb_dispersion=9.8556e-01; offset_emb_mean=-0.1730; offset_emb_std=0.0303; offset_id_mean=0.2650; offset_id_std=0.0238; supervised_edges_avg=608.6; supervised_edges_min=332; supervised_edges_max=1514; cpu_mem_max=5.20GB, gpu_mem_max=15.54GB; epoch_time=364.11s; batch_time_avg=0.3678s
+2026-04-17 00:52:11.633999: I 
+2026-04-17 00:52:11.633784: I Epoch 8/999 eval_loss=140.23654
+2026-04-17 00:52:11.634424: I ******************************************
+2026-04-17 00:52:11.634655: I Validation Evaluation results
+2026-04-17 00:52:11.634787: I Cut-off: 20
+2026-04-17 00:52:11.635100: I Eval Time: 1.3365581035614014
+2026-04-17 00:52:11.635259: I Results
+2026-04-17 00:52:11.635452: I Recall	0.01538
+2026-04-17 00:52:11.635596: I nDCG	0.00536
+2026-04-17 00:52:12.260030: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=8).
+2026-04-17 00:58:17.557952: I [EPOCH 9/999] train_loss=140.44180; train_loss_min=58.89408; train_loss_max=413.05185; train_loss_std=46.61808; grad_norm_mean=41.1015; grad_norm_max=142.7750; emb_logits_mean=-4.8051; emb_logits_std=1.3009; emb_logits_pre_mean=-5.0165; emb_logits_pre_std=0.9594; override_ratio=0.059178; local_items_per_user_mean=2251.60; local_items_per_user_std=398.16; delta_override_mean=3.5726; delta_override_std=1.1497; id_logits_mean=-1.3262; id_logits_std=0.9857; user_norm_mean=6.3624; user_norm_std=1.1750; user_dispersion=1.6720e-01; item_loc_norm_mean=8.8001; item_loc_norm_std=0.2104; item_loc_dispersion=3.1917e-01; rhs_emb_norm_mean=16.4557; rhs_emb_norm_std=0.8948; rhs_emb_dispersion=9.8557e-01; offset_emb_mean=-0.1792; offset_emb_std=0.0278; offset_id_mean=0.2725; offset_id_std=0.0220; supervised_edges_avg=608.6; supervised_edges_min=371; supervised_edges_max=1515; cpu_mem_max=5.20GB, gpu_mem_max=15.54GB; epoch_time=365.30s; batch_time_avg=0.3690s
+2026-04-17 01:03:37.564265: I Epoch 9/999 eval_loss=140.44180
+2026-04-17 01:03:37.564959: I 
+2026-04-17 01:03:37.565196: I Validation Evaluation results
+2026-04-17 01:03:37.565390: I Cut-off: 20
+2026-04-17 01:03:37.565597: I Eval Time: 1.280881404876709
+2026-04-17 01:03:37.642667: I Results
+2026-04-17 01:03:37.643057: I Recall	0.01412
+2026-04-17 01:03:37.643173: I nDCG	0.005
+2026-04-17 01:03:37.962459: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=9).
+2026-04-17 01:03:37.963764: I EarlyStopping: current=0.01412, best=0.01538, bad_epochs=1/10
+2026-04-17 01:09:42.704308: I [EPOCH 10/999] train_loss=140.09831; train_loss_min=60.07928; train_loss_max=533.97034; train_loss_std=49.32559; grad_norm_mean=38.1807; grad_norm_max=118.2175; emb_logits_mean=-4.8193; emb_logits_std=1.2809; emb_logits_pre_mean=-5.0273; emb_logits_pre_std=0.9378; override_ratio=0.059208; local_items_per_user_mean=2252.76; local_items_per_user_std=398.65; delta_override_mean=3.5137; delta_override_std=1.1848; id_logits_mean=-1.3804; id_logits_std=1.0290; user_norm_mean=5.9628; user_norm_std=1.2007; user_dispersion=1.4786e-01; item_loc_norm_mean=8.6348; item_loc_norm_std=0.2180; item_loc_dispersion=3.0821e-01; rhs_emb_norm_mean=16.4894; rhs_emb_norm_std=0.9019; rhs_emb_dispersion=9.8562e-01; offset_emb_mean=-0.1880; offset_emb_std=0.0250; offset_id_mean=0.2824; offset_id_std=0.0218; supervised_edges_avg=608.6; supervised_edges_min=293; supervised_edges_max=1871; cpu_mem_max=5.20GB, gpu_mem_max=15.54GB; epoch_time=364.74s; batch_time_avg=0.3684s
+2026-04-17 01:15:12.802752: I Epoch 10/999 eval_loss=140.09831
+2026-04-17 01:15:12.803002: I 
+2026-04-17 01:15:12.803446: I ******************************************
+2026-04-17 01:15:12.803591: I Validation Evaluation results
+2026-04-17 01:15:12.804027: I Cut-off: 20
+2026-04-17 01:15:12.804170: I Eval Time: 1.320253610610962
+2026-04-17 01:15:12.804448: I Results
+2026-04-17 01:15:12.804646: I Recall	0.01648
+2026-04-17 01:15:12.804827: I nDCG	0.00571
+2026-04-17 01:15:13.479412: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=10).
+
+---
+
+2026-04-17 09:38:37.084649: I [EPOCH 11/999] train_loss=139.03043; train_loss_min=54.63544; train_loss_max=416.32635; train_loss_std=43.57585; grad_norm_mean=36.4198; grad_norm_max=94.8291; emb_logits_mean=-4.8689; emb_logits_std=1.2615; emb_logits_pre_mean=-5.0725; emb_logits_pre_std=0.9196; override_ratio=0.059189; local_items_per_user_mean=2252.04; local_items_per_user_std=398.21; delta_override_mean=3.4390; delta_override_std=1.2212; id_logits_mean=-1.4814; id_logits_std=1.0744; user_norm_mean=5.5049; user_norm_std=1.1925; user_dispersion=1.2677e-01; item_loc_norm_mean=8.5062; item_loc_norm_std=0.2267; item_loc_dispersion=3.0045e-01; rhs_emb_norm_mean=16.5165; rhs_emb_norm_std=0.9090; rhs_emb_dispersion=9.8572e-01; offset_emb_mean=-0.1941; offset_emb_std=0.0238; offset_id_mean=0.2896; offset_id_std=0.0205; supervised_edges_avg=608.6; supervised_edges_min=282; supervised_edges_max=1479; cpu_mem_max=5.41GB, gpu_mem_max=15.52GB; epoch_time=356.04s; batch_time_avg=0.3596s
+2026-04-17 09:43:03.735979: I Epoch 11/999 eval_loss=139.03043
+2026-04-17 09:43:03.736259: I ******************************************
+2026-04-17 09:43:03.736512: I 
+2026-04-17 09:43:03.736910: I Validation Evaluation results
+2026-04-17 09:43:03.737121: I Cut-off: 20
+2026-04-17 09:43:03.737260: I Eval Time: 1.0851976871490479
+2026-04-17 09:43:03.737442: I Results
+2026-04-17 09:43:03.737642: I Recall	0.01737
+2026-04-17 09:43:03.737772: I nDCG	0.00596
+2026-04-17 09:43:04.288881: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=11).
+2026-04-17 09:48:59.251182: I [EPOCH 12/999] train_loss=138.66169; train_loss_min=47.17253; train_loss_max=398.69293; train_loss_std=43.23836; grad_norm_mean=36.9453; grad_norm_max=103.5230; emb_logits_mean=-4.9427; emb_logits_std=1.2657; emb_logits_pre_mean=-5.1423; emb_logits_pre_std=0.9301; override_ratio=0.059189; local_items_per_user_mean=2252.02; local_items_per_user_std=398.45; delta_override_mean=3.3724; delta_override_std=1.2790; id_logits_mean=-1.5956; id_logits_std=1.1469; user_norm_mean=5.0061; user_norm_std=1.2199; user_dispersion=1.0655e-01; item_loc_norm_mean=8.3898; item_loc_norm_std=0.2403; item_loc_dispersion=2.9424e-01; rhs_emb_norm_mean=16.5388; rhs_emb_norm_std=0.9147; rhs_emb_dispersion=9.8585e-01; offset_emb_mean=-0.1978; offset_emb_std=0.0208; offset_id_mean=0.2939; offset_id_std=0.0194; supervised_edges_avg=608.6; supervised_edges_min=335; supervised_edges_max=1431; cpu_mem_max=5.27GB, gpu_mem_max=15.52GB; epoch_time=354.96s; batch_time_avg=0.3585s
+2026-04-17 09:53:07.349616: I Epoch 12/999 eval_loss=138.66169
+2026-04-17 09:53:07.349838: I 
+2026-04-17 09:53:07.350111: I ******************************************
+2026-04-17 09:53:07.350219: I Validation Evaluation results
+2026-04-17 09:53:07.350637: I Cut-off: 20
+2026-04-17 09:53:07.350822: I Eval Time: 1.0628926753997803
+2026-04-17 09:53:07.350975: I Results
+2026-04-17 09:53:07.351058: I Recall	0.02002
+2026-04-17 09:53:07.351240: I nDCG	0.0064
+2026-04-17 09:53:07.876860: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=12).
+2026-04-17 09:59:02.944190: I [EPOCH 13/999] train_loss=138.08931; train_loss_min=57.41380; train_loss_max=387.68564; train_loss_std=42.42383; grad_norm_mean=29.7361; grad_norm_max=96.2969; emb_logits_mean=-5.0657; emb_logits_std=1.2755; emb_logits_pre_mean=-5.2613; emb_logits_pre_std=0.9495; override_ratio=0.059202; local_items_per_user_mean=2252.53; local_items_per_user_std=399.30; delta_override_mean=3.3033; delta_override_std=1.3166; id_logits_mean=-1.7554; id_logits_std=1.1938; user_norm_mean=4.4430; user_norm_std=1.2313; user_dispersion=8.6074e-02; item_loc_norm_mean=8.2660; item_loc_norm_std=0.2562; item_loc_dispersion=2.8754e-01; rhs_emb_norm_mean=16.5588; rhs_emb_norm_std=0.9200; rhs_emb_dispersion=9.8601e-01; offset_emb_mean=-0.2004; offset_emb_std=0.0190; offset_id_mean=0.2965; offset_id_std=0.0181; supervised_edges_avg=608.6; supervised_edges_min=371; supervised_edges_max=1419; cpu_mem_max=5.26GB, gpu_mem_max=15.52GB; epoch_time=355.07s; batch_time_avg=0.3587s
+2026-04-17 10:03:11.359898: I 
+2026-04-17 10:03:11.359762: I Epoch 13/999 eval_loss=138.08931
+2026-04-17 10:03:11.360192: I ******************************************
+2026-04-17 10:03:11.360518: I Validation Evaluation results
+2026-04-17 10:03:11.360794: I Cut-off: 20
+2026-04-17 10:03:11.360926: I Eval Time: 1.0527029037475586
+2026-04-17 10:03:11.361093: I Results
+2026-04-17 10:03:11.361256: I Recall	0.02665
+2026-04-17 10:03:11.361346: I nDCG	0.00908
+2026-04-17 10:03:12.055603: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=13).
+2026-04-17 10:09:06.492378: I [EPOCH 14/999] train_loss=138.43609; train_loss_min=59.50961; train_loss_max=417.69177; train_loss_std=46.00849; grad_norm_mean=27.4621; grad_norm_max=68.6549; emb_logits_mean=-5.1882; emb_logits_std=1.2864; emb_logits_pre_mean=-5.3788; emb_logits_pre_std=0.9701; override_ratio=0.059188; local_items_per_user_mean=2251.98; local_items_per_user_std=398.34; delta_override_mean=3.2198; delta_override_std=1.3808; id_logits_mean=-1.9224; id_logits_std=1.2618; user_norm_mean=4.0130; user_norm_std=1.2675; user_dispersion=7.3228e-02; item_loc_norm_mean=8.1232; item_loc_norm_std=0.2846; item_loc_dispersion=2.8097e-01; rhs_emb_norm_mean=16.5808; rhs_emb_norm_std=0.9222; rhs_emb_dispersion=9.8618e-01; offset_emb_mean=-0.2049; offset_emb_std=0.0177; offset_id_mean=0.3015; offset_id_std=0.0187; supervised_edges_avg=608.6; supervised_edges_min=367; supervised_edges_max=1532; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.44s; batch_time_avg=0.3580s
+2026-04-17 10:13:11.589652: I 
+2026-04-17 10:13:11.589487: I Epoch 14/999 eval_loss=138.43609
+2026-04-17 10:13:11.589901: I ******************************************
+2026-04-17 10:13:11.590119: I Validation Evaluation results
+2026-04-17 10:13:11.590337: I Cut-off: 20
+2026-04-17 10:13:11.590443: I Eval Time: 1.014836072921753
+2026-04-17 10:13:11.590707: I Results
+2026-04-17 10:13:11.590876: I Recall	0.03515
+2026-04-17 10:13:11.590920: I nDCG	0.01284
+2026-04-17 10:13:12.101141: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=14).
+2026-04-17 10:19:06.719286: I [EPOCH 15/999] train_loss=138.16128; train_loss_min=52.12092; train_loss_max=405.34067; train_loss_std=44.90359; grad_norm_mean=31.6830; grad_norm_max=98.1747; emb_logits_mean=-5.2776; emb_logits_std=1.2929; emb_logits_pre_mean=-5.4637; emb_logits_pre_std=0.9866; override_ratio=0.059192; local_items_per_user_mean=2252.12; local_items_per_user_std=398.20; delta_override_mean=3.1437; delta_override_std=1.4082; id_logits_mean=-2.0512; id_logits_std=1.2896; user_norm_mean=3.7274; user_norm_std=1.3037; user_dispersion=6.5483e-02; item_loc_norm_mean=7.9763; item_loc_norm_std=0.3159; item_loc_dispersion=2.7404e-01; rhs_emb_norm_mean=16.6100; rhs_emb_norm_std=0.9242; rhs_emb_dispersion=9.8635e-01; offset_emb_mean=-0.2051; offset_emb_std=0.0166; offset_id_mean=0.3049; offset_id_std=0.0182; supervised_edges_avg=608.6; supervised_edges_min=352; supervised_edges_max=1475; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.62s; batch_time_avg=0.3582s
+2026-04-17 10:23:11.306028: I 
+2026-04-17 10:23:11.305877: I Epoch 15/999 eval_loss=138.16128
+2026-04-17 10:23:11.306318: I ******************************************
+2026-04-17 10:23:11.306403: I Validation Evaluation results
+2026-04-17 10:23:11.306549: I Cut-off: 20
+2026-04-17 10:23:11.306788: I Eval Time: 0.9918999671936035
+2026-04-17 10:23:11.306939: I Results
+2026-04-17 10:23:11.307091: I Recall	0.04285
+2026-04-17 10:23:11.307226: I nDCG	0.01636
+2026-04-17 10:23:11.804856: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=15).
+2026-04-17 10:29:06.066261: I [EPOCH 16/999] train_loss=137.06812; train_loss_min=57.84682; train_loss_max=385.69562; train_loss_std=42.68310; grad_norm_mean=27.6325; grad_norm_max=70.0318; emb_logits_mean=-5.4021; emb_logits_std=1.3109; emb_logits_pre_mean=-5.5838; emb_logits_pre_std=1.0136; override_ratio=0.059185; local_items_per_user_mean=2251.88; local_items_per_user_std=398.51; delta_override_mean=3.0712; delta_override_std=1.4646; id_logits_mean=-2.2014; id_logits_std=1.3379; user_norm_mean=3.4989; user_norm_std=1.3074; user_dispersion=5.9236e-02; item_loc_norm_mean=7.8496; item_loc_norm_std=0.3627; item_loc_dispersion=2.6992e-01; rhs_emb_norm_mean=16.6375; rhs_emb_norm_std=0.9236; rhs_emb_dispersion=9.8651e-01; offset_emb_mean=-0.2076; offset_emb_std=0.0157; offset_id_mean=0.3049; offset_id_std=0.0189; supervised_edges_avg=608.6; supervised_edges_min=296; supervised_edges_max=1410; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.26s; batch_time_avg=0.3578s
+2026-04-17 10:33:09.516222: I Epoch 16/999 eval_loss=137.06812
+2026-04-17 10:33:09.516732: I 
+2026-04-17 10:33:09.516986: I Validation Evaluation results
+2026-04-17 10:33:09.567104: I Cut-off: 20
+2026-04-17 10:33:09.567393: I Eval Time: 1.0280940532684326
+2026-04-17 10:33:09.567621: I Results
+2026-04-17 10:33:09.567808: I Recall	0.04102
+2026-04-17 10:33:09.568021: I nDCG	0.01593
+2026-04-17 10:33:09.814114: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=16).
+2026-04-17 10:33:09.814932: I EarlyStopping: current=0.04102, best=0.04285, bad_epochs=1/10
+2026-04-17 10:39:04.143256: I [EPOCH 17/999] train_loss=137.35832; train_loss_min=53.36810; train_loss_max=398.22342; train_loss_std=44.98959; grad_norm_mean=28.9782; grad_norm_max=117.4714; emb_logits_mean=-5.4978; emb_logits_std=1.3437; emb_logits_pre_mean=-5.6764; emb_logits_pre_std=1.0586; override_ratio=0.059190; local_items_per_user_mean=2252.08; local_items_per_user_std=398.84; delta_override_mean=3.0163; delta_override_std=1.4963; id_logits_mean=-2.3042; id_logits_std=1.3636; user_norm_mean=3.2373; user_norm_std=1.3102; user_dispersion=5.2818e-02; item_loc_norm_mean=7.7279; item_loc_norm_std=0.4079; item_loc_dispersion=2.6518e-01; rhs_emb_norm_mean=16.6773; rhs_emb_norm_std=0.9230; rhs_emb_dispersion=9.8668e-01; offset_emb_mean=-0.2142; offset_emb_std=0.0156; offset_id_mean=0.3113; offset_id_std=0.0187; supervised_edges_avg=608.6; supervised_edges_min=356; supervised_edges_max=1454; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.33s; batch_time_avg=0.3579s
+2026-04-17 10:43:08.072754: I Epoch 17/999 eval_loss=137.35832
+2026-04-17 10:43:08.073221: I 
+2026-04-17 10:43:08.073764: I Validation Evaluation results
+2026-04-17 10:43:08.123827: I Cut-off: 20
+2026-04-17 10:43:08.124173: I Eval Time: 1.0062808990478516
+2026-04-17 10:43:08.124573: I Results
+2026-04-17 10:43:08.124780: I Recall	0.03998
+2026-04-17 10:43:08.124941: I nDCG	0.01557
+2026-04-17 10:43:08.345132: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=17).
+2026-04-17 10:43:08.347342: I EarlyStopping: current=0.03998, best=0.04285, bad_epochs=2/10
+2026-04-17 10:49:02.793506: I [EPOCH 18/999] train_loss=136.01412; train_loss_min=54.64397; train_loss_max=450.13113; train_loss_std=42.41910; grad_norm_mean=30.5221; grad_norm_max=90.9718; emb_logits_mean=-5.5773; emb_logits_std=1.3797; emb_logits_pre_mean=-5.7517; emb_logits_pre_std=1.1078; override_ratio=0.059190; local_items_per_user_mean=2252.04; local_items_per_user_std=397.86; delta_override_mean=2.9461; delta_override_std=1.5250; id_logits_mean=-2.3967; id_logits_std=1.3921; user_norm_mean=3.0812; user_norm_std=1.2950; user_dispersion=4.9095e-02; item_loc_norm_mean=7.6043; item_loc_norm_std=0.4455; item_loc_dispersion=2.5987e-01; rhs_emb_norm_mean=16.7162; rhs_emb_norm_std=0.9229; rhs_emb_dispersion=9.8688e-01; offset_emb_mean=-0.2193; offset_emb_std=0.0163; offset_id_mean=0.3143; offset_id_std=0.0208; supervised_edges_avg=608.6; supervised_edges_min=360; supervised_edges_max=1621; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.45s; batch_time_avg=0.3580s
+2026-04-17 10:53:04.681639: I 
+2026-04-17 10:53:04.681479: I Epoch 18/999 eval_loss=136.01412
+2026-04-17 10:53:04.681928: I ******************************************
+2026-04-17 10:53:04.682281: I Validation Evaluation results
+2026-04-17 10:53:04.682420: I Cut-off: 20
+2026-04-17 10:53:04.682520: I Eval Time: 0.9521243572235107
+2026-04-17 10:53:04.682691: I Results
+2026-04-17 10:53:04.682832: I Recall	0.04658
+2026-04-17 10:53:04.682997: I nDCG	0.01814
+2026-04-17 10:53:05.199953: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=18).
+2026-04-17 10:58:59.640498: I [EPOCH 19/999] train_loss=136.14620; train_loss_min=58.40118; train_loss_max=396.57202; train_loss_std=43.83071; grad_norm_mean=28.9471; grad_norm_max=107.6120; emb_logits_mean=-5.6504; emb_logits_std=1.4172; emb_logits_pre_mean=-5.8209; emb_logits_pre_std=1.1541; override_ratio=0.059185; local_items_per_user_mean=2251.88; local_items_per_user_std=398.26; delta_override_mean=2.8809; delta_override_std=1.5601; id_logits_mean=-2.4596; id_logits_std=1.4201; user_norm_mean=3.0587; user_norm_std=1.3081; user_dispersion=4.9232e-02; item_loc_norm_mean=7.4736; item_loc_norm_std=0.4897; item_loc_dispersion=2.5443e-01; rhs_emb_norm_mean=16.7638; rhs_emb_norm_std=0.9202; rhs_emb_dispersion=9.8709e-01; offset_emb_mean=-0.2222; offset_emb_std=0.0160; offset_id_mean=0.3172; offset_id_std=0.0229; supervised_edges_avg=608.6; supervised_edges_min=258; supervised_edges_max=1435; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.44s; batch_time_avg=0.3580s
+2026-04-17 11:03:06.908392: I 
+2026-04-17 11:03:06.908241: I Epoch 19/999 eval_loss=136.14620
+2026-04-17 11:03:06.908955: I Validation Evaluation results
+2026-04-17 11:03:06.909117: I Cut-off: 20
+2026-04-17 11:03:06.909281: I Eval Time: 0.9751474857330322
+2026-04-17 11:03:06.909560: I Results
+2026-04-17 11:03:06.960943: I Recall	0.04367
+2026-04-17 11:03:06.961101: I nDCG	0.01667
+2026-04-17 11:03:07.187650: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=19).
+2026-04-17 11:03:07.188580: I EarlyStopping: current=0.04367, best=0.04658, bad_epochs=1/10
+2026-04-17 11:09:01.898740: I [EPOCH 20/999] train_loss=136.05155; train_loss_min=52.68717; train_loss_max=400.61911; train_loss_std=44.37558; grad_norm_mean=27.4500; grad_norm_max=206.3602; emb_logits_mean=-5.6910; emb_logits_std=1.4596; emb_logits_pre_mean=-5.8568; emb_logits_pre_std=1.2084; override_ratio=0.059174; local_items_per_user_mean=2251.44; local_items_per_user_std=399.05; delta_override_mean=2.8014; delta_override_std=1.5916; id_logits_mean=-2.4952; id_logits_std=1.4379; user_norm_mean=3.1162; user_norm_std=1.3176; user_dispersion=5.0974e-02; item_loc_norm_mean=7.3640; item_loc_norm_std=0.5266; item_loc_dispersion=2.4980e-01; rhs_emb_norm_mean=16.8120; rhs_emb_norm_std=0.9163; rhs_emb_dispersion=9.8722e-01; offset_emb_mean=-0.2294; offset_emb_std=0.0170; offset_id_mean=0.3247; offset_id_std=0.0272; supervised_edges_avg=608.6; supervised_edges_min=323; supervised_edges_max=1471; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.71s; batch_time_avg=0.3583s
+2026-04-17 11:13:12.486182: I Epoch 20/999 eval_loss=136.05155
+2026-04-17 11:13:12.486423: I ******************************************
+2026-04-17 11:13:12.486698: I 
+2026-04-17 11:13:12.486848: I Validation Evaluation results
+2026-04-17 11:13:12.487052: I Cut-off: 20
+2026-04-17 11:13:12.487167: I Eval Time: 0.9837398529052734
+2026-04-17 11:13:12.487337: I Results
+2026-04-17 11:13:12.487461: I Recall	0.06038
+2026-04-17 11:13:12.487621: I nDCG	0.02339
+2026-04-17 11:13:12.987800: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=20).
+2026-04-17 11:19:08.126867: I [EPOCH 21/999] train_loss=135.20626; train_loss_min=55.83132; train_loss_max=420.56802; train_loss_std=42.61888; grad_norm_mean=26.8419; grad_norm_max=75.4654; emb_logits_mean=-5.6963; emb_logits_std=1.4354; emb_logits_pre_mean=-5.8620; emb_logits_pre_std=1.1816; override_ratio=0.059197; local_items_per_user_mean=2252.34; local_items_per_user_std=398.78; delta_override_mean=2.7992; delta_override_std=1.6085; id_logits_mean=-2.5287; id_logits_std=1.4414; user_norm_mean=3.0809; user_norm_std=1.3035; user_dispersion=4.9408e-02; item_loc_norm_mean=7.2699; item_loc_norm_std=0.5485; item_loc_dispersion=2.4508e-01; rhs_emb_norm_mean=16.8774; rhs_emb_norm_std=0.9140; rhs_emb_dispersion=9.8726e-01; offset_emb_mean=-0.2279; offset_emb_std=0.0148; offset_id_mean=0.3257; offset_id_std=0.0223; supervised_edges_avg=608.6; supervised_edges_min=295; supervised_edges_max=1499; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=355.14s; batch_time_avg=0.3587s
+2026-04-17 11:23:20.937518: I 
+2026-04-17 11:23:20.937376: I Epoch 21/999 eval_loss=135.20626
+2026-04-17 11:23:20.938042: I Validation Evaluation results
+2026-04-17 11:23:20.938202: I Cut-off: 20
+2026-04-17 11:23:20.938280: I Eval Time: 1.0128324031829834
+2026-04-17 11:23:20.938480: I Results
+2026-04-17 11:23:20.990249: I Recall	0.05791
+2026-04-17 11:23:20.990937: I nDCG	0.02338
+2026-04-17 11:23:21.234092: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=21).
+2026-04-17 11:23:21.235068: I EarlyStopping: current=0.05791, best=0.06038, bad_epochs=1/10
+2026-04-17 11:29:16.284049: I [EPOCH 22/999] train_loss=135.16959; train_loss_min=49.96186; train_loss_max=536.35431; train_loss_std=45.59863; grad_norm_mean=23.8018; grad_norm_max=86.6657; emb_logits_mean=-5.7729; emb_logits_std=1.5132; emb_logits_pre_mean=-5.9328; emb_logits_pre_std=1.2752; override_ratio=0.059188; local_items_per_user_mean=2252.00; local_items_per_user_std=399.47; delta_override_mean=2.7011; delta_override_std=1.6112; id_logits_mean=-2.5709; id_logits_std=1.4650; user_norm_mean=2.9637; user_norm_std=1.2844; user_dispersion=4.7511e-02; item_loc_norm_mean=7.2055; item_loc_norm_std=0.5935; item_loc_dispersion=2.4432e-01; rhs_emb_norm_mean=16.9491; rhs_emb_norm_std=0.9146; rhs_emb_dispersion=9.8742e-01; offset_emb_mean=-0.2365; offset_emb_std=0.0167; offset_id_mean=0.3314; offset_id_std=0.0317; supervised_edges_avg=608.6; supervised_edges_min=262; supervised_edges_max=1947; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=355.05s; batch_time_avg=0.3586s
+2026-04-17 11:33:29.259089: I 
+2026-04-17 11:33:29.258921: I Epoch 22/999 eval_loss=135.16959
+2026-04-17 11:33:29.259636: I Validation Evaluation results
+2026-04-17 11:33:29.259751: I Cut-off: 20
+2026-04-17 11:33:29.259884: I Eval Time: 1.0453369617462158
+2026-04-17 11:33:29.260014: I Results
+2026-04-17 11:33:29.260087: I Recall	0.04999
+2026-04-17 11:33:29.313855: I nDCG	0.01936
+2026-04-17 11:33:29.553239: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=22).
+2026-04-17 11:33:29.554118: I EarlyStopping: current=0.04999, best=0.06038, bad_epochs=2/10
+2026-04-17 11:39:24.775509: I [EPOCH 23/999] train_loss=135.16603; train_loss_min=57.45293; train_loss_max=397.23517; train_loss_std=44.54058; grad_norm_mean=25.6297; grad_norm_max=105.8424; emb_logits_mean=-5.8512; emb_logits_std=1.5658; emb_logits_pre_mean=-6.0078; emb_logits_pre_std=1.3366; override_ratio=0.059198; local_items_per_user_mean=2252.36; local_items_per_user_std=398.15; delta_override_mean=2.6441; delta_override_std=1.6357; id_logits_mean=-2.6225; id_logits_std=1.4860; user_norm_mean=2.9363; user_norm_std=1.2946; user_dispersion=4.7497e-02; item_loc_norm_mean=7.0819; item_loc_norm_std=0.6283; item_loc_dispersion=2.3858e-01; rhs_emb_norm_mean=17.0321; rhs_emb_norm_std=0.9125; rhs_emb_dispersion=9.8749e-01; offset_emb_mean=-0.2380; offset_emb_std=0.0179; offset_id_mean=0.3309; offset_id_std=0.0388; supervised_edges_avg=608.6; supervised_edges_min=288; supervised_edges_max=1453; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=355.22s; batch_time_avg=0.3588s
+2026-04-17 11:43:35.354667: I 
+2026-04-17 11:43:35.354495: I Epoch 23/999 eval_loss=135.16603
+2026-04-17 11:43:35.355144: I Validation Evaluation results
+2026-04-17 11:43:35.355322: I Cut-off: 20
+2026-04-17 11:43:35.407407: I Eval Time: 1.0338571071624756
+2026-04-17 11:43:35.407717: I Results
+2026-04-17 11:43:35.407936: I Recall	0.05993
+2026-04-17 11:43:35.408168: I nDCG	0.02411
+2026-04-17 11:43:35.631949: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=23).
+2026-04-17 11:43:35.633758: I EarlyStopping: current=0.05993, best=0.06038, bad_epochs=3/10
+2026-04-17 11:49:30.646108: I [EPOCH 24/999] train_loss=134.90400; train_loss_min=56.19408; train_loss_max=474.90430; train_loss_std=45.83706; grad_norm_mean=25.5041; grad_norm_max=81.3204; emb_logits_mean=-5.8924; emb_logits_std=1.6069; emb_logits_pre_mean=-6.0458; emb_logits_pre_std=1.3845; override_ratio=0.059189; local_items_per_user_mean=2252.01; local_items_per_user_std=398.08; delta_override_mean=2.5924; delta_override_std=1.6249; id_logits_mean=-2.6374; id_logits_std=1.4894; user_norm_mean=2.8841; user_norm_std=1.2485; user_dispersion=4.5853e-02; item_loc_norm_mean=6.9925; item_loc_norm_std=0.6520; item_loc_dispersion=2.3458e-01; rhs_emb_norm_mean=17.0888; rhs_emb_norm_std=0.9117; rhs_emb_dispersion=9.8755e-01; offset_emb_mean=-0.2398; offset_emb_std=0.0204; offset_id_mean=0.3371; offset_id_std=0.0483; supervised_edges_avg=608.6; supervised_edges_min=277; supervised_edges_max=1700; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=355.01s; batch_time_avg=0.3586s
+2026-04-17 11:53:41.733756: I 
+2026-04-17 11:53:41.733600: I Epoch 24/999 eval_loss=134.90400
+2026-04-17 11:53:41.734248: I Validation Evaluation results
+2026-04-17 11:53:41.734468: I Cut-off: 20
+2026-04-17 11:53:41.784737: I Eval Time: 1.0417771339416504
+2026-04-17 11:53:41.785068: I Results
+2026-04-17 11:53:41.785306: I Recall	0.04784
+2026-04-17 11:53:41.785499: I nDCG	0.01921
+2026-04-17 11:53:42.020957: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=24).
+2026-04-17 11:53:42.023271: I EarlyStopping: current=0.04784, best=0.06038, bad_epochs=4/10
+2026-04-17 11:59:37.080091: I [EPOCH 25/999] train_loss=134.24198; train_loss_min=54.85722; train_loss_max=402.25864; train_loss_std=42.31759; grad_norm_mean=23.1075; grad_norm_max=62.1632; emb_logits_mean=-5.9433; emb_logits_std=1.6410; emb_logits_pre_mean=-6.0931; emb_logits_pre_std=1.4257; override_ratio=0.059204; local_items_per_user_mean=2252.60; local_items_per_user_std=397.37; delta_override_mean=2.5308; delta_override_std=1.6234; id_logits_mean=-2.6818; id_logits_std=1.5033; user_norm_mean=2.8438; user_norm_std=1.2330; user_dispersion=4.5046e-02; item_loc_norm_mean=6.8984; item_loc_norm_std=0.6791; item_loc_dispersion=2.3010e-01; rhs_emb_norm_mean=17.1576; rhs_emb_norm_std=0.9114; rhs_emb_dispersion=9.8758e-01; offset_emb_mean=-0.2456; offset_emb_std=0.0229; offset_id_mean=0.3427; offset_id_std=0.0569; supervised_edges_avg=608.7; supervised_edges_min=321; supervised_edges_max=1477; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=355.06s; batch_time_avg=0.3586s
+2026-04-17 12:03:46.488931: I 
+2026-04-17 12:03:46.488774: I Epoch 25/999 eval_loss=134.24198
+2026-04-17 12:03:46.489418: I Validation Evaluation results
+2026-04-17 12:03:46.489605: I Cut-off: 20
+2026-04-17 12:03:46.489813: I Eval Time: 0.9895122051239014
+2026-04-17 12:03:46.489999: I Results
+2026-04-17 12:03:46.539474: I Recall	0.05479
+2026-04-17 12:03:46.539640: I nDCG	0.02177
+2026-04-17 12:03:46.778450: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=25).
+2026-04-17 12:03:46.779480: I EarlyStopping: current=0.05479, best=0.06038, bad_epochs=5/10
+2026-04-17 12:09:41.723464: I [EPOCH 26/999] train_loss=133.86387; train_loss_min=57.71288; train_loss_max=413.11209; train_loss_std=43.81654; grad_norm_mean=24.9583; grad_norm_max=71.7221; emb_logits_mean=-5.9791; emb_logits_std=1.6740; emb_logits_pre_mean=-6.1270; emb_logits_pre_std=1.4624; override_ratio=0.059180; local_items_per_user_mean=2251.68; local_items_per_user_std=398.17; delta_override_mean=2.4990; delta_override_std=1.6189; id_logits_mean=-2.6844; id_logits_std=1.4990; user_norm_mean=2.8178; user_norm_std=1.2028; user_dispersion=4.4101e-02; item_loc_norm_mean=6.8068; item_loc_norm_std=0.6826; item_loc_dispersion=2.2458e-01; rhs_emb_norm_mean=17.2159; rhs_emb_norm_std=0.9120; rhs_emb_dispersion=9.8763e-01; offset_emb_mean=-0.2484; offset_emb_std=0.0290; offset_id_mean=0.3490; offset_id_std=0.0688; supervised_edges_avg=608.6; supervised_edges_min=361; supervised_edges_max=1512; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.94s; batch_time_avg=0.3585s
+2026-04-17 12:13:51.455889: I 
+2026-04-17 12:13:51.455670: I Epoch 26/999 eval_loss=133.86387
+2026-04-17 12:13:51.456502: I Validation Evaluation results
+2026-04-17 12:13:51.456647: I Cut-off: 20
+2026-04-17 12:13:51.456742: I Eval Time: 1.01240873336792
+2026-04-17 12:13:51.456896: I Results
+2026-04-17 12:13:51.457101: I Recall	0.04759
+2026-04-17 12:13:51.505203: I nDCG	0.01865
+2026-04-17 12:13:51.736838: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=26).
+2026-04-17 12:13:51.738025: I EarlyStopping: current=0.04759, best=0.06038, bad_epochs=6/10
+2026-04-17 12:19:46.815058: I [EPOCH 27/999] train_loss=133.49777; train_loss_min=55.86947; train_loss_max=423.48572; train_loss_std=42.36703; grad_norm_mean=24.3744; grad_norm_max=126.4843; emb_logits_mean=-6.0771; emb_logits_std=1.7192; emb_logits_pre_mean=-6.2222; emb_logits_pre_std=1.5134; override_ratio=0.059188; local_items_per_user_mean=2251.97; local_items_per_user_std=398.15; delta_override_mean=2.4509; delta_override_std=1.6326; id_logits_mean=-2.7589; id_logits_std=1.5183; user_norm_mean=2.7207; user_norm_std=1.1695; user_dispersion=4.1949e-02; item_loc_norm_mean=6.7053; item_loc_norm_std=0.7025; item_loc_dispersion=2.1896e-01; rhs_emb_norm_mean=17.2743; rhs_emb_norm_std=0.9135; rhs_emb_dispersion=9.8766e-01; offset_emb_mean=-0.2584; offset_emb_std=0.0383; offset_id_mean=0.3517; offset_id_std=0.0809; supervised_edges_avg=608.6; supervised_edges_min=364; supervised_edges_max=1525; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=355.08s; batch_time_avg=0.3587s
+2026-04-17 12:23:56.781666: I 
+2026-04-17 12:23:56.781496: I Epoch 27/999 eval_loss=133.49777
+2026-04-17 12:23:56.782097: I Validation Evaluation results
+2026-04-17 12:23:56.782246: I Cut-off: 20
+2026-04-17 12:23:56.782381: I Eval Time: 0.996922492980957
+2026-04-17 12:23:56.837467: I Results
+2026-04-17 12:23:56.837702: I Recall	0.05908
+2026-04-17 12:23:56.837934: I nDCG	0.02318
+2026-04-17 12:23:57.081523: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=27).
+2026-04-17 12:23:57.082394: I EarlyStopping: current=0.05908, best=0.06038, bad_epochs=7/10
+2026-04-17 12:29:52.020438: I [EPOCH 28/999] train_loss=134.07181; train_loss_min=56.84616; train_loss_max=486.26837; train_loss_std=45.61262; grad_norm_mean=22.1340; grad_norm_max=72.1170; emb_logits_mean=-6.1552; emb_logits_std=1.7784; emb_logits_pre_mean=-6.2990; emb_logits_pre_std=1.5779; override_ratio=0.059178; local_items_per_user_mean=2251.59; local_items_per_user_std=399.03; delta_override_mean=2.4300; delta_override_std=1.6430; id_logits_mean=-2.7833; id_logits_std=1.5208; user_norm_mean=2.7308; user_norm_std=1.1531; user_dispersion=4.2262e-02; item_loc_norm_mean=6.6096; item_loc_norm_std=0.7178; item_loc_dispersion=2.1353e-01; rhs_emb_norm_mean=17.3318; rhs_emb_norm_std=0.9156; rhs_emb_dispersion=9.8773e-01; offset_emb_mean=-0.2627; offset_emb_std=0.0459; offset_id_mean=0.3613; offset_id_std=0.0938; supervised_edges_avg=608.6; supervised_edges_min=292; supervised_edges_max=1792; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.94s; batch_time_avg=0.3585s
+2026-04-17 12:34:00.250572: I 
+2026-04-17 12:34:00.250400: I Epoch 28/999 eval_loss=134.07181
+2026-04-17 12:34:00.251053: I Validation Evaluation results
+2026-04-17 12:34:00.251193: I Cut-off: 20
+2026-04-17 12:34:00.251323: I Eval Time: 1.019211769104004
+2026-04-17 12:34:00.299701: I Results
+2026-04-17 12:34:00.300018: I Recall	0.04484
+2026-04-17 12:34:00.300119: I nDCG	0.01799
+2026-04-17 12:34:00.515962: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=28).
+2026-04-17 12:34:00.516928: I EarlyStopping: current=0.04484, best=0.06038, bad_epochs=8/10
+2026-04-17 12:39:55.200021: I [EPOCH 29/999] train_loss=133.54258; train_loss_min=57.18608; train_loss_max=483.19025; train_loss_std=45.46444; grad_norm_mean=22.6081; grad_norm_max=68.3383; emb_logits_mean=-6.2148; emb_logits_std=1.8009; emb_logits_pre_mean=-6.3558; emb_logits_pre_std=1.6043; override_ratio=0.059177; local_items_per_user_mean=2251.56; local_items_per_user_std=397.53; delta_override_mean=2.3825; delta_override_std=1.6363; id_logits_mean=-2.8333; id_logits_std=1.5209; user_norm_mean=2.6729; user_norm_std=1.1008; user_dispersion=4.0558e-02; item_loc_norm_mean=6.5520; item_loc_norm_std=0.7342; item_loc_dispersion=2.1091e-01; rhs_emb_norm_mean=17.3787; rhs_emb_norm_std=0.9170; rhs_emb_dispersion=9.8780e-01; offset_emb_mean=-0.2684; offset_emb_std=0.0547; offset_id_mean=0.3693; offset_id_std=0.1061; supervised_edges_avg=608.6; supervised_edges_min=319; supervised_edges_max=1771; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.68s; batch_time_avg=0.3583s
+2026-04-17 12:44:06.245145: I Epoch 29/999 eval_loss=133.54258
+2026-04-17 12:44:06.245402: I 
+2026-04-17 12:44:06.245768: I Validation Evaluation results
+2026-04-17 12:44:06.245944: I Cut-off: 20
+2026-04-17 12:44:06.246123: I Eval Time: 1.07383394241333
+2026-04-17 12:44:06.299262: I Results
+2026-04-17 12:44:06.299562: I Recall	0.05232
+2026-04-17 12:44:06.299700: I nDCG	0.02059
+2026-04-17 12:44:06.526063: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=29).
+2026-04-17 12:44:06.527075: I EarlyStopping: current=0.05232, best=0.06038, bad_epochs=9/10
+2026-04-17 12:50:01.987094: I [EPOCH 30/999] train_loss=132.37841; train_loss_min=51.28004; train_loss_max=371.51367; train_loss_std=41.60287; grad_norm_mean=21.6163; grad_norm_max=90.7278; emb_logits_mean=-6.2908; emb_logits_std=1.8667; emb_logits_pre_mean=-6.4288; emb_logits_pre_std=1.6776; override_ratio=0.059179; local_items_per_user_mean=2251.65; local_items_per_user_std=399.29; delta_override_mean=2.3320; delta_override_std=1.6480; id_logits_mean=-2.8723; id_logits_std=1.5360; user_norm_mean=2.6350; user_norm_std=1.0633; user_dispersion=3.9442e-02; item_loc_norm_mean=6.5082; item_loc_norm_std=0.7319; item_loc_dispersion=2.0836e-01; rhs_emb_norm_mean=17.4460; rhs_emb_norm_std=0.9190; rhs_emb_dispersion=9.8785e-01; offset_emb_mean=-0.2734; offset_emb_std=0.0631; offset_id_mean=0.3771; offset_id_std=0.1209; supervised_edges_avg=608.6; supervised_edges_min=355; supervised_edges_max=1441; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=355.46s; batch_time_avg=0.3591s
+2026-04-17 12:54:20.994218: I 
+2026-04-17 12:54:20.994032: I Epoch 30/999 eval_loss=132.37841
+2026-04-17 12:54:20.994441: I Validation Evaluation results
+2026-04-17 12:54:20.994690: I ******************************************
+2026-04-17 12:54:20.995057: I Cut-off: 20
+2026-04-17 12:54:20.995229: I Eval Time: 1.0455420017242432
+2026-04-17 12:54:20.995416: I Results
+2026-04-17 12:54:20.995516: I Recall	0.06177
+2026-04-17 12:54:20.995658: I nDCG	0.02384
+2026-04-17 12:54:21.532666: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=30).
+2026-04-17 13:00:16.431952: I [EPOCH 31/999] train_loss=132.03340; train_loss_min=55.15526; train_loss_max=402.23718; train_loss_std=39.14240; grad_norm_mean=22.2866; grad_norm_max=68.6600; emb_logits_mean=-6.3583; emb_logits_std=1.9007; emb_logits_pre_mean=-6.4950; emb_logits_pre_std=1.7146; override_ratio=0.059171; local_items_per_user_mean=2251.32; local_items_per_user_std=398.44; delta_override_mean=2.3088; delta_override_std=1.6420; id_logits_mean=-2.9126; id_logits_std=1.5371; user_norm_mean=2.5937; user_norm_std=1.0244; user_dispersion=3.8424e-02; item_loc_norm_mean=6.4329; item_loc_norm_std=0.7402; item_loc_dispersion=2.0415e-01; rhs_emb_norm_mean=17.4949; rhs_emb_norm_std=0.9215; rhs_emb_dispersion=9.8795e-01; offset_emb_mean=-0.2823; offset_emb_std=0.0727; offset_id_mean=0.3850; offset_id_std=0.1311; supervised_edges_avg=608.6; supervised_edges_min=359; supervised_edges_max=1484; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.90s; batch_time_avg=0.3585s
+2026-04-17 13:04:26.185269: I Epoch 31/999 eval_loss=132.03340
+2026-04-17 13:04:26.185746: I 
+2026-04-17 13:04:26.185949: I Validation Evaluation results
+2026-04-17 13:04:26.234974: I Cut-off: 20
+2026-04-17 13:04:26.235373: I Eval Time: 0.9857368469238281
+2026-04-17 13:04:26.235571: I Results
+2026-04-17 13:04:26.235788: I Recall	0.0521
+2026-04-17 13:04:26.235991: I nDCG	0.02038
+2026-04-17 13:04:26.491403: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=31).
+2026-04-17 13:04:26.492365: I EarlyStopping: current=0.05210, best=0.06177, bad_epochs=1/10
+2026-04-17 13:10:21.797248: I [EPOCH 32/999] train_loss=132.14494; train_loss_min=54.56445; train_loss_max=401.24548; train_loss_std=41.79496; grad_norm_mean=20.8921; grad_norm_max=52.8337; emb_logits_mean=-6.4815; emb_logits_std=1.9830; emb_logits_pre_mean=-6.6160; emb_logits_pre_std=1.8025; override_ratio=0.059201; local_items_per_user_mean=2252.46; local_items_per_user_std=397.48; delta_override_mean=2.2718; delta_override_std=1.6559; id_logits_mean=-2.9687; id_logits_std=1.5533; user_norm_mean=2.5654; user_norm_std=0.9860; user_dispersion=3.7723e-02; item_loc_norm_mean=6.3959; item_loc_norm_std=0.7516; item_loc_dispersion=2.0236e-01; rhs_emb_norm_mean=17.5364; rhs_emb_norm_std=0.9242; rhs_emb_dispersion=9.8804e-01; offset_emb_mean=-0.2895; offset_emb_std=0.0894; offset_id_mean=0.3946; offset_id_std=0.1479; supervised_edges_avg=608.6; supervised_edges_min=364; supervised_edges_max=1504; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=355.30s; batch_time_avg=0.3589s
+2026-04-17 13:14:30.464090: I 
+2026-04-17 13:14:30.463933: I Epoch 32/999 eval_loss=132.14494
+2026-04-17 13:14:30.464642: I Validation Evaluation results
+2026-04-17 13:14:30.464850: I Cut-off: 20
+2026-04-17 13:14:30.464987: I Eval Time: 1.0864448547363281
+2026-04-17 13:14:30.519411: I Results
+2026-04-17 13:14:30.519784: I Recall	0.05829
+2026-04-17 13:14:30.520162: I nDCG	0.02202
+2026-04-17 13:14:30.759177: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=32).
+2026-04-17 13:14:30.760166: I EarlyStopping: current=0.05829, best=0.06177, bad_epochs=2/10
+2026-04-17 13:20:26.005608: I [EPOCH 33/999] train_loss=132.17938; train_loss_min=55.76888; train_loss_max=410.21014; train_loss_std=43.22997; grad_norm_mean=22.1750; grad_norm_max=91.5667; emb_logits_mean=-6.5646; emb_logits_std=2.0287; emb_logits_pre_mean=-6.6983; emb_logits_pre_std=1.8511; override_ratio=0.059191; local_items_per_user_mean=2252.08; local_items_per_user_std=397.31; delta_override_mean=2.2581; delta_override_std=1.6679; id_logits_mean=-2.9985; id_logits_std=1.5503; user_norm_mean=2.5532; user_norm_std=0.9664; user_dispersion=3.7357e-02; item_loc_norm_mean=6.3328; item_loc_norm_std=0.7506; item_loc_dispersion=1.9868e-01; rhs_emb_norm_mean=17.5821; rhs_emb_norm_std=0.9262; rhs_emb_dispersion=9.8814e-01; offset_emb_mean=-0.3053; offset_emb_std=0.0987; offset_id_mean=0.4032; offset_id_std=0.1566; supervised_edges_avg=608.6; supervised_edges_min=378; supervised_edges_max=1536; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=355.25s; batch_time_avg=0.3588s
+2026-04-17 13:24:35.344043: I 
+2026-04-17 13:24:35.343892: I Epoch 33/999 eval_loss=132.17938
+2026-04-17 13:24:35.344714: I Validation Evaluation results
+2026-04-17 13:24:35.344906: I Cut-off: 20
+2026-04-17 13:24:35.345060: I Eval Time: 0.9683449268341064
+2026-04-17 13:24:35.345239: I Results
+2026-04-17 13:24:35.394106: I Recall	0.05542
+2026-04-17 13:24:35.394278: I nDCG	0.02098
+2026-04-17 13:24:35.612886: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=33).
+2026-04-17 13:24:35.613810: I EarlyStopping: current=0.05542, best=0.06177, bad_epochs=3/10
+2026-04-17 13:30:30.308090: I [EPOCH 34/999] train_loss=131.14315; train_loss_min=37.88641; train_loss_max=361.79169; train_loss_std=39.02165; grad_norm_mean=20.8320; grad_norm_max=59.9558; emb_logits_mean=-6.6529; emb_logits_std=2.0821; emb_logits_pre_mean=-6.7834; emb_logits_pre_std=1.9093; override_ratio=0.059191; local_items_per_user_mean=2252.11; local_items_per_user_std=397.85; delta_override_mean=2.2060; delta_override_std=1.6857; id_logits_mean=-3.0470; id_logits_std=1.5734; user_norm_mean=2.5499; user_norm_std=0.9335; user_dispersion=3.7346e-02; item_loc_norm_mean=6.2397; item_loc_norm_std=0.7739; item_loc_dispersion=1.9402e-01; rhs_emb_norm_mean=17.6484; rhs_emb_norm_std=0.9271; rhs_emb_dispersion=9.8825e-01; offset_emb_mean=-0.3107; offset_emb_std=0.1077; offset_id_mean=0.4076; offset_id_std=0.1721; supervised_edges_avg=608.6; supervised_edges_min=198; supervised_edges_max=1418; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.69s; batch_time_avg=0.3583s
+2026-04-17 13:34:39.197038: I 
+2026-04-17 13:34:39.196879: I Epoch 34/999 eval_loss=131.14315
+2026-04-17 13:34:39.197369: I ******************************************
+2026-04-17 13:34:39.197486: I Validation Evaluation results
+2026-04-17 13:34:39.197757: I Cut-off: 20
+2026-04-17 13:34:39.197855: I Eval Time: 0.9745054244995117
+2026-04-17 13:34:39.198002: I Results
+2026-04-17 13:34:39.198087: I Recall	0.06363
+2026-04-17 13:34:39.198197: I nDCG	0.02433
+2026-04-17 13:34:39.701086: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=34).
+2026-04-17 13:40:34.695030: I [EPOCH 35/999] train_loss=131.66445; train_loss_min=46.79963; train_loss_max=395.00183; train_loss_std=41.40052; grad_norm_mean=22.8849; grad_norm_max=56.5178; emb_logits_mean=-6.7147; emb_logits_std=2.1383; emb_logits_pre_mean=-6.8427; emb_logits_pre_std=1.9698; override_ratio=0.059168; local_items_per_user_mean=2251.23; local_items_per_user_std=398.16; delta_override_mean=2.1632; delta_override_std=1.6799; id_logits_mean=-3.0625; id_logits_std=1.5795; user_norm_mean=2.4884; user_norm_std=0.8996; user_dispersion=3.6096e-02; item_loc_norm_mean=6.1746; item_loc_norm_std=0.7832; item_loc_dispersion=1.9095e-01; rhs_emb_norm_mean=17.6944; rhs_emb_norm_std=0.9279; rhs_emb_dispersion=9.8834e-01; offset_emb_mean=-0.3104; offset_emb_std=0.1141; offset_id_mean=0.4124; offset_id_std=0.1831; supervised_edges_avg=608.6; supervised_edges_min=307; supervised_edges_max=1534; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.99s; batch_time_avg=0.3586s
+2026-04-17 13:44:48.590304: I 
+2026-04-17 13:44:48.590161: I Epoch 35/999 eval_loss=131.66445
+2026-04-17 13:44:48.590962: I Validation Evaluation results
+2026-04-17 13:44:48.591159: I Cut-off: 20
+2026-04-17 13:44:48.591348: I Eval Time: 0.9742724895477295
+2026-04-17 13:44:48.645612: I Results
+2026-04-17 13:44:48.645853: I Recall	0.05681
+2026-04-17 13:44:48.646059: I nDCG	0.02149
+2026-04-17 13:44:48.872764: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=35).
+2026-04-17 13:44:48.873783: I EarlyStopping: current=0.05681, best=0.06363, bad_epochs=1/10
+2026-04-17 13:50:44.225898: I [EPOCH 36/999] train_loss=131.62632; train_loss_min=57.20015; train_loss_max=431.01562; train_loss_std=42.84637; grad_norm_mean=20.1406; grad_norm_max=49.6752; emb_logits_mean=-6.8620; emb_logits_std=2.2316; emb_logits_pre_mean=-6.9871; emb_logits_pre_std=2.0705; override_ratio=0.059201; local_items_per_user_mean=2252.47; local_items_per_user_std=398.18; delta_override_mean=2.1130; delta_override_std=1.7043; id_logits_mean=-3.1284; id_logits_std=1.5812; user_norm_mean=2.5011; user_norm_std=0.8783; user_dispersion=3.6711e-02; item_loc_norm_mean=6.1063; item_loc_norm_std=0.7844; item_loc_dispersion=1.8669e-01; rhs_emb_norm_mean=17.7384; rhs_emb_norm_std=0.9280; rhs_emb_dispersion=9.8842e-01; offset_emb_mean=-0.3182; offset_emb_std=0.1258; offset_id_mean=0.4242; offset_id_std=0.1957; supervised_edges_avg=608.6; supervised_edges_min=380; supervised_edges_max=1630; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=355.35s; batch_time_avg=0.3589s
+2026-04-17 13:55:01.439661: I 
+2026-04-17 13:55:01.439493: I Epoch 36/999 eval_loss=131.62632
+2026-04-17 13:55:01.440233: I Validation Evaluation results
+2026-04-17 13:55:01.440399: I Cut-off: 20
+2026-04-17 13:55:01.440474: I Eval Time: 1.0496008396148682
+2026-04-17 13:55:01.440674: I Results
+2026-04-17 13:55:01.489663: I Recall	0.05583
+2026-04-17 13:55:01.489867: I nDCG	0.02108
+2026-04-17 13:55:01.709710: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=36).
+2026-04-17 13:55:01.710731: I EarlyStopping: current=0.05583, best=0.06363, bad_epochs=2/10
+2026-04-17 14:00:56.565509: I [EPOCH 37/999] train_loss=130.92113; train_loss_min=56.24446; train_loss_max=383.29877; train_loss_std=40.68276; grad_norm_mean=21.9336; grad_norm_max=60.7293; emb_logits_mean=-6.9496; emb_logits_std=2.2855; emb_logits_pre_mean=-7.0746; emb_logits_pre_std=2.1251; override_ratio=0.059177; local_items_per_user_mean=2251.56; local_items_per_user_std=398.48; delta_override_mean=2.1132; delta_override_std=1.7157; id_logits_mean=-3.1308; id_logits_std=1.5755; user_norm_mean=2.5348; user_norm_std=0.8750; user_dispersion=3.7723e-02; item_loc_norm_mean=6.0280; item_loc_norm_std=0.7794; item_loc_dispersion=1.8170e-01; rhs_emb_norm_mean=17.7975; rhs_emb_norm_std=0.9288; rhs_emb_dispersion=9.8851e-01; offset_emb_mean=-0.3314; offset_emb_std=0.1297; offset_id_mean=0.4393; offset_id_std=0.2012; supervised_edges_avg=608.6; supervised_edges_min=303; supervised_edges_max=1460; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.85s; batch_time_avg=0.3584s
+2026-04-17 14:05:05.935035: I 
+2026-04-17 14:05:05.934860: I Epoch 37/999 eval_loss=130.92113
+2026-04-17 14:05:05.935506: I Validation Evaluation results
+2026-04-17 14:05:05.935692: I Cut-off: 20
+2026-04-17 14:05:05.935842: I Eval Time: 0.9921090602874756
+2026-04-17 14:05:05.935994: I Results
+2026-04-17 14:05:05.936051: I Recall	0.05532
+2026-04-17 14:05:05.987547: I nDCG	0.02151
+2026-04-17 14:05:06.231381: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=37).
+2026-04-17 14:05:06.232343: I EarlyStopping: current=0.05532, best=0.06363, bad_epochs=3/10
+2026-04-17 14:11:02.575649: I [EPOCH 38/999] train_loss=130.98413; train_loss_min=52.60858; train_loss_max=390.21545; train_loss_std=41.64965; grad_norm_mean=22.9914; grad_norm_max=78.3796; emb_logits_mean=-7.0408; emb_logits_std=2.3579; emb_logits_pre_mean=-7.1619; emb_logits_pre_std=2.2037; override_ratio=0.059206; local_items_per_user_mean=2252.69; local_items_per_user_std=398.16; delta_override_mean=2.0451; delta_override_std=1.7235; id_logits_mean=-3.1709; id_logits_std=1.5888; user_norm_mean=2.5170; user_norm_std=0.8506; user_dispersion=3.7659e-02; item_loc_norm_mean=5.9630; item_loc_norm_std=0.8075; item_loc_dispersion=1.7932e-01; rhs_emb_norm_mean=17.8432; rhs_emb_norm_std=0.9294; rhs_emb_dispersion=9.8859e-01; offset_emb_mean=-0.3374; offset_emb_std=0.1362; offset_id_mean=0.4499; offset_id_std=0.2129; supervised_edges_avg=608.6; supervised_edges_min=297; supervised_edges_max=1532; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=356.34s; batch_time_avg=0.3599s
+2026-04-17 14:15:19.167354: I Epoch 38/999 eval_loss=130.98413
+2026-04-17 14:15:19.167875: I 
+2026-04-17 14:15:19.168047: I Validation Evaluation results
+2026-04-17 14:15:19.217932: I Cut-off: 20
+2026-04-17 14:15:19.218364: I Eval Time: 0.9979588985443115
+2026-04-17 14:15:19.218599: I Results
+2026-04-17 14:15:19.218787: I Recall	0.05428
+2026-04-17 14:15:19.218892: I nDCG	0.0195
+2026-04-17 14:15:19.469729: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=38).
+2026-04-17 14:15:19.470764: I EarlyStopping: current=0.05428, best=0.06363, bad_epochs=4/10
+2026-04-17 14:21:14.386239: I [EPOCH 39/999] train_loss=130.71274; train_loss_min=56.16853; train_loss_max=510.56622; train_loss_std=44.40399; grad_norm_mean=22.1979; grad_norm_max=73.7137; emb_logits_mean=-7.1284; emb_logits_std=2.4451; emb_logits_pre_mean=-7.2488; emb_logits_pre_std=2.2943; override_ratio=0.059189; local_items_per_user_mean=2252.04; local_items_per_user_std=398.80; delta_override_mean=2.0342; delta_override_std=1.7215; id_logits_mean=-3.1683; id_logits_std=1.5883; user_norm_mean=2.4801; user_norm_std=0.8233; user_dispersion=3.6928e-02; item_loc_norm_mean=5.9190; item_loc_norm_std=0.7929; item_loc_dispersion=1.7666e-01; rhs_emb_norm_mean=17.8912; rhs_emb_norm_std=0.9292; rhs_emb_dispersion=9.8864e-01; offset_emb_mean=-0.3482; offset_emb_std=0.1394; offset_id_mean=0.4600; offset_id_std=0.2215; supervised_edges_avg=608.6; supervised_edges_min=376; supervised_edges_max=1910; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.92s; batch_time_avg=0.3585s
+2026-04-17 14:25:26.012445: I 
+2026-04-17 14:25:26.012278: I Epoch 39/999 eval_loss=130.71274
+2026-04-17 14:25:26.013302: I Validation Evaluation results
+2026-04-17 14:25:26.013633: I Cut-off: 20
+2026-04-17 14:25:26.061795: I Eval Time: 0.9921531677246094
+2026-04-17 14:25:26.062033: I Results
+2026-04-17 14:25:26.062129: I Recall	0.05962
+2026-04-17 14:25:26.062283: I nDCG	0.02211
+2026-04-17 14:25:26.314430: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=39).
+2026-04-17 14:25:26.315423: I EarlyStopping: current=0.05962, best=0.06363, bad_epochs=5/10
+2026-04-17 14:31:21.419430: I [EPOCH 40/999] train_loss=130.15792; train_loss_min=56.25983; train_loss_max=418.35583; train_loss_std=40.72117; grad_norm_mean=22.8759; grad_norm_max=64.3442; emb_logits_mean=-7.2244; emb_logits_std=2.5228; emb_logits_pre_mean=-7.3422; emb_logits_pre_std=2.3770; override_ratio=0.059188; local_items_per_user_mean=2251.98; local_items_per_user_std=398.18; delta_override_mean=1.9901; delta_override_std=1.7460; id_logits_mean=-3.1932; id_logits_std=1.5992; user_norm_mean=2.4581; user_norm_std=0.7994; user_dispersion=3.6777e-02; item_loc_norm_mean=5.8397; item_loc_norm_std=0.8061; item_loc_dispersion=1.7242e-01; rhs_emb_norm_mean=17.9420; rhs_emb_norm_std=0.9297; rhs_emb_dispersion=9.8871e-01; offset_emb_mean=-0.3562; offset_emb_std=0.1482; offset_id_mean=0.4610; offset_id_std=0.2278; supervised_edges_avg=608.6; supervised_edges_min=354; supervised_edges_max=1643; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=355.10s; batch_time_avg=0.3587s
+2026-04-17 14:35:32.906502: I 
+2026-04-17 14:35:32.906358: I Epoch 40/999 eval_loss=130.15792
+2026-04-17 14:35:32.907159: I Validation Evaluation results
+2026-04-17 14:35:32.907389: I Cut-off: 20
+2026-04-17 14:35:32.907610: I Eval Time: 0.9915904998779297
+2026-04-17 14:35:32.907786: I Results
+2026-04-17 14:35:32.907855: I Recall	0.05924
+2026-04-17 14:35:32.961162: I nDCG	0.0217
+2026-04-17 14:35:33.178517: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=40).
+2026-04-17 14:35:33.179355: I EarlyStopping: current=0.05924, best=0.06363, bad_epochs=6/10
+2026-04-17 14:41:28.023503: I [EPOCH 41/999] train_loss=130.27552; train_loss_min=59.40354; train_loss_max=402.39484; train_loss_std=41.53682; grad_norm_mean=22.7533; grad_norm_max=58.8263; emb_logits_mean=-7.2901; emb_logits_std=2.5769; emb_logits_pre_mean=-7.4053; emb_logits_pre_std=2.4351; override_ratio=0.059189; local_items_per_user_mean=2252.01; local_items_per_user_std=398.53; delta_override_mean=1.9468; delta_override_std=1.7417; id_logits_mean=-3.2245; id_logits_std=1.6078; user_norm_mean=2.4418; user_norm_std=0.7783; user_dispersion=3.6268e-02; item_loc_norm_mean=5.8042; item_loc_norm_std=0.8101; item_loc_dispersion=1.7069e-01; rhs_emb_norm_mean=17.9840; rhs_emb_norm_std=0.9299; rhs_emb_dispersion=9.8876e-01; offset_emb_mean=-0.3643; offset_emb_std=0.1512; offset_id_mean=0.4651; offset_id_std=0.2330; supervised_edges_avg=608.6; supervised_edges_min=269; supervised_edges_max=1577; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.84s; batch_time_avg=0.3584s
+2026-04-17 14:45:38.592883: I 
+2026-04-17 14:45:38.592738: I Epoch 41/999 eval_loss=130.27552
+2026-04-17 14:45:38.593379: I Validation Evaluation results
+2026-04-17 14:45:38.593464: I Cut-off: 20
+2026-04-17 14:45:38.593588: I Eval Time: 1.0241048336029053
+2026-04-17 14:45:38.593683: I Results
+2026-04-17 14:45:38.593893: I Recall	0.05589
+2026-04-17 14:45:38.649184: I nDCG	0.02095
+2026-04-17 14:45:38.887091: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=41).
+2026-04-17 14:45:38.888078: I EarlyStopping: current=0.05589, best=0.06363, bad_epochs=7/10
+2026-04-17 14:51:33.660468: I [EPOCH 42/999] train_loss=129.79278; train_loss_min=54.01175; train_loss_max=382.92462; train_loss_std=40.95599; grad_norm_mean=22.8678; grad_norm_max=79.1092; emb_logits_mean=-7.4151; emb_logits_std=2.6876; emb_logits_pre_mean=-7.5296; emb_logits_pre_std=2.5490; override_ratio=0.059181; local_items_per_user_mean=2251.71; local_items_per_user_std=399.12; delta_override_mean=1.9338; delta_override_std=1.7636; id_logits_mean=-3.2247; id_logits_std=1.6173; user_norm_mean=2.4421; user_norm_std=0.7713; user_dispersion=3.6817e-02; item_loc_norm_mean=5.7547; item_loc_norm_std=0.8191; item_loc_dispersion=1.6878e-01; rhs_emb_norm_mean=18.0181; rhs_emb_norm_std=0.9303; rhs_emb_dispersion=9.8880e-01; offset_emb_mean=-0.3711; offset_emb_std=0.1578; offset_id_mean=0.4800; offset_id_std=0.2479; supervised_edges_avg=608.6; supervised_edges_min=350; supervised_edges_max=1512; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.77s; batch_time_avg=0.3584s
+2026-04-17 14:55:43.696425: I Epoch 42/999 eval_loss=129.79278
+2026-04-17 14:55:43.696999: I 
+2026-04-17 14:55:43.697201: I Validation Evaluation results
+2026-04-17 14:55:43.697328: I Cut-off: 20
+2026-04-17 14:55:43.697486: I Eval Time: 0.9754049777984619
+2026-04-17 14:55:43.748256: I Results
+2026-04-17 14:55:43.748574: I Recall	0.04806
+2026-04-17 14:55:43.748703: I nDCG	0.01811
+2026-04-17 14:55:43.987650: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=42).
+2026-04-17 14:55:43.988487: I EarlyStopping: current=0.04806, best=0.06363, bad_epochs=8/10
+2026-04-17 15:01:38.892706: I [EPOCH 43/999] train_loss=129.89711; train_loss_min=56.40440; train_loss_max=411.36230; train_loss_std=41.75759; grad_norm_mean=21.5004; grad_norm_max=68.1603; emb_logits_mean=-7.4809; emb_logits_std=2.7388; emb_logits_pre_mean=-7.5925; emb_logits_pre_std=2.6041; override_ratio=0.059195; local_items_per_user_mean=2252.24; local_items_per_user_std=398.23; delta_override_mean=1.8852; delta_override_std=1.7713; id_logits_mean=-3.2450; id_logits_std=1.6221; user_norm_mean=2.4883; user_norm_std=0.7553; user_dispersion=3.7964e-02; item_loc_norm_mean=5.6776; item_loc_norm_std=0.8119; item_loc_dispersion=1.6393e-01; rhs_emb_norm_mean=18.0472; rhs_emb_norm_std=0.9302; rhs_emb_dispersion=9.8882e-01; offset_emb_mean=-0.3754; offset_emb_std=0.1555; offset_id_mean=0.4828; offset_id_std=0.2469; supervised_edges_avg=608.6; supervised_edges_min=372; supervised_edges_max=1605; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.90s; batch_time_avg=0.3585s
+2026-04-17 15:05:50.927844: I 
+2026-04-17 15:05:50.927679: I Epoch 43/999 eval_loss=129.89711
+2026-04-17 15:05:50.928516: I Validation Evaluation results
+2026-04-17 15:05:50.928962: I Cut-off: 20
+2026-04-17 15:05:50.977253: I Eval Time: 1.0009455680847168
+2026-04-17 15:05:50.977487: I Results
+2026-04-17 15:05:50.977667: I Recall	0.04519
+2026-04-17 15:05:50.977908: I nDCG	0.01707
+2026-04-17 15:05:51.210369: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=43).
+2026-04-17 15:05:51.211299: I EarlyStopping: current=0.04519, best=0.06363, bad_epochs=9/10
+2026-04-17 15:11:46.136916: I [EPOCH 44/999] train_loss=129.70023; train_loss_min=53.85785; train_loss_max=391.40030; train_loss_std=41.10709; grad_norm_mean=22.2476; grad_norm_max=114.8947; emb_logits_mean=-7.5700; emb_logits_std=2.8161; emb_logits_pre_mean=-7.6796; emb_logits_pre_std=2.6848; override_ratio=0.059187; local_items_per_user_mean=2251.95; local_items_per_user_std=398.71; delta_override_mean=1.8522; delta_override_std=1.7878; id_logits_mean=-3.2665; id_logits_std=1.6320; user_norm_mean=2.4805; user_norm_std=0.7531; user_dispersion=3.8011e-02; item_loc_norm_mean=5.6188; item_loc_norm_std=0.8151; item_loc_dispersion=1.6039e-01; rhs_emb_norm_mean=18.0840; rhs_emb_norm_std=0.9302; rhs_emb_dispersion=9.8883e-01; offset_emb_mean=-0.3821; offset_emb_std=0.1620; offset_id_mean=0.4936; offset_id_std=0.2554; supervised_edges_avg=608.6; supervised_edges_min=378; supervised_edges_max=1573; cpu_mem_max=5.25GB, gpu_mem_max=15.52GB; epoch_time=354.93s; batch_time_avg=0.3585s
+2026-04-17 15:15:57.849757: I 
+2026-04-17 15:15:57.849613: I Epoch 44/999 eval_loss=129.70023
+2026-04-17 15:15:57.850272: I Validation Evaluation results
+2026-04-17 15:15:57.850477: I Cut-off: 20
+2026-04-17 15:15:57.900684: I Eval Time: 0.9885604381561279
+2026-04-17 15:15:57.900948: I Results
+2026-04-17 15:15:57.901069: I Recall	0.04538
+2026-04-17 15:15:57.901206: I nDCG	0.0175
+2026-04-17 15:15:58.154929: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/resume-state-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414.pt' (last_completed_epoch=44).
+2026-04-17 15:15:58.155838: I EarlyStopping: current=0.04538, best=0.06363, bad_epochs=10/10
+2026-04-17 15:15:58.156065: I Met Early Stopping conditions: logger: <Logger EarlyStopping (DEBUG)>, validation_metric: Recall, validation_k: 20, cutoffs: [20], simple_metrics: ['Recall', 'nDCG'], monitor: Recall@20, patience: 10, mode: max, metric_k: 20, metric: Recall, min_delta: 0, verbose: True, active: True, _best: 0.0636288998357964, _bad_epochs: 10
+2026-04-17 15:15:58.329299: I Best checkpoint correctly restored from '/kaggle/working/contextgnn-through-elliot/results/yelp-2018/weights/ContextGNN_yelp-2018_seed=1_h=7eb6244cb414/best-weights-ContextGNN_yelp-2018_seed=1_h=7eb6244cb414'
+2026-04-17 15:20:20.719147: I 
+2026-04-17 15:20:20.718926: I [BRANCH USAGE@20, mode=full] local_topk_share=0.8751; global_topk_share=0.1249
+2026-04-17 15:20:20.720945: I Test Evaluation results
+2026-04-17 15:20:20.721052: I Cut-off: 20
+2026-04-17 15:20:20.721696: I Eval Time: 1.6676230430603027
+2026-04-17 15:20:20.722078: I Results
+2026-04-17 15:20:20.725676: I Recall	0.04354
+2026-04-17 15:20:20.725893: I nDCG	0.03285
+2026-04-17 15:24:40.207375: I 
+2026-04-17 15:24:40.207238: I [BRANCH USAGE@20, mode=global] local_topk_share=0.4600; global_topk_share=0.5400
+2026-04-17 15:24:40.208851: I Test Evaluation results
+2026-04-17 15:24:40.209408: I Cut-off: 20
+2026-04-17 15:24:40.209499: I Eval Time: 1.3180716037750244
+2026-04-17 15:24:40.210136: I Results
+2026-04-17 15:24:40.211019: I Recall	0.00484
+2026-04-17 15:24:40.211081: I nDCG	0.00403
+2026-04-17 15:29:00.092353: I 
+2026-04-17 15:29:00.092221: I [BRANCH USAGE@20, mode=local] local_topk_share=1.0000; global_topk_share=0.0000
+2026-04-17 15:29:00.097650: I Test Evaluation results
+2026-04-17 15:29:00.102855: I Cut-off: 20
+2026-04-17 15:29:00.114502: I Eval Time: 1.3375306129455566
+2026-04-17 15:29:00.119677: I Results
+2026-04-17 15:29:00.124932: I Recall	0.04705
+2026-04-17 15:29:00.135285: I nDCG	0.03873
+2026-04-17 15:29:01.593906: I [RANKING OVERLAP - TEST] Jaccard@20(Full, Local)=0.1794; Jaccard@20(Full, Global)=0.0569
+2026-04-17 15:29:01.668094: I Tuning ended for ContextGNN
+2026-04-17 15:29:01.668302: I Loss:	-0.0702601995705444
+2026-04-17 15:29:01.668614: I Best Model params:	{'meta': namespace(hyper_opt_alg='grid', verbose=False, save_weights=True, save_resume=True, validation_rate=1, validation_metric='Recall@20', restore=True, write_best_iterations=True), 'epochs': 999, 'max_steps': 2000, 'lr': 0.0005, 'acc_steps': 4, 'batch_size': 32, 'eval_batch_size': 32, 'inference_for_ranking': 'full,global,local', 'seed': 2, 'early_stopping': {'monitor': 'Recall@20', 'min_delta': 0, 'patience': 10, 'verbose': True, 'mode': 'auto'}, 'gnn': 'NGCF', 'loss': 'ce', 'n_layers': 4, 'aggr': 'sum', 'factors': 128, 'channels': 128, 'neigh': '(16,16,16,16)', 'name': 'ContextGNN_yelp-2018_seed=2_h=af5b5efd846f', 'best_iteration': 44}
+2026-04-17 15:29:01.668692: I Best Model results:	{20: {'Recall': np.float64(0.045087112577537065), 'nDCG': np.float64(0.03519240363210295)}}
