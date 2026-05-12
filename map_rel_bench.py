@@ -210,9 +210,9 @@ assert train_pairs.isdisjoint(val_pairs), "Train/Validation overlap detected."
 assert val_pairs.isdisjoint(test_pairs), "Validation/Test overlap detected."
 assert train_pairs.isdisjoint(test_pairs), "Train/Test overlap detected."
 
-#################################################################
-### SAVE train_elliot.tsv AND ALL THE INTERMEDIATE DATAFRAMES ###
-#################################################################
+########################################################################################
+### SAVE train_elliot.tsv (Tab-Separated Values) AND ALL THE INTERMEDIATE DATAFRAMES ###
+########################################################################################
 
 src_df = src_df[src_df[SRC_ENTITY_COL].isin(train_users_vocab)].reset_index(drop=True)
 dst_df = dst_df[dst_df[DST_ENTITY_COL].isin(train_items_vocab)].reset_index(drop=True)
