@@ -62,6 +62,40 @@ class HeteroGraphSAGE(torch.nn.Module):
             for norm in norm_dict.values():
                 norm.reset_parameters()
 
+    @staticmethod
+    def _apply_xsimgcl_noise(x: Tensor, eps: float) -> Tensor:
+        if eps <= 0.0 or x.numel() == 0:
+            return x
+
+        random_noise = torch.rand_like(x)
+        random_noise = torch.nn.functional.normalize(random_noise, dim=-1)
+
+        return x + (torch.sign(x) * random_noise * eps)
+
+    def forward_with_all_layers(
+        self,
+        x_dict: Dict[NodeType, Tensor],
+        edge_index_dict: Dict[NodeType, Tensor],
+        perturbed: bool = False,
+        eps: float = 0.0
+    ):
+        layer_outputs = []
+
+        for conv, norm_dict in zip(self.convs, self.norms):
+            x_dict = conv(x_dict, edge_index_dict)
+            x_dict = {key: norm_dict[key](x) for key, x in x_dict.items()}
+            x_dict = {key: x.relu() for key, x in x_dict.items()}
+
+            if perturbed and eps > 0.0:
+                x_dict = {
+                    key: self._apply_xsimgcl_noise(x, eps)
+                    for key, x in x_dict.items()
+                }
+
+            layer_outputs.append({key: x.clone() for key, x in x_dict.items()})
+
+        return x_dict, layer_outputs
+
     def forward(
         self,
         x_dict: Dict[NodeType, Tensor],

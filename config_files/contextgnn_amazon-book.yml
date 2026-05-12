@@ -50,3 +50,15 @@ experiment:
       factors: 128
       channels: 128
       neigh: (16,16,8,8)
+
+      # SGL & XSimGCL
+      cl_method: none # none | sgl | xsimgcl
+      lambda_cl: 0.0
+      tau_cl: 0.2
+      cl_layer: 2
+
+      # SGL
+      # edge_drop_p: 0.1
+
+      # XSimGCL
+      # xsim_eps: 0.1
