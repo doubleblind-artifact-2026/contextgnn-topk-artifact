@@ -50,3 +50,10 @@ experiment:
       factors: 128
       channels: 128
       neigh: (16,16,8,8)
+
+      # FUSION GATE
+      fusion_gate_version: v1 # v1 | v2 | v3
+      lambda_entropy: 1e-5
+      # gate_temperature: 1.0 # ONLY FOR v3
+      fixed_gates: False
+      # fixed_gates_weights_name: best-weights_amazon-book_seed_42_fgv_v1 # ONLY FOR fixed_gates: True

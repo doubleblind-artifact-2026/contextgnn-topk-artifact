@@ -28,6 +28,7 @@ from .nn.models import HeteroGraphSAGE, HeteroNGCF, HeteroLightGCN
 from .nn.models.rhsembeddinggnn import RHSEmbeddingGNN
 from .utils import RHSEmbeddingMode
 import numpy as np
+import math
 
 class ContextGNNModel(RHSEmbeddingGNN):
     r"""Implementation of HybridGNN model."""
@@ -54,7 +55,9 @@ class ContextGNNModel(RHSEmbeddingGNN):
         torch_frame_model_kwargs: Optional[Dict[str, Any]] = None,
         is_static: Optional[bool] = False,
         num_src_nodes: Optional[int] = None,
-        src_entity_table: Optional[str] = None
+        src_entity_table: Optional[str] = None,
+        fusion_gate_version: str = "v1",
+        gate_temperature: float = 1.0
     ) -> None:
         super().__init__(
             data,
@@ -125,8 +128,61 @@ class ContextGNNModel(RHSEmbeddingGNN):
 
         self.lhs_projector = torch.nn.Linear(channels, embedding_dim)
         self.id_awareness_emb = torch.nn.Embedding(1, channels)
-        self.lin_offset_idgnn = torch.nn.Linear(embedding_dim, 1)
-        self.lin_offset_embgnn = torch.nn.Linear(embedding_dim, 1)
+
+        self.fusion_gate_version = str(fusion_gate_version).lower().strip()
+
+        self._gate_temperature_init = float(gate_temperature)
+
+        if self._gate_temperature_init <= 0:
+            raise ValueError("gate_temperature must be > 0")
+
+        allowed_fgv = {"v1", "v2", "v3"}
+
+        if self.fusion_gate_version not in allowed_fgv:
+            raise ValueError(
+                f"fusion_gate_version='{self.fusion_gate_version}' not valid. "
+                f"Admitted: {sorted(allowed_fgv)}"
+            )
+
+        if self.fusion_gate_version == "v1":
+            self.gate_mlp = torch.nn.Sequential(
+                torch.nn.Linear(2 * channels, channels),
+                torch.nn.ReLU(),
+                torch.nn.Dropout(p=0.1),
+                torch.nn.Linear(channels, 1)
+            )
+
+            self.gate_norm = None
+            self.norm_u_local = None
+            self.norm_u_global = None
+            self.norm_v_local = None
+            self.log_gate_temperature = None
+        else:
+            gate_emb_dim = (2 * channels) + embedding_dim
+
+            self.gate_mlp = torch.nn.Sequential(
+                torch.nn.Linear(gate_emb_dim + 1, channels // 2),
+                torch.nn.ReLU(),
+                torch.nn.Dropout(p=0.1),
+                torch.nn.Linear(channels // 2, 1)
+            )
+
+            self.gate_norm = torch.nn.LayerNorm(gate_emb_dim)
+            self.norm_u_local = torch.nn.LayerNorm(channels)
+            self.norm_u_global = torch.nn.LayerNorm(embedding_dim)
+            self.norm_v_local = torch.nn.LayerNorm(channels)
+
+            if self.fusion_gate_version == "v3":
+                self.log_gate_temperature = torch.nn.Parameter(
+                    torch.tensor(
+                        math.log(self._gate_temperature_init),
+                        device=self.device,
+                        dtype=torch.float32
+                    )
+                )
+            else:
+                self.log_gate_temperature = None
+
         self.channels = channels
         self.is_static = is_static
         self.reset_parameters()
@@ -135,8 +191,6 @@ class ContextGNNModel(RHSEmbeddingGNN):
         self.lhs_projector.to(self.device)
         self.rhs_embedding.to(self.device)
         self.head.to(self.device)
-        self.lin_offset_idgnn.to(self.device)
-        self.lin_offset_embgnn.to(self.device)
         self.id_awareness_emb.to(self.device)
         
         self.encoder.to(self.device)
@@ -145,8 +199,24 @@ class ContextGNNModel(RHSEmbeddingGNN):
         if self.lhs_embedding is not None:
             self.lhs_embedding.to(self.device)
         
+        self.gate_mlp.to(self.device)
+
+        if self.gate_norm is not None:
+            self.gate_norm.to(self.device)
+
+        if self.norm_u_local is not None:
+            self.norm_u_local.to(self.device)
+
+        if self.norm_u_global is not None:
+            self.norm_u_global.to(self.device)
+
+        if self.norm_v_local is not None:
+            self.norm_v_local.to(self.device)
+        
         self._monitor = {}
         self._last_local_assign = None
+        self._last_gate_tensor = None
+        self._last_gate_assign = None
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
 
@@ -159,21 +229,55 @@ class ContextGNNModel(RHSEmbeddingGNN):
         self.head.reset_parameters()
         self.id_awareness_emb.reset_parameters()
         self.rhs_embedding.reset_parameters()
-        self.lin_offset_embgnn.reset_parameters()
-        self.lin_offset_idgnn.reset_parameters()
         self.lhs_projector.reset_parameters()
+
+        for m in self.gate_mlp.modules():
+            if isinstance(m, torch.nn.Linear):
+                m.reset_parameters()
+
+        if self.gate_norm is not None:
+            self.gate_norm.reset_parameters()
+
+        if self.norm_u_local is not None:
+            self.norm_u_local.reset_parameters()
+
+        if self.norm_u_global is not None:
+            self.norm_u_global.reset_parameters()
+
+        if self.norm_v_local is not None:
+            self.norm_v_local.reset_parameters()
+
+        if self.log_gate_temperature is not None:
+            with torch.no_grad():
+                self.log_gate_temperature.fill_(math.log(self._gate_temperature_init))
 
         if self.lhs_embedding is not None:
             self.lhs_embedding.reset_parameters()
+
+    def _get_gate_temperature(self) -> Tensor:
+        if self.log_gate_temperature is None:
+            raise RuntimeError("Gate temperature requested but fusion_gate_version is not v3.")
+
+        return torch.exp(self.log_gate_temperature).clamp(min=1e-4, max=1e4)
 
     def forward(
         self,
         batch: HeteroData,
         entity_table: NodeType,
         dst_table: NodeType,
-        score_mode: str = "full"
+        score_mode: str = "full",
+        fixed_gate_value: Optional[float] = None
     ) -> Tensor:
         score_mode = str(score_mode).lower().strip()
+
+        if fixed_gate_value is not None:
+            fixed_gate_value = float(fixed_gate_value)
+
+            if not (0.0 <= fixed_gate_value <= 1.0):
+                raise ValueError("fixed_gate_value must be in [0, 1].")
+
+            if self.training:
+                raise ValueError("fixed_gate_value can only be used during inference.")
 
         seed_time = batch[entity_table].seed_time
         
@@ -212,23 +316,15 @@ class ContextGNNModel(RHSEmbeddingGNN):
 
         embgnn_logits = torch.matmul(lhs_embedding_projected, rhs_embedding.t())
 
-        embgnn_offset_logits = self.lin_offset_embgnn(lhs_embedding_projected).flatten()
-
-        embgnn_logits += embgnn_offset_logits.view(-1, 1)
-
         embgnn_logits_pre_mean = embgnn_logits.mean()
         embgnn_logits_pre_std = embgnn_logits.std()
 
-        emb_selected_pre = embgnn_logits[lhs_idgnn_batch, rhs_idgnn_index]
+        global_selected = embgnn_logits[lhs_idgnn_batch, rhs_idgnn_index]
 
         idgnn_logits = self.head(rhs_gnn_embedding).flatten()
         idgnn_logits += (lhs_embedding[lhs_idgnn_batch] * rhs_gnn_embedding).sum(dim=-1)
 
-        idgnn_offset_logits = self.lin_offset_idgnn(lhs_embedding_projected).flatten()
-
-        idgnn_logits = idgnn_logits + idgnn_offset_logits[lhs_idgnn_batch]
-
-        delta_override = (idgnn_logits - emb_selected_pre)
+        delta_override = (idgnn_logits - global_selected)
         delta_override_mean = delta_override.mean()
         delta_override_std = delta_override.std()
 
@@ -241,9 +337,45 @@ class ContextGNNModel(RHSEmbeddingGNN):
         local_per_user_std = local_per_user.std(unbiased=False)
 
         if score_mode == "full":
-            embgnn_logits[lhs_idgnn_batch, rhs_idgnn_index] = idgnn_logits
+            if fixed_gate_value is not None:
+                g_id = torch.full_like(idgnn_logits, fill_value=fixed_gate_value)
+            else:
+                if self.fusion_gate_version == "v1":
+                    pair_feat = torch.cat(
+                        [lhs_embedding[lhs_idgnn_batch], rhs_gnn_embedding],
+                        dim=-1
+                    )
+
+                    gate_logit = self.gate_mlp(pair_feat).flatten()
+                    g_id = torch.sigmoid(gate_logit)
+                else:
+                    u_local = lhs_embedding[lhs_idgnn_batch]
+                    u_global = lhs_embedding_projected[lhs_idgnn_batch]
+                    v_local = rhs_gnn_embedding
+
+                    u_local_n = self.norm_u_local(u_local)
+                    u_global_n = self.norm_u_global(u_global)
+                    v_local_n = self.norm_v_local(v_local)
+
+                    emb_feat = torch.cat([u_local_n, u_global_n, v_local_n], dim=-1)
+                    emb_feat = self.gate_norm(emb_feat)
+
+                    pair_feat = torch.cat([emb_feat, delta_override.unsqueeze(-1)], dim=-1)
+
+                    gate_logit = self.gate_mlp(pair_feat).flatten()
+
+                    if self.fusion_gate_version == "v3":
+                        tau = self._get_gate_temperature()
+                        g_id = torch.sigmoid(gate_logit / tau)
+                    else:
+                        g_id = torch.sigmoid(gate_logit)
+
+            self._last_gate_tensor = g_id
+
+            fused_logits = g_id * idgnn_logits + (1.0 - g_id) * global_selected
+            embgnn_logits[lhs_idgnn_batch, rhs_idgnn_index] = fused_logits
         elif score_mode == "global":
-            pass
+            self._last_gate_tensor = None
         elif score_mode == "local":
             local_only = torch.full(
                 (batch_size, rhs_embedding.size(0)),
@@ -254,6 +386,8 @@ class ContextGNNModel(RHSEmbeddingGNN):
 
             local_only[lhs_idgnn_batch, rhs_idgnn_index] = idgnn_logits
             embgnn_logits = local_only
+
+            self._last_gate_tensor = None
         else:
             raise ValueError(f"Unknown score_mode='{score_mode}'. Use one of: full, global, local.")
 
@@ -272,10 +406,15 @@ class ContextGNNModel(RHSEmbeddingGNN):
                 id_logits_mean = idgnn_logits.mean()
                 id_logits_std = idgnn_logits.std()
 
-                offset_emb_mean = embgnn_offset_logits.mean()
-                offset_emb_std = embgnn_offset_logits.std()
-                offset_id_mean = idgnn_offset_logits.mean()
-                offset_id_std = idgnn_offset_logits.std()
+                g = self._last_gate_tensor
+
+                gate_mean = g.mean()
+                gate_std = g.std()
+                gate_min = g.min()
+                gate_max = g.max()
+
+                eps = 1e-8
+                gate_entropy = -(g * torch.log(g + eps) + (1.0 - g) * torch.log(1.0 - g + eps)).mean()
 
                 self._monitor = {
                     "lhs_norm_mean": lhs_norm.mean().item(),
@@ -291,10 +430,6 @@ class ContextGNNModel(RHSEmbeddingGNN):
                     "emb_logit_std": emb_logits_std.item(),
                     "id_logit_mean": id_logits_mean.item(),
                     "id_logit_std": id_logits_std.item(),
-                    "offset_emb_mean": offset_emb_mean.item(),
-                    "offset_emb_std": offset_emb_std.item(),
-                    "offset_id_mean": offset_id_mean.item(),
-                    "offset_id_std": offset_id_std.item(),
                     "emb_logit_pre_mean": embgnn_logits_pre_mean.item(),
                     "emb_logit_pre_std": embgnn_logits_pre_std.item(),
                     "override_ratio": float(override_ratio),
@@ -303,8 +438,16 @@ class ContextGNNModel(RHSEmbeddingGNN):
                     "local_items_per_user_mean": local_per_user_mean.item(),
                     "local_items_per_user_std": local_per_user_std.item(),
                     "delta_override_mean": delta_override_mean.item(),
-                    "delta_override_std": delta_override_std.item()
+                    "delta_override_std": delta_override_std.item(),
+                    "gate_mean": gate_mean.item(),
+                    "gate_std": gate_std.item(),
+                    "gate_min": gate_min.item(),
+                    "gate_max": gate_max.item(),
+                    "gate_entropy_mean": gate_entropy.item()
                 }
+
+                if self.fusion_gate_version == "v3":
+                    self._monitor["gate_temperature"] = float(self._get_gate_temperature().detach().item())
         
         if not self.training:
             self._last_local_assign = (
@@ -312,8 +455,19 @@ class ContextGNNModel(RHSEmbeddingGNN):
                 rhs_idgnn_index.detach().cpu(),
                 batch_size
             )
+
+            if score_mode == "full" and self._last_gate_tensor is not None:
+                self._last_gate_assign = (
+                    lhs_idgnn_batch.detach().cpu(),
+                    rhs_idgnn_index.detach().cpu(),
+                    self._last_gate_tensor.detach().cpu(),
+                    batch_size
+                )
+            else:
+                self._last_gate_assign = None
         else:
             self._last_local_assign = None
+            self._last_gate_assign = None
 
         return embgnn_logits
 
