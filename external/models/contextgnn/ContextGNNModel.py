@@ -54,8 +54,20 @@ class ContextGNNModel(RHSEmbeddingGNN):
         torch_frame_model_kwargs: Optional[Dict[str, Any]] = None,
         is_static: Optional[bool] = False,
         num_src_nodes: Optional[int] = None,
-        src_entity_table: Optional[str] = None
+        src_entity_table: Optional[str] = None,
+        feature_type: str = "const_original"
     ) -> None:
+        feature_type_norm = str(feature_type).lower().strip()
+        allowed_feature_types = {"const_original", "const_unified", "random", "informative"}
+
+        if feature_type_norm not in allowed_feature_types:
+            raise ValueError(
+                f"feature_type='{feature_type_norm}' not valid. "
+                f"Admitted: ['const_original', 'const_unified', 'informative', 'random']"
+            )
+
+        build_lhs_embedding = (feature_type_norm == "const_original")
+
         super().__init__(
             data,
             col_stats_dict,
@@ -64,22 +76,43 @@ class ContextGNNModel(RHSEmbeddingGNN):
             num_nodes,
             embedding_dim,
             num_src_nodes,
-            src_entity_table
+            src_entity_table,
+            build_lhs_embedding=build_lhs_embedding
         )
 
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        self.encoder = HeteroEncoder(
-            channels=channels,
-            node_to_col_names_dict={
-                node_type: data[node_type].tf.col_names_dict
-                for node_type in data.node_types
-            },
-            node_to_col_stats=col_stats_dict,
-            stype_encoder_cls_kwargs=DEFAULT_STYPE_ENCODER_DICT,
-            torch_frame_model_cls=torch_frame_model_cls,
-            torch_frame_model_kwargs=torch_frame_model_kwargs
-        )
+        self.channels = channels
+        self.is_static = is_static
+
+        self.feature_type = feature_type_norm
+
+        self.src_entity_table_name = src_entity_table
+        self.dst_entity_table_name = dst_entity_table
+
+        if self.feature_type == "const_original":
+            self.encoder = HeteroEncoder(
+                channels=channels,
+                node_to_col_names_dict={
+                    node_type: data[node_type].tf.col_names_dict
+                    for node_type in data.node_types
+                },
+                node_to_col_stats=col_stats_dict,
+                stype_encoder_cls_kwargs=DEFAULT_STYPE_ENCODER_DICT,
+                torch_frame_model_cls=torch_frame_model_cls,
+                torch_frame_model_kwargs=torch_frame_model_kwargs
+            )
+
+            self.src_dense_encoder = None
+            self.dst_dense_encoder = None
+        else:
+            self.encoder = None
+
+            src_feat_dim = int(data[src_entity_table].x_dense.size(-1))
+            dst_feat_dim = int(data[dst_entity_table].x_dense.size(-1))
+
+            self.src_dense_encoder = torch.nn.Linear(src_feat_dim, channels)
+            self.dst_dense_encoder = torch.nn.Linear(dst_feat_dim, channels)
 
         self.temporal_encoder = HeteroTemporalEncoder(
             node_types=[
@@ -127,8 +160,7 @@ class ContextGNNModel(RHSEmbeddingGNN):
         self.id_awareness_emb = torch.nn.Embedding(1, channels)
         self.lin_offset_idgnn = torch.nn.Linear(embedding_dim, 1)
         self.lin_offset_embgnn = torch.nn.Linear(embedding_dim, 1)
-        self.channels = channels
-        self.is_static = is_static
+
         self.reset_parameters()
         
         self.gnn.to(self.device)
@@ -138,9 +170,13 @@ class ContextGNNModel(RHSEmbeddingGNN):
         self.lin_offset_idgnn.to(self.device)
         self.lin_offset_embgnn.to(self.device)
         self.id_awareness_emb.to(self.device)
-        
-        self.encoder.to(self.device)
         self.temporal_encoder.to(self.device)
+
+        if self.feature_type == "const_original":
+            self.encoder.to(self.device)
+        else:
+            self.src_dense_encoder.to(self.device)
+            self.dst_dense_encoder.to(self.device)
         
         if self.lhs_embedding is not None:
             self.lhs_embedding.to(self.device)
@@ -153,18 +189,25 @@ class ContextGNNModel(RHSEmbeddingGNN):
     def reset_parameters(self) -> None:
         super().reset_parameters()
 
-        self.encoder.reset_parameters()
+        if self.feature_type == "const_original":
+            self.encoder.reset_parameters()
+        else:
+            self.src_dense_encoder.reset_parameters()
+            self.dst_dense_encoder.reset_parameters()
+
         self.temporal_encoder.reset_parameters()
         self.gnn.reset_parameters()
         self.head.reset_parameters()
         self.id_awareness_emb.reset_parameters()
-        self.rhs_embedding.reset_parameters()
         self.lin_offset_embgnn.reset_parameters()
         self.lin_offset_idgnn.reset_parameters()
         self.lhs_projector.reset_parameters()
 
-        if self.lhs_embedding is not None:
-            self.lhs_embedding.reset_parameters()
+        if self.feature_type == "const_original":
+            self.rhs_embedding.reset_parameters()
+
+            if self.lhs_embedding is not None:
+                self.lhs_embedding.reset_parameters()
 
     def forward(
         self,
@@ -176,12 +219,20 @@ class ContextGNNModel(RHSEmbeddingGNN):
         score_mode = str(score_mode).lower().strip()
 
         seed_time = batch[entity_table].seed_time
-        
-        x_dict = self.encoder(batch.tf_dict)
-        
-        if self.lhs_embedding is not None:
-            lhs = self.lhs_embedding() 
-            x_dict[entity_table] = lhs[batch[entity_table].n_id]
+
+        if self.feature_type == "const_original":
+            x_dict = self.encoder(batch.tf_dict)
+
+            if self.lhs_embedding is not None:
+                lhs = self.lhs_embedding()
+                x_dict[entity_table] = lhs[batch[entity_table].n_id]
+        elif self.feature_type in {"const_unified", "random", "informative"}:
+            x_dict = {
+                entity_table: self.src_dense_encoder(batch[entity_table].x_dense),
+                dst_table: self.dst_dense_encoder(batch[dst_table].x_dense)
+            }
+        else:
+            raise ValueError(f"Unknown feature_type='{self.feature_type}'")
 
         id_aw = self.id_awareness_emb.weight
         x_dict[entity_table][:seed_time.size(0)] += id_aw
