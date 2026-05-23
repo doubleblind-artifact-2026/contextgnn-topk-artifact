@@ -1,6 +1,6 @@
 # Beyond Two-Tower, Back to Local: Revisiting ContextGNN for Top-K Recommendation
 
-This repository accompanies the paper **Beyond Two-Tower, Back to Local: Revisiting ContextGNN for Top-K Recommendation**, available at: \<TODO: link>.
+This repository accompanies the paper **Beyond Two-Tower, Back to Local: Revisiting ContextGNN for Top-K Recommendation**.
 
 Its purpose is to support the reproducibility of the experimental results reported in the paper by documenting the code origin and software requirements, describing the data format and preprocessing workflow, explaining how to configure and launch experiments, linking each experimental grid to its aggregated result file, and exposing the logs, diagnostics, and auxiliary execution notes that are not fully included in the paper.
 
@@ -54,13 +54,13 @@ For **Amazon-Book**, **Yelp2018**, and **Gowalla**, this data-preparation step h
 The raw files can be converted into the format required by Elliot and RelBench with:
 
 ```bash
-python map_relbench.py --dataset <dataset_name>
+python map_rel_bench.py --dataset <dataset_name>
 ```
 
 For example, for Amazon-Book:
 
 ```bash
-python map_relbench.py --dataset amazon-book
+python map_rel_bench.py --dataset amazon-book
 ```
 
 This step creates the Elliot interaction files used for evaluation, including `train_elliot.tsv`, `val_elliot.tsv`, and `test_elliot.tsv`, together with the RelBench-style tables required by ContextGNN.
@@ -184,7 +184,7 @@ Aggregated value tables and diagnostic definitions: `experiment_results/structur
 | `neigh`, 3 layers | Amazon-Book: `(16,16,8)`; Yelp2018/Gowalla: `(16,16,16)`      |
 | `neigh`, 4 layers | Amazon-Book: `(16,16,8,8)`; Yelp2018/Gowalla: `(16,16,16,16)` |
 
-**Multi-seed protocol:** seed-0  screening for `LightGCN` and `NGCF`, followed by re-evaluation of the selected best configuration with `seed ∈ {0,1,2,3,4}`. The `GraphSAGE` baseline row reported in the paper table is reused from the five-seed baseline evaluation.
+**Multi-seed protocol:** seed-0 screening for `LightGCN` and `NGCF`, followed by re-evaluation of the selected best configuration with `seed ∈ {0,1,2,3,4}`. The `GraphSAGE` baseline row reported in the paper table is reused from the five-seed baseline evaluation.
 
 Aggregated value tables and diagnostic definitions: `experiment_results/backbone.md`.
 
@@ -202,7 +202,7 @@ Aggregated value tables and diagnostic definitions: `experiment_results/backbone
 
 For fixed-gate inference-only tests, `fixed_gates_weights_name` expects only the checkpoint filename, not a full path. The corresponding file must be present under Elliot's weight directory, `results/weights/`, for example `results/weights/<fixed_gates_weights_name>`.
 
-The fixed-gate checkpoints are provided in [`best_weights.zip`](https://github.com/doubleblind-artifact-2026/contextgnn-topk-artifact/releases/download/v1.0.0/best-weights.zip), available from the GitHub release assets. Extract the archive and place the checkpoint files in `results/weights/` before running the fixed-gate inference-only tests.
+The fixed-gate checkpoints are provided in [`best-weights.zip`](https://github.com/doubleblind-artifact-2026/contextgnn-topk-artifact/releases/download/v1.0.0/best-weights.zip), available from the GitHub release assets. Extract the archive and place the checkpoint files in `results/weights/` before running the fixed-gate inference-only tests.
 
 The fixed-gate runs are inference-only evaluations over saved learned-gate checkpoints, not additional model-training runs. The branch evaluates the fixed gate values `0.25`, `0.50`, and `0.75` during those inference-only tests.
 
@@ -250,7 +250,7 @@ experiment_logs/
 
 The directory is organized by experimental block and dataset, so that the raw logs corresponding to each group of experiments can be inspected separately.
 
-The `experiment_logs/` accounts for **426 model-training runs** and **45 additional fixed-gate inference-only runs**. Since each trained checkpoint is evaluated in the three inference modes `Full`, `Global`, and `Local`, the logs correspond to **1,278 mode-specific evaluations** from trained models, plus **135 mode-specific fixed-gate mode evaluations**, for a total of **1,413 mode-specific result evaluations**.&#x20;
+The `experiment_logs/` accounts for **426 model-training runs** and **45 additional fixed-gate inference-only runs**. Since each trained checkpoint is evaluated in the three inference modes `Full`, `Global`, and `Local`, the logs correspond to **1,278 mode-specific evaluations** from trained models, plus **135 mode-specific fixed-gate evaluations**, for a total of **1,413 mode-specific result evaluations**.
 
 The repository also provides the script:
 
