@@ -126,7 +126,7 @@ Experimental blocks and branches, ordered as in the paper:
 | `contrastive-learning` | SGL-style and XSimGCL-style contrastive learning                                                                  |
 | `hard-negatives`       | BCE training and hard negative mining                                                                             |
 | `main`                 | K-sensitivity analysis                                                                                            |
-| `low-degree-users`     | User-degree-stratified analysis                                                                                    |
+| `low-degree-analysis`     | User-degree-stratified analysis                                                                                    |
 
 The original baseline configurations are stored in `config_files/` on the `main` branch. The grids below report only the hyperparameters that must be changed with respect to those baseline YAML files in order to reproduce each experimental block. Unless explicitly stated otherwise, all other settings, including data split, gradient accumulation, early stopping, and Full, Global, and Local evaluation setup, follow the baseline configuration.
 
@@ -263,7 +263,7 @@ Aggregated value tables and diagnostic definitions: `experiment_results/k_sensit
 
 ### Low-degree-user analysis
 
-**Branch:** `low-degree-users`
+**Branch:** `low-degree-analysis`
 
 This analysis uses the original dataset-specific baseline training configurations and evaluates performance at `K=20` after stratifying test users by their degree in the training interaction graph. The first and third degree quartiles (`q25` and `q75`) define the `low`, `medium`, and `high` user-degree groups. This is a degree-stratified evaluation of warm users under the existing protocol and should not be interpreted as a cold-start evaluation.
 
