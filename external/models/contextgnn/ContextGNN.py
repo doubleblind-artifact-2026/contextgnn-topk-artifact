@@ -335,6 +335,9 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
         self._final_test_results_by_mode = None
         self._final_test_recommendations = None
 
+        self._final_test_results_by_degree = None
+        self._degree_group_metadata = None
+
     def _build_run_signature(self) -> str:
         es = getattr(self._params, "early_stopping", None)
 
@@ -987,6 +990,103 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
         return float(np.mean(jaccard_scores))
 
+    def _build_test_degree_groups(self, users):
+        train_dict = getattr(self._data, "train_dict", None)
+
+        if train_dict is None:
+            raise AttributeError("Low-degree analysis requires self._data.train_dict.")
+
+        missing_users = {
+            user
+            for user in users
+            if user not in train_dict
+        }
+
+        if missing_users:
+            raise RuntimeError(
+                f"Found {len(missing_users)} test users without training interactions "
+                "during degree stratification."
+            )
+
+        degree_by_user = {
+            user: len(train_dict[user])
+            for user in users
+        }
+
+        if not degree_by_user:
+            raise RuntimeError(
+                "No test users with training interactions were found "
+                "for the degree-stratified analysis."
+            )
+
+        degree_values = np.asarray(
+            list(degree_by_user.values()),
+            dtype=np.int64
+        )
+
+        q25, q75 = np.quantile(
+            degree_values,
+            [0.25, 0.75]
+        )
+
+        groups = {
+            "low": {
+                user
+                for user, degree in degree_by_user.items()
+                if degree <= q25
+            },
+            "medium": {
+                user
+                for user, degree in degree_by_user.items()
+                if q25 < degree <= q75
+            },
+            "high": {
+                user
+                for user, degree in degree_by_user.items()
+                if degree > q75
+            }
+        }
+
+        metadata = {
+            "thresholds": {
+                "q25": float(q25),
+                "q75": float(q75)
+            },
+            "n_users_total": len(degree_by_user)
+        }
+
+        for group_name, group_users in groups.items():
+            group_degrees = [
+                degree_by_user[user]
+                for user in group_users
+            ]
+
+            if group_degrees:
+                metadata[group_name] = {
+                    "n_users": len(group_users),
+                    "degree_min": int(np.min(group_degrees)),
+                    "degree_mean": float(np.mean(group_degrees)),
+                    "degree_max": int(np.max(group_degrees))
+                }
+            else:
+                metadata[group_name] = {
+                    "n_users": 0,
+                    "degree_min": None,
+                    "degree_mean": None,
+                    "degree_max": None
+                }
+
+        return groups, metadata
+
+    def _filter_recommendations_by_users(self, recommendations, users):
+        users = set(users)
+
+        return {
+            user: recs
+            for user, recs in recommendations.items()
+            if user in users
+        }
+
     def _rng_snapshot(self):
         snap = {
             "py": random.getstate(),
@@ -1251,6 +1351,106 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                         f"local_topk_share={local_share:.4f}; global_topk_share={global_share:.4f}"
                     )
 
+            required_modes = {"full", "global", "local"}
+            available_modes = set(recs_by_mode.keys())
+            missing_modes = required_modes - available_modes
+
+            if missing_modes:
+                raise ValueError(
+                    "Low-degree analysis requires Full, Global, and Local "
+                    f"inference modes. Missing modes: {sorted(missing_modes)}"
+                )
+
+            common_users = (
+                set(recs_by_mode["full"].keys())
+                & set(recs_by_mode["global"].keys())
+                & set(recs_by_mode["local"].keys())
+            )
+
+            if not common_users:
+                raise RuntimeError(
+                    "No common test users were found across Full, Global, "
+                    "and Local recommendation dictionaries."
+                )
+
+            degree_groups, degree_metadata = self._build_test_degree_groups(common_users)
+            thresholds = degree_metadata["thresholds"]
+
+            self.logger.info(
+                f"[DEGREE STRATIFICATION] "
+                f"n_users_total={degree_metadata['n_users_total']}; "
+                f"q25={thresholds['q25']:.2f}; "
+                f"q75={thresholds['q75']:.2f}"
+            )
+
+            for group_name in ("low", "medium", "high"):
+                meta = degree_metadata[group_name]
+
+                if meta["n_users"] == 0:
+                    self.logger.info(
+                        f"[DEGREE GROUP] "
+                        f"group={group_name}; "
+                        f"n_users=0"
+                    )
+
+                    continue
+
+                self.logger.info(
+                    f"[DEGREE GROUP] "
+                    f"group={group_name}; "
+                    f"n_users={meta['n_users']}; "
+                    f"degree_min={meta['degree_min']}; "
+                    f"degree_mean={meta['degree_mean']:.2f}; "
+                    f"degree_max={meta['degree_max']}"
+                )
+
+            results_by_degree = {}
+
+            for group_name in ("low", "medium", "high"):
+                group_users = degree_groups[group_name]
+
+                if not group_users:
+                    continue
+
+                results_by_degree[group_name] = {}
+
+                for mode in ("full", "global", "local"):
+                    group_recs = self._filter_recommendations_by_users(
+                        recs_by_mode[mode],
+                        group_users
+                    )
+
+                    if len(group_recs) != len(group_users):
+                        raise RuntimeError(
+                            f"Degree-group recommendation mismatch: "
+                            f"group={group_name}, mode={mode}, "
+                            f"expected_users={len(group_users)}, "
+                            f"found_users={len(group_recs)}."
+                        )
+
+                    group_results = self.evaluator.eval_test(group_recs)
+                    results_by_degree[group_name][mode] = group_results
+
+                    for cutoff, cutoff_results in group_results.items():
+                        test_metrics = cutoff_results.get(
+                            "test_results",
+                            {}
+                        )
+
+                        metrics_str = "; ".join(
+                            f"{metric}={value:.6f}"
+                            for metric, value in test_metrics.items()
+                        )
+
+                        self.logger.info(
+                            f"[DEGREE TEST] "
+                            f"group={group_name}; "
+                            f"mode={mode}; "
+                            f"k={cutoff}; "
+                            f"n_users={len(group_recs)}; "
+                            f"{metrics_str}"
+                        )
+
             jaccard_full_local = None
             jaccard_full_global = None
 
@@ -1284,6 +1484,9 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             self._final_test_results = results_by_mode[primary]
             self._final_test_results_by_mode = results_by_mode
             self._final_test_recommendations = recs_by_mode[primary]
+
+            self._final_test_results_by_degree = results_by_degree
+            self._degree_group_metadata = degree_metadata
 
             if self._save_recs and self._final_test_recommendations is not None:
                 self.logger.info(f"Writing final test recommendations at: {self._config.path_output_rec_result}")
