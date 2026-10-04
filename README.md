@@ -204,7 +204,7 @@ Aggregated value tables and diagnostic definitions: `experiment_results/backbone
 
 For fixed-gate inference-only tests, `fixed_gates_weights_name` expects only the checkpoint filename, not a full path. The corresponding file must be present under Elliot's weight directory, `results/weights/`, for example `results/weights/<fixed_gates_weights_name>`.
 
-The fixed-gate checkpoints are provided in [`best-weights.zip`](), available from the GitHub release assets. Extract the archive and place the checkpoint files in `results/weights/` before running the fixed-gate inference-only tests.
+The fixed-gate checkpoints are provided in [`best-weights.zip`](https://github.com/doubleblind-artifact-2026/contextgnn-topk-artifact/releases/download/v1.0.0/best-weights.zip), available from the GitHub release assets. Extract the archive and place the checkpoint files in `results/weights/` before running the fixed-gate inference-only tests.
 
 The fixed-gate runs are inference-only evaluations over saved learned-gate checkpoints, not additional model-training runs. The branch evaluates the fixed gate values `0.25`, `0.50`, and `0.75` during those inference-only tests.
 
