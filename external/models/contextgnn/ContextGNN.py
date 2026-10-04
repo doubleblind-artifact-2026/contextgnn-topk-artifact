@@ -88,6 +88,32 @@ def _parse_inference_for_ranking(val):
 
     return out
 
+def _parse_fusion_gate_version(val):
+    version = str(val).strip().lower()
+    allowed = {"v1", "v2", "v3"}
+
+    if version not in allowed:
+        raise ValueError(f"fusion_gate_version='{version}' not valid. Admitted: {sorted(allowed)}")
+
+    return version
+
+def _parse_bool_flag(val):
+    if isinstance(val, bool):
+        return val
+
+    if isinstance(val, (int, float)):
+        return bool(val)
+
+    s = str(val).strip().lower()
+
+    if s in {"true", "1", "yes", "y", "on"}:
+        return True
+
+    if s in {"false", "0", "no", "n", "off"}:
+        return False
+
+    raise ValueError(f"Cannot parse boolean flag from value='{val}'.")
+
 class ContextGNN(RecMixin, BaseRecommenderModel):
     r"""
     ContextGNN: Beyond Two-Tower Recommendation Systems (https://arxiv.org/abs/2411.19513)
@@ -126,10 +152,34 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                 "full",
                 _parse_inference_for_ranking,
                 lambda x: "-".join(x)
-            )
+            ),
+            (
+                "_fusion_gate_version",
+                "fusion_gate_version",
+                "fgv",
+                "v1",
+                _parse_fusion_gate_version,
+                lambda x: x
+            ),
+            ("_lambda_entropy", "lambda_entropy", "lambda_entropy", 1e-5, float, None),
+            ("_gate_temperature", "gate_temperature", "gt", 1.0, float, None)
         ]
 
         self.autoset_params()
+
+        self._fixed_gates = _parse_bool_flag(getattr(self._params, "fixed_gates", False))
+        self._fixed_gate_values = (0.25, 0.50, 0.75)
+
+        self._fixed_gates_weights_name = getattr(self._params, "fixed_gates_weights_name", None)
+
+        if self._fixed_gates_weights_name is not None:
+            self._fixed_gates_weights_name = str(self._fixed_gates_weights_name).strip()
+
+            if len(self._fixed_gates_weights_name) == 0:
+                self._fixed_gates_weights_name = None
+
+        if self._fixed_gates and self._fixed_gates_weights_name is None:
+            raise ValueError("fixed_gates=True requires 'fixed_gates_weights_name' in the config file.")
 
         if "full" in self._inference_for_ranking:
             self._primary_inference_mode = "full"
@@ -316,7 +366,9 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             torch_frame_model_kwargs={"channels": self._channels, "num_layers": self._n_layers},
             is_static=True,
             src_entity_table=SRC_ENTITY_TABLE,
-            num_src_nodes=NUM_SRC_NODES
+            num_src_nodes=NUM_SRC_NODES,
+            fusion_gate_version=self._fusion_gate_version,
+            gate_temperature=self._gate_temperature
         )
 
         self._save_resume = getattr(self._params.meta, "save_resume", True)
@@ -368,7 +420,26 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             f"ContextGNN_"
             f"{self._config.dataset}_"
             f"seed={self._seed}_"
+            f"fgv={self._fusion_gate_version}_"
             f"h={run_hash}"
+        )
+
+    def _get_fixed_gates_best_weights_filepath(self) -> str:
+        if self._fixed_gates_weights_name is None:
+            raise ValueError(
+                "Cannot build fixed-gates best checkpoint filepath: "
+                "'fixed_gates_weights_name' is missing."
+            )
+
+        weights_name = self._fixed_gates_weights_name
+
+        return os.path.abspath(
+            os.path.join(
+                ".",
+                "results",
+                "weights",
+                weights_name
+            )
         )
 
     def negative_sampling(self, edge_label_index):
@@ -475,10 +546,121 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
         if not isinstance(ei_rev, TSSparseTensor):
             batch[rev_edge_type].edge_index = self._edge_index_to_torch_sparse_adj_t(ei_rev, num_src=num_dst, num_dst=num_src, device=self.device)
+    
+    def run_fixed_gate_tests(self):
+        rng = self._rng_snapshot()
+
+        try:
+            k_need = self.evaluator.get_needed_recommendations()
+
+            jaccard_k = 20
+            modes = getattr(self, "_inference_for_ranking", ["full"])
+            primary = getattr(self, "_primary_inference_mode", "full")
+
+            self.logger.info("*** FIXED GATES TEST START ***")
+
+            for g in self._fixed_gate_values:
+                results_by_mode = {}
+                recs_by_mode = {}
+
+                for mode in modes:
+                    test_recs = self._collect_recommendations_for_split(
+                        "test",
+                        k_need,
+                        inference_mode=mode,
+                        count_usage=True,
+                        fixed_gate_value=(g if mode == "full" else None)
+                    )
+
+                    recs_by_mode[mode] = test_recs
+                    results_by_mode[mode] = self.evaluator.eval_test(test_recs)
+
+                    if getattr(self, "_usage_total", 0) > 0:
+                        local_share = self._usage_local_hits / self._usage_total
+                        global_share = 1.0 - local_share
+
+                        self.logger.info(
+                            f"[BRANCH USAGE@{k_need}, fixed_g={g:.2f}, mode={mode}] "
+                            f"local_topk_share={local_share:.4f}; global_topk_share={global_share:.4f}"
+                        )
+
+                    if mode == "full":
+                        self._log_gate_topk_stats(prefix=f"[GATE TOPK@20, fixed_g={g:.2f}, mode={mode}]")
+
+                jaccard_full_local = None
+                jaccard_full_global = None
+
+                if "full" in recs_by_mode and "local" in recs_by_mode:
+                    jaccard_full_local = self._mean_jaccard_at_k(
+                        recs_by_mode["full"],
+                        recs_by_mode["local"],
+                        k=jaccard_k
+                    )
+
+                if "full" in recs_by_mode and "global" in recs_by_mode:
+                    jaccard_full_global = self._mean_jaccard_at_k(
+                        recs_by_mode["full"],
+                        recs_by_mode["global"],
+                        k=jaccard_k
+                    )
+
+                jaccard_parts = []
+
+                if jaccard_full_local is not None:
+                    jaccard_parts.append(f"Jaccard@{jaccard_k}(Full, Local)={jaccard_full_local:.4f}")
+
+                if jaccard_full_global is not None:
+                    jaccard_parts.append(f"Jaccard@{jaccard_k}(Full, Global)={jaccard_full_global:.4f}")
+
+                if jaccard_parts:
+                    self.logger.info(f"[RANKING OVERLAP, fixed_g={g:.2f}] " + "; ".join(jaccard_parts))
+
+                primary_result = results_by_mode.get(primary, None)
+                primary_recs = recs_by_mode.get(primary, None)
+
+                if primary_result is not None:
+                    self.logger.info(
+                        f"[FIXED GATE SUMMARY, g={g:.2f}, primary_mode={primary}] "
+                        f"{primary_result[self._validation_k]['test_results']}"
+                    )
+
+                if self._save_recs and primary_recs is not None:
+                    gate_tag = f"{g:.2f}".replace(".", "p")
+
+                    self.logger.info(f"Writing recommendations at: {self._config.path_output_rec_result}")
+
+                    store_recommendation(
+                        primary_recs,
+                        os.path.abspath(
+                            os.sep.join([
+                                self._config.path_output_rec_result,
+                                f"{self.name}_fixedg={gate_tag}_mode={primary}.tsv"
+                            ])
+                        )
+                    )
+
+            self.logger.info("*** FIXED GATES TEST END ***")
+        finally:
+            self._rng_restore(rng)
 
     def train(self):
         restored = False
         self._start_epoch = 0
+
+        if self._fixed_gates:
+            fixed_gates_best_filepath = self._get_fixed_gates_best_weights_filepath()
+
+            self.logger.info("fixed_gates=True detected: skipping training and running fixed-gate test on explicitly selected best weights only.")
+            self.logger.info(f"Fixed-gates best checkpoint path: '{fixed_gates_best_filepath}'")
+
+            restored_best = self.restore_best_weights(filepath=fixed_gates_best_filepath)
+
+            if not restored_best:
+                raise FileNotFoundError(f"Fixed-gates test requested, but no best checkpoint was found at '{fixed_gates_best_filepath}'.")
+
+            self.run_fixed_gate_tests()
+        
+            return
 
         if self._restore:
             restored = self.restore_training_state()
@@ -613,7 +795,6 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
                     if self._is_sparse_gnn():
                         adj_t_dst_src = TSSparseTensor(row=dst, col=src, value=values_f32, sparse_sizes=(num_dst, num_src)).coalesce()
-
                         adj_t_src_dst = TSSparseTensor(row=src, col=dst, value=values_f32, sparse_sizes=(num_src, num_dst)).coalesce()
 
                         batch[edge_type].edge_index = adj_t_dst_src
@@ -653,6 +834,13 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                         loss = torch.nn.functional.binary_cross_entropy_with_logits(logits_all, labels_all)
                     else:
                         raise NotImplementedError
+
+                    g = getattr(self._model, "_last_gate_tensor", None)
+
+                    if g is not None:
+                        eps = 1e-8
+                        entropy = -(g * torch.log(g + eps) + (1.0 - g) * torch.log(1.0 - g + eps))
+                        loss = loss - self._lambda_entropy * entropy.mean()
 
                     (loss / self._acc_steps).backward()
 
@@ -696,10 +884,14 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                         self._weighted_add(metric_acc, "rhs_emb_norm_std", monitor.get("rhs_emb_norm_std", 0.0), rhs_emb_weight)
                         self._weighted_add(metric_acc, "rhs_emb_dispersion", monitor.get("rhs_emb_dispersion", 0.0), rhs_emb_weight)
 
-                        self._weighted_add(metric_acc, "offset_emb_mean", monitor.get("offset_emb_mean", 0.0), user_weight)
-                        self._weighted_add(metric_acc, "offset_emb_std", monitor.get("offset_emb_std", 0.0), user_weight)
-                        self._weighted_add(metric_acc, "offset_id_mean", monitor.get("offset_id_mean", 0.0), user_weight)
-                        self._weighted_add(metric_acc, "offset_id_std", monitor.get("offset_id_std", 0.0), user_weight)
+                        self._weighted_add(metric_acc, "gate_mean", monitor.get("gate_mean", 0.0), local_item_weight)
+                        self._weighted_add(metric_acc, "gate_std", monitor.get("gate_std", 0.0), local_item_weight)
+                        self._weighted_add(metric_acc, "gate_min", monitor.get("gate_min", 0.0), local_item_weight)
+                        self._weighted_add(metric_acc, "gate_max", monitor.get("gate_max", 0.0), local_item_weight)
+                        self._weighted_add(metric_acc, "gate_entropy_mean", monitor.get("gate_entropy_mean", 0.0), local_item_weight)
+
+                        if "gate_temperature" in monitor:
+                            self._weighted_add(metric_acc, "gate_temperature", monitor["gate_temperature"], local_item_weight)
 
                         self._weighted_add(metric_acc, "override_ratio", monitor.get("override_ratio", 0.0), pair_weight)
                         self._weighted_add(metric_acc, "local_items_per_user_mean", monitor.get("local_items_per_user_mean", 0.0), user_weight)
@@ -763,10 +955,12 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             rhs_gnn_disp_avg = self._weighted_mean(metric_acc, "rhs_gnn_dispersion")
             rhs_emb_disp_avg = self._weighted_mean(metric_acc, "rhs_emb_dispersion")
 
-            offset_emb_mean_avg = self._weighted_mean(metric_acc, "offset_emb_mean")
-            offset_emb_std_avg = self._weighted_mean(metric_acc, "offset_emb_std")
-            offset_id_mean_avg = self._weighted_mean(metric_acc, "offset_id_mean")
-            offset_id_std_avg = self._weighted_mean(metric_acc, "offset_id_std")
+            gate_mean_avg = self._weighted_mean(metric_acc, "gate_mean")
+            gate_std_avg = self._weighted_mean(metric_acc, "gate_std")
+            gate_min_avg = self._weighted_mean(metric_acc, "gate_min")
+            gate_max_avg = self._weighted_mean(metric_acc, "gate_max")
+            gate_entropy_mean_avg = self._weighted_mean(metric_acc, "gate_entropy_mean")
+            gate_temperature_avg = self._weighted_mean(metric_acc, "gate_temperature")
 
             emb_logit_pre_mean_avg = self._weighted_mean(metric_acc, "emb_logit_pre_mean")
             emb_logit_pre_std_avg = self._weighted_mean(metric_acc, "emb_logit_pre_std")
@@ -782,6 +976,11 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             epoch_time = time.perf_counter() - epoch_start
             avg_batch_time = epoch_time / max(steps, 1)
 
+            gate_temperature_part = ""
+
+            if self._fusion_gate_version == "v3":
+                gate_temperature_part = f"gate_temperature={gate_temperature_avg:.4f}; "
+
             self.logger.info(
                 f"[EPOCH {it + 1}/{self._epochs}] "
                 f"train_loss={epoch_loss:.5f}; "
@@ -792,6 +991,10 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                 f"override_ratio={override_ratio_avg:.6f}; "
                 f"local_items_per_user_mean={local_items_per_user_mean_avg:.2f}; local_items_per_user_std={local_items_per_user_std_avg:.2f}; "
                 f"delta_override_mean={delta_override_mean_avg:.4f}; delta_override_std={delta_override_std_avg:.4f}; "
+                f"gate_mean={gate_mean_avg:.4f}; gate_std={gate_std_avg:.4f}; "
+                f"gate_min={gate_min_avg:.4f}; gate_max={gate_max_avg:.4f}; "
+                f"gate_entropy_mean={gate_entropy_mean_avg:.4f}; "
+                f"{gate_temperature_part}"
                 f"id_logits_mean={id_logit_mean_avg:.4f}; id_logits_std={id_logit_std_avg:.4f}; "
                 f"user_norm_mean={lhs_norm_mean_avg:.4f}; user_norm_std={lhs_norm_std_avg:.4f}; "
                 f"user_dispersion={lhs_disp_avg:.4e}; "
@@ -799,8 +1002,6 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                 f"item_loc_dispersion={rhs_gnn_disp_avg:.4e}; "
                 f"rhs_emb_norm_mean={rhs_emb_norm_mean_avg:.4f}; rhs_emb_norm_std={rhs_emb_norm_std_avg:.4f}; "
                 f"rhs_emb_dispersion={rhs_emb_disp_avg:.4e}; "
-                f"offset_emb_mean={offset_emb_mean_avg:.4f}; offset_emb_std={offset_emb_std_avg:.4f}; "
-                f"offset_id_mean={offset_id_mean_avg:.4f}; offset_id_std={offset_id_std_avg:.4f}; "
                 f"supervised_edges_avg={avg_supervised_edges:.1f}; "
                 f"supervised_edges_min={supervised_edges_min}; supervised_edges_max={supervised_edges_max}; "
                 f"cpu_mem_max={max_cpu_mem:.2f}GB, gpu_mem_max={max_gpu_mem:.2f}GB; "
@@ -817,17 +1018,48 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
         self._run_final_test()
 
+    def _reset_usage_trackers(self):
+        self._usage_local_hits = 0
+        self._usage_total = 0
+
+    def _reset_gate_topk_trackers(self):
+        self._topk_gate_sum_at20 = 0.0
+        self._topk_gate_count_at20 = 0
+        self._topk_local_hits_at20 = 0
+        self._topk_local_high_gate_hits_at20 = 0
+
+    def _log_gate_topk_stats(self, prefix: str):
+        if (getattr(self, "_topk_local_hits_at20", 0) > 0) or (getattr(self, "_topk_gate_count_at20", 0) > 0):
+            if self._topk_gate_count_at20 > 0:
+                topk_local_gate_mean_20 = self._topk_gate_sum_at20 / self._topk_gate_count_at20
+            else:
+                topk_local_gate_mean_20 = float("nan")
+
+            if self._topk_local_hits_at20 > 0:
+                topk_local_with_gate_high_share_20 = self._topk_local_high_gate_hits_at20 / self._topk_local_hits_at20
+            else:
+                topk_local_with_gate_high_share_20 = float("nan")
+
+            self.logger.info(
+                f"{prefix} "
+                f"topk_local_gate_mean@20={topk_local_gate_mean_20:.4f}; "
+                f"topk_local_with_gate_high_share@20={topk_local_with_gate_high_share_20:.4f}"
+            )
+
     def _collect_recommendations_for_split(
         self,
         split_name: str,
         k: int = 100,
         inference_mode: str = "full",
-        count_usage: bool = False
+        count_usage: bool = False,
+        fixed_gate_value: float = None
     ):
         predictions_top_k = {}
 
-        self._usage_local_hits = 0
-        self._usage_total = 0
+        self._reset_usage_trackers()
+
+        if count_usage:
+            self._reset_gate_topk_trackers()
 
         self._model.eval()
 
@@ -855,7 +1087,8 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                         batch,
                         SRC_ENTITY_TABLE,
                         DST_ENTITY_TABLE,
-                        score_mode=inference_mode
+                        score_mode=inference_mode,
+                        fixed_gate_value=fixed_gate_value
                     )
 
                     global_batch_src_ids = batch[SRC_ENTITY_TABLE].n_id[:batch_size]
@@ -875,19 +1108,24 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
         return predictions_top_k
 
-    def get_recommendations(self, k: int = 100, inference_mode: str = "full"):
+    def get_recommendations(self, k: int = 100, inference_mode: str = "full", fixed_gate_value: float = None):
+        self._reset_usage_trackers()
+        self._reset_gate_topk_trackers()
+        
         predictions_top_k_val = self._collect_recommendations_for_split(
             "validation",
             k,
             inference_mode="full",
-            count_usage=False
+            count_usage=False,
+            fixed_gate_value=None
         )
 
         predictions_top_k_test = self._collect_recommendations_for_split(
             "test",
             k,
             inference_mode=inference_mode,
-            count_usage=True
+            count_usage=True,
+            fixed_gate_value=fixed_gate_value
         )
 
         return predictions_top_k_val, predictions_top_k_test
@@ -924,6 +1162,7 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
         
         if count_usage:
             local_assign = getattr(self._model, "_last_local_assign", None)
+            gate_assign = getattr(self._model, "_last_gate_assign", None)
 
             if local_assign is not None:
                 lhs_b, rhs_idx, bsz = local_assign
@@ -934,6 +1173,17 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                     for u_pos, item in zip(lhs_b.tolist(), rhs_idx.tolist()):
                         local_sets[u_pos].add(int(item))
 
+                    gate_maps = None
+
+                    if gate_assign is not None:
+                        lhs_bg, rhs_idxg, gate_vals, bsz_g = gate_assign
+
+                        if bsz_g == i.size(0):
+                            gate_maps = [dict() for _ in range(bsz_g)]
+
+                            for u_pos, item, gate_val in zip(lhs_bg.tolist(), rhs_idxg.tolist(), gate_vals.tolist()):
+                                gate_maps[u_pos][int(item)] = float(gate_val)
+
                     topk = i.detach().cpu().tolist()
                     hits = 0
 
@@ -943,6 +1193,31 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
                     self._usage_local_hits += hits
                     self._usage_total += (bsz * k)
+
+                    if i.size(1) >= 20:
+                        for u_pos, items in enumerate(topk):
+                            items20 = items[:20]
+                            s = local_sets[u_pos]
+
+                            local_hits20 = 0
+                            local_high_gate_hits20 = 0
+
+                            for it in items20:
+                                if it in s:
+                                    local_hits20 += 1
+
+                                    if gate_maps is not None:
+                                        gate_val = gate_maps[u_pos].get(int(it), None)
+
+                                        if gate_val is not None:
+                                            self._topk_gate_sum_at20 += gate_val
+                                            self._topk_gate_count_at20 += 1
+
+                                            if gate_val > 0.5:
+                                                local_high_gate_hits20 += 1
+
+                            self._topk_local_hits_at20 += local_hits20
+                            self._topk_local_high_gate_hits_at20 += local_high_gate_hits20
 
         items_ratings_pair = [
             list(zip(
@@ -1182,7 +1457,8 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                 "validation",
                 k_need,
                 inference_mode="full",
-                count_usage=False
+                count_usage=False,
+                fixed_gate_value=None
             )
 
             result_dict = self.evaluator.eval_validation(val_recs)
@@ -1236,7 +1512,8 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                     "test",
                     k_need,
                     inference_mode=mode,
-                    count_usage=True
+                    count_usage=True,
+                    fixed_gate_value=None
                 )
 
                 recs_by_mode[mode] = test_recs
@@ -1250,6 +1527,9 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                         f"[BRANCH USAGE@{k_need}, mode={mode}] "
                         f"local_topk_share={local_share:.4f}; global_topk_share={global_share:.4f}"
                     )
+                
+                if mode == "full":
+                    self._log_gate_topk_stats(prefix=f"[GATE TOPK@20, mode={mode}]")
 
             jaccard_full_local = None
             jaccard_full_global = None
@@ -1295,18 +1575,20 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
         finally:
             self._rng_restore(rng)
 
-    def restore_best_weights(self):
-        if not self._saving_filepath:
+    def restore_best_weights(self, filepath: str = None):
+        restore_filepath = filepath if filepath is not None else self._saving_filepath
+
+        if not restore_filepath:
             self.logger.warning("Best-weights restore requested but no saving filepath is configured.")
             return False
 
-        if not os.path.isfile(self._saving_filepath):
-            self.logger.info(f"No best checkpoint found at '{self._saving_filepath}'.")
+        if not os.path.isfile(restore_filepath):
+            self.logger.info(f"No best checkpoint found at '{restore_filepath}'.")
             return False
 
         try:
             checkpoint = torch.load(
-                self._saving_filepath,
+                restore_filepath,
                 map_location=self.device,
                 weights_only=False
             )
@@ -1324,11 +1606,11 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             if best_iteration is not None:
                 self._params.best_iteration = best_iteration
 
-            self.logger.info(f"Best checkpoint correctly restored from '{self._saving_filepath}'")
+            self.logger.info(f"Best checkpoint correctly restored from '{restore_filepath}'")
             
             return True
         except Exception as ex:
-            self.logger.exception(f"Best checkpoint found but restore failed from '{self._saving_filepath}': {ex}")
+            self.logger.exception(f"Best checkpoint found but restore failed from '{restore_filepath}': {ex}")
             raise
 
     def restore_weights(self):
