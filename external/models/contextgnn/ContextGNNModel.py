@@ -27,7 +27,6 @@ from .nn.encoder import (
 from .nn.models import HeteroGraphSAGE, HeteroNGCF, HeteroLightGCN
 from .nn.models.rhsembeddinggnn import RHSEmbeddingGNN
 from .utils import RHSEmbeddingMode
-import numpy as np
 
 class ContextGNNModel(RHSEmbeddingGNN):
     r"""Implementation of HybridGNN model."""
@@ -147,6 +146,7 @@ class ContextGNNModel(RHSEmbeddingGNN):
         
         self._monitor = {}
         self._last_local_assign = None
+        self._sampling_cache = {}
 
         self.optimizer = torch.optim.Adam(self.parameters(), lr=lr)
 
@@ -171,9 +171,16 @@ class ContextGNNModel(RHSEmbeddingGNN):
         batch: HeteroData,
         entity_table: NodeType,
         dst_table: NodeType,
-        score_mode: str = "full"
+        score_mode: str = "full",
+        sampling_cache_mode: Optional[str] = None
     ) -> Tensor:
         score_mode = str(score_mode).lower().strip()
+
+        if sampling_cache_mode is not None:
+            sampling_cache_mode = str(sampling_cache_mode).lower().strip()
+
+            if sampling_cache_mode not in {"global", "local"}:
+                raise ValueError(f"Unknown sampling_cache_mode='{sampling_cache_mode}'. Use one of: global, local, None.")
 
         seed_time = batch[entity_table].seed_time
         
@@ -215,6 +222,14 @@ class ContextGNNModel(RHSEmbeddingGNN):
         embgnn_offset_logits = self.lin_offset_embgnn(lhs_embedding_projected).flatten()
 
         embgnn_logits += embgnn_offset_logits.view(-1, 1)
+
+        embgnn_logits_pre_override = None
+
+        if self.training and sampling_cache_mode == "global":
+            if score_mode != "full":
+                raise ValueError("sampling_cache_mode='global' requires score_mode='full' during training.")
+
+            embgnn_logits_pre_override = embgnn_logits.detach().clone()
 
         embgnn_logits_pre_mean = embgnn_logits.mean()
         embgnn_logits_pre_std = embgnn_logits.std()
@@ -305,6 +320,26 @@ class ContextGNNModel(RHSEmbeddingGNN):
                     "delta_override_mean": delta_override_mean.item(),
                     "delta_override_std": delta_override_std.item()
                 }
+        
+        if self.training and sampling_cache_mode is not None:
+            cache = {
+                "mode": sampling_cache_mode,
+                "lhs_idgnn_batch": lhs_idgnn_batch.detach(),
+                "rhs_idgnn_index": rhs_idgnn_index.detach(),
+                "batch_size": int(batch_size)
+            }
+
+            if sampling_cache_mode == "local":
+                cache["idgnn_logits"] = idgnn_logits.detach()
+            elif sampling_cache_mode == "global":
+                if embgnn_logits_pre_override is None:
+                    raise RuntimeError("Missing embgnn pre-override logits while sampling_cache_mode='global'.")
+
+                cache["embgnn_logits_pre_override"] = embgnn_logits_pre_override
+
+            self._sampling_cache = cache
+        elif self.training:
+            self._sampling_cache = {}
         
         if not self.training:
             self._last_local_assign = (

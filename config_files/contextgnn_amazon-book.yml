@@ -44,9 +44,14 @@ experiment:
 
       # ARCHITECTURE
       gnn: GraphSAGE
-      loss: ce
+      loss: bce
       n_layers: 4
       aggr: sum
       factors: 128
       channels: 128
       neigh: (16,16,8,8)
+
+      # NEGATIVE SAMPLING
+      negative_sampling_strategy: uniform # uniform | global_model_aware | local_model_aware
+      # hard_ratio: 0.0 # ONLY FOR global_model_aware AND local_model_aware
+      # warmup_epochs: 0 # ONLY FOR global_model_aware AND local_model_aware
