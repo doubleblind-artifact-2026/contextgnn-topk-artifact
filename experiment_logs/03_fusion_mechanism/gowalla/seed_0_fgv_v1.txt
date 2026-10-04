@@ -1,0 +1,504 @@
+2026-03-28 14:34:44.398340: I Start experiment
+WARNING: Your Python version is lower than 3.8. Consequently, Custom class objects created in Side Information Namespace will be created swallowly!!!!
+2026-03-28 14:34:44.723583: I /kaggle/working/contextgnn-through-elliot/data/gowalla/train_elliot.tsv - Loaded
+2026-03-28 14:34:44.933204: I Test Fold 0 - Validation Fold 0
+2026-03-28 14:34:57.435565: I Statistics	Users:	29858	Items:	40981	Transactions:	780270	Sparsity:	0.9993623216916333
+2026-03-28 14:35:11.903815: I Training begun for ContextGNN
+
+2026-03-28 14:35:11.903699: I Loading parameters
+2026-03-28 14:35:11.904037: I Parameter lr set to 0.001
+2026-03-28 14:35:11.904131: I Hyperparameters:
+2026-03-28 14:35:11.904238: I meta set to namespace(hyper_opt_alg='grid', verbose=False, save_weights=True, save_resume=True, validation_rate=1, validation_metric='Recall@20', restore=True, write_best_iterations=True)
+2026-03-28 14:35:11.904342: I Parameter factors set to 128
+2026-03-28 14:35:11.904469: I epochs set to 999
+2026-03-28 14:35:11.904526: I max_steps set to 2000
+2026-03-28 14:35:11.904602: I Parameter n_layers set to 4
+2026-03-28 14:35:11.904732: I Parameter norm set to layer_norm
+2026-03-28 14:35:11.904823: I Parameter sup_rat set to 0.5
+2026-03-28 14:35:11.904891: I lr set to 0.001
+2026-03-28 14:35:11.904962: I Parameter channels set to 128
+2026-03-28 14:35:11.905042: I Parameter max_steps set to 2000
+2026-03-28 14:35:11.905117: I Parameter gnn set to GraphSAGE
+2026-03-28 14:35:11.905260: I Parameter mess_drop set to 0.5
+2026-03-28 14:35:11.905358: I acc_steps set to 4
+2026-03-28 14:35:11.905461: I Parameter eps set to 1e-05
+2026-03-28 14:35:11.905591: I Parameter t_eps set to True
+2026-03-28 14:35:11.905658: I batch_size set to 32
+2026-03-28 14:35:11.905731: I Parameter adj_norm set to True
+2026-03-28 14:35:11.905808: I Parameter loss set to ce
+2026-03-28 14:35:11.905914: I eval_batch_size set to 32
+2026-03-28 14:35:11.905977: I Parameter aggr set to sum
+2026-03-28 14:35:11.906078: I inference_for_ranking set to full,global,local
+2026-03-28 14:35:11.906217: I Parameter neigh set to [16, 16, 16, 16]
+2026-03-28 14:35:11.906350: I seed set to 0
+2026-03-28 14:35:11.906429: I Parameter acc_steps set to 4
+2026-03-28 14:35:11.906540: I early_stopping set to {'monitor': 'Recall@20', 'min_delta': 0, 'patience': 10, 'verbose': True, 'mode': 'auto'}
+2026-03-28 14:35:11.906634: I Parameter inference_for_ranking set to ['full', 'global', 'local']
+2026-03-28 14:35:11.906810: I gnn set to GraphSAGE
+2026-03-28 14:35:11.906719: I Parameter fusion_gate_version set to v1
+2026-03-28 14:35:11.906899: I Parameter lambda_entropy set to 1e-05
+2026-03-28 14:35:11.907000: I loss set to ce
+2026-03-28 14:35:11.907094: I Parameter gate_temperature set to 1.0
+2026-03-28 14:35:11.907197: I n_layers set to 4
+2026-03-28 14:35:11.907574: I aggr set to sum
+2026-03-28 14:35:11.907666: I factors set to 128
+2026-03-28 14:35:11.907789: I channels set to 128
+2026-03-28 14:35:11.907885: I neigh set to (16,16,16,16)
+2026-03-28 14:35:11.907954: I fusion_gate_version set to v1
+2026-03-28 14:35:11.908040: I lambda_entropy set to 1e-5
+2026-03-28 14:35:11.908106: I fixed_gates set to False
+2026-03-28 14:35:11.908169: I Exploration: Test Fold exploration number 1
+2026-03-28 14:35:11.908255: I Exploration: Train-Validation Fold exploration number 1
+2026-03-28 14:35:14.859240: I No resume checkpoint found at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt'. Starting training from scratch.
+2026-03-28 14:35:14.859412: I No valid resume checkpoint restored. Starting training from scratch.
+2026-03-28 14:39:09.263461: I [EPOCH 1/999] train_loss=95.02616; train_loss_min=9.55739; train_loss_max=293.24106; train_loss_std=35.50805; grad_norm_mean=170.2324; grad_norm_max=1794.6437; emb_logits_mean=-0.1276; emb_logits_std=1.6759; emb_logits_pre_mean=-0.2939; emb_logits_pre_std=1.3682; override_ratio=0.036734; local_items_per_user_mean=1505.41; local_items_per_user_std=541.20; delta_override_mean=6.1631; delta_override_std=2.4053; gate_mean=0.7348; gate_std=0.0543; gate_min=0.5473; gate_max=0.8977; gate_entropy_mean=0.5664; id_logits_mean=6.0644; id_logits_std=1.9859; user_norm_mean=6.8581; user_norm_std=0.2143; user_dispersion=5.5920e-03; item_loc_norm_mean=8.0430; item_loc_norm_std=0.3309; item_loc_dispersion=4.2741e-02; rhs_emb_norm_mean=15.9361; rhs_emb_norm_std=0.8637; rhs_emb_dispersion=9.9858e-01; supervised_edges_avg=417.4; supervised_edges_min=9; supervised_edges_max=944; cpu_mem_max=4.51GB, gpu_mem_max=15.47GB; epoch_time=234.40s; batch_time_avg=0.2510s
+2026-03-28 14:41:52.203964: I Epoch 1/999 eval_loss=95.02616
+2026-03-28 14:41:52.204238: I ******************************************
+2026-03-28 14:41:52.204422: I 
+2026-03-28 14:41:52.204761: I Validation Evaluation results
+2026-03-28 14:41:52.204862: I Cut-off: 20
+2026-03-28 14:41:52.204933: I Eval Time: 0.9569146633148193
+2026-03-28 14:41:52.205165: I Results
+2026-03-28 14:41:52.205334: I Recall	0.10657
+2026-03-28 14:41:52.205497: I nDCG	0.03867
+2026-03-28 14:41:52.602273: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=1).
+2026-03-28 14:45:46.298025: I [EPOCH 2/999] train_loss=88.21701; train_loss_min=22.58843; train_loss_max=205.51881; train_loss_std=33.70748; grad_norm_mean=118.9460; grad_norm_max=405.7541; emb_logits_mean=0.0549; emb_logits_std=1.0929; emb_logits_pre_mean=-0.0714; emb_logits_pre_std=0.7984; override_ratio=0.036722; local_items_per_user_mean=1504.92; local_items_per_user_std=540.47; delta_override_mean=4.0635; delta_override_std=2.1779; gate_mean=0.8478; gate_std=0.0556; gate_min=0.5839; gate_max=0.9808; gate_entropy_mean=0.4118; id_logits_mean=4.1308; id_logits_std=2.0620; user_norm_mean=6.6885; user_norm_std=0.3638; user_dispersion=8.0335e-03; item_loc_norm_mean=7.2613; item_loc_norm_std=0.7685; item_loc_dispersion=6.5732e-02; rhs_emb_norm_mean=15.8692; rhs_emb_norm_std=0.8614; rhs_emb_dispersion=9.9764e-01; supervised_edges_avg=417.5; supervised_edges_min=19; supervised_edges_max=821; cpu_mem_max=4.68GB, gpu_mem_max=15.47GB; epoch_time=233.70s; batch_time_avg=0.2502s
+2026-03-28 14:48:29.389894: I Epoch 2/999 eval_loss=88.21701
+2026-03-28 14:48:29.390149: I ******************************************
+2026-03-28 14:48:29.390247: I 
+2026-03-28 14:48:29.390540: I Validation Evaluation results
+2026-03-28 14:48:29.390913: I Cut-off: 20
+2026-03-28 14:48:29.391077: I Eval Time: 0.9100306034088135
+2026-03-28 14:48:29.391163: I Results
+2026-03-28 14:48:29.391489: I Recall	0.13005
+2026-03-28 14:48:29.391678: I nDCG	0.04907
+2026-03-28 14:48:29.916612: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=2).
+2026-03-28 14:52:23.309032: I [EPOCH 3/999] train_loss=85.94037; train_loss_min=24.64597; train_loss_max=212.35266; train_loss_std=33.35381; grad_norm_mean=106.1244; grad_norm_max=399.7513; emb_logits_mean=0.5916; emb_logits_std=1.0582; emb_logits_pre_mean=0.4725; emb_logits_pre_std=0.7668; override_ratio=0.036689; local_items_per_user_mean=1503.57; local_items_per_user_std=539.78; delta_override_mean=3.6486; delta_override_std=2.2301; gate_mean=0.8964; gate_std=0.0524; gate_min=0.6217; gate_max=0.9917; gate_entropy_mean=0.3172; id_logits_mean=4.2703; id_logits_std=2.1339; user_norm_mean=6.4776; user_norm_std=0.3691; user_dispersion=8.4682e-03; item_loc_norm_mean=7.4107; item_loc_norm_std=0.6401; item_loc_dispersion=6.6140e-02; rhs_emb_norm_mean=15.8043; rhs_emb_norm_std=0.8603; rhs_emb_dispersion=9.9679e-01; supervised_edges_avg=417.5; supervised_edges_min=25; supervised_edges_max=851; cpu_mem_max=4.68GB, gpu_mem_max=15.47GB; epoch_time=233.39s; batch_time_avg=0.2499s
+2026-03-28 14:55:05.729823: I 
+2026-03-28 14:55:05.729680: I Epoch 3/999 eval_loss=85.94037
+2026-03-28 14:55:05.730093: I ******************************************
+2026-03-28 14:55:05.730175: I Validation Evaluation results
+2026-03-28 14:55:05.730404: I Cut-off: 20
+2026-03-28 14:55:05.730521: I Eval Time: 0.9038255214691162
+2026-03-28 14:55:05.730667: I Results
+2026-03-28 14:55:05.730775: I Recall	0.15942
+2026-03-28 14:55:05.730902: I nDCG	0.06598
+2026-03-28 14:55:06.266203: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=3).
+2026-03-28 14:58:59.698997: I [EPOCH 4/999] train_loss=84.70529; train_loss_min=24.13105; train_loss_max=221.01913; train_loss_std=32.92794; grad_norm_mean=95.1534; grad_norm_max=335.8463; emb_logits_mean=0.6633; emb_logits_std=1.0399; emb_logits_pre_mean=0.5508; emb_logits_pre_std=0.7572; override_ratio=0.036737; local_items_per_user_mean=1505.52; local_items_per_user_std=541.90; delta_override_mean=3.3396; delta_override_std=2.2170; gate_mean=0.9162; gate_std=0.0412; gate_min=0.6792; gate_max=0.9959; gate_entropy_mean=0.2751; id_logits_mean=4.0641; id_logits_std=2.1393; user_norm_mean=6.0313; user_norm_std=0.4046; user_dispersion=8.1540e-03; item_loc_norm_mean=7.4568; item_loc_norm_std=0.6061; item_loc_dispersion=6.5402e-02; rhs_emb_norm_mean=15.7141; rhs_emb_norm_std=0.8614; rhs_emb_dispersion=9.9625e-01; supervised_edges_avg=417.5; supervised_edges_min=32; supervised_edges_max=863; cpu_mem_max=4.68GB, gpu_mem_max=15.47GB; epoch_time=233.43s; batch_time_avg=0.2499s
+2026-03-28 15:01:41.802405: I 
+2026-03-28 15:01:41.802231: I Epoch 4/999 eval_loss=84.70529
+2026-03-28 15:01:41.802618: I ******************************************
+2026-03-28 15:01:41.802881: I Validation Evaluation results
+2026-03-28 15:01:41.803011: I Cut-off: 20
+2026-03-28 15:01:41.803189: I Eval Time: 0.9180452823638916
+2026-03-28 15:01:41.803383: I Results
+2026-03-28 15:01:41.803497: I Recall	0.16535
+2026-03-28 15:01:41.803595: I nDCG	0.07033
+2026-03-28 15:01:42.314786: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=4).
+2026-03-28 15:05:35.775487: I [EPOCH 5/999] train_loss=84.47301; train_loss_min=23.08393; train_loss_max=476.55606; train_loss_std=33.44094; grad_norm_mean=78.8306; grad_norm_max=291.0054; emb_logits_mean=0.7625; emb_logits_std=1.0208; emb_logits_pre_mean=0.6554; emb_logits_pre_std=0.7430; override_ratio=0.036726; local_items_per_user_mean=1505.06; local_items_per_user_std=540.50; delta_override_mean=3.1530; delta_override_std=2.2569; gate_mean=0.9116; gate_std=0.0453; gate_min=0.5889; gate_max=0.9977; gate_entropy_mean=0.2833; id_logits_mean=4.0137; id_logits_std=2.1822; user_norm_mean=5.6586; user_norm_std=0.4357; user_dispersion=8.0168e-03; item_loc_norm_mean=7.5123; item_loc_norm_std=0.5769; item_loc_dispersion=6.9935e-02; rhs_emb_norm_mean=15.6017; rhs_emb_norm_std=0.8619; rhs_emb_dispersion=9.9627e-01; supervised_edges_avg=417.5; supervised_edges_min=116; supervised_edges_max=837; cpu_mem_max=4.71GB, gpu_mem_max=15.47GB; epoch_time=233.46s; batch_time_avg=0.2500s
+2026-03-28 15:08:18.062801: I 
+2026-03-28 15:08:18.062670: I Epoch 5/999 eval_loss=84.47301
+2026-03-28 15:08:18.063074: I ******************************************
+2026-03-28 15:08:18.063148: I Validation Evaluation results
+2026-03-28 15:08:18.063394: I Cut-off: 20
+2026-03-28 15:08:18.063513: I Eval Time: 0.8955748081207275
+2026-03-28 15:08:18.063663: I Results
+2026-03-28 15:08:18.063787: I Recall	0.17707
+2026-03-28 15:08:18.063851: I nDCG	0.07529
+2026-03-28 15:08:18.594917: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=5).
+2026-03-28 15:12:11.993051: I [EPOCH 6/999] train_loss=83.80091; train_loss_min=23.10813; train_loss_max=246.43814; train_loss_std=34.42886; grad_norm_mean=70.9371; grad_norm_max=198.8462; emb_logits_mean=0.9562; emb_logits_std=1.0365; emb_logits_pre_mean=0.8534; emb_logits_pre_std=0.7711; override_ratio=0.036720; local_items_per_user_mean=1504.84; local_items_per_user_std=540.27; delta_override_mean=3.0329; delta_override_std=2.3168; gate_mean=0.8823; gate_std=0.0743; gate_min=0.3643; gate_max=0.9984; gate_entropy_mean=0.3342; id_logits_mean=4.1538; id_logits_std=2.2329; user_norm_mean=5.3949; user_norm_std=0.4466; user_dispersion=8.2373e-03; item_loc_norm_mean=7.5463; item_loc_norm_std=0.5518; item_loc_dispersion=7.2743e-02; rhs_emb_norm_mean=15.4916; rhs_emb_norm_std=0.8616; rhs_emb_dispersion=9.9676e-01; supervised_edges_avg=417.5; supervised_edges_min=21; supervised_edges_max=976; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.40s; batch_time_avg=0.2499s
+2026-03-28 15:14:54.519297: I 
+2026-03-28 15:14:54.519144: I Epoch 6/999 eval_loss=83.80091
+2026-03-28 15:14:54.519763: I Validation Evaluation results
+2026-03-28 15:14:54.519887: I Cut-off: 20
+2026-03-28 15:14:54.520012: I Eval Time: 0.9313161373138428
+2026-03-28 15:14:54.520106: I Results
+2026-03-28 15:14:54.520239: I Recall	0.15678
+2026-03-28 15:14:54.520457: I nDCG	0.05943
+2026-03-28 15:14:54.814179: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=6).
+2026-03-28 15:14:54.814976: I EarlyStopping: current=0.15678, best=0.17707, bad_epochs=1/10
+2026-03-28 15:18:48.123284: I [EPOCH 7/999] train_loss=83.01895; train_loss_min=20.26001; train_loss_max=240.97295; train_loss_std=32.83637; grad_norm_mean=61.5878; grad_norm_max=200.5247; emb_logits_mean=0.8535; emb_logits_std=1.0566; emb_logits_pre_mean=0.7551; emb_logits_pre_std=0.8015; override_ratio=0.036711; local_items_per_user_mean=1504.47; local_items_per_user_std=541.61; delta_override_mean=2.9973; delta_override_std=2.4135; gate_mean=0.8456; gate_std=0.0910; gate_min=0.3073; gate_max=0.9986; gate_entropy_mean=0.3950; id_logits_mean=4.1024; id_logits_std=2.3334; user_norm_mean=5.2252; user_norm_std=0.4582; user_dispersion=8.9827e-03; item_loc_norm_mean=7.5217; item_loc_norm_std=0.5617; item_loc_dispersion=7.6370e-02; rhs_emb_norm_mean=15.3731; rhs_emb_norm_std=0.8593; rhs_emb_dispersion=9.9762e-01; supervised_edges_avg=417.5; supervised_edges_min=17; supervised_edges_max=958; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.31s; batch_time_avg=0.2498s
+2026-03-28 15:21:30.441915: I 
+2026-03-28 15:21:30.441770: I Epoch 7/999 eval_loss=83.01895
+2026-03-28 15:21:30.442084: I Validation Evaluation results
+2026-03-28 15:21:30.442175: I Cut-off: 20
+2026-03-28 15:21:30.442254: I Eval Time: 0.9617619514465332
+2026-03-28 15:21:30.442498: I ******************************************
+2026-03-28 15:21:30.442711: I Results
+2026-03-28 15:21:30.442841: I Recall	0.19492
+2026-03-28 15:21:30.442908: I nDCG	0.08483
+2026-03-28 15:21:30.978786: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=7).
+2026-03-28 15:25:24.821021: I [EPOCH 8/999] train_loss=82.39974; train_loss_min=22.04115; train_loss_max=234.76495; train_loss_std=32.67516; grad_norm_mean=51.8496; grad_norm_max=143.4535; emb_logits_mean=0.6707; emb_logits_std=1.0904; emb_logits_pre_mean=0.5772; emb_logits_pre_std=0.8533; override_ratio=0.036736; local_items_per_user_mean=1505.47; local_items_per_user_std=541.03; delta_override_mean=2.9421; delta_override_std=2.4346; gate_mean=0.8134; gate_std=0.1068; gate_min=0.2478; gate_max=0.9988; gate_entropy_mean=0.4395; id_logits_mean=3.9943; id_logits_std=2.3676; user_norm_mean=5.0641; user_norm_std=0.4548; user_dispersion=9.2224e-03; item_loc_norm_mean=7.5234; item_loc_norm_std=0.5338; item_loc_dispersion=7.7389e-02; rhs_emb_norm_mean=15.2788; rhs_emb_norm_std=0.8567; rhs_emb_dispersion=9.9841e-01; supervised_edges_avg=417.5; supervised_edges_min=29; supervised_edges_max=948; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.84s; batch_time_avg=0.2504s
+2026-03-28 15:28:07.108799: I 
+2026-03-28 15:28:07.108618: I Epoch 8/999 eval_loss=82.39974
+2026-03-28 15:28:07.109291: I Validation Evaluation results
+2026-03-28 15:28:07.109429: I Cut-off: 20
+2026-03-28 15:28:07.109640: I Eval Time: 0.9113943576812744
+2026-03-28 15:28:07.156568: I Results
+2026-03-28 15:28:07.156875: I Recall	0.19224
+2026-03-28 15:28:07.156991: I nDCG	0.08152
+2026-03-28 15:28:07.405026: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=8).
+2026-03-28 15:28:07.405985: I EarlyStopping: current=0.19224, best=0.19492, bad_epochs=1/10
+2026-03-28 15:32:00.739721: I [EPOCH 9/999] train_loss=81.46147; train_loss_min=22.64225; train_loss_max=223.39198; train_loss_std=31.55843; grad_norm_mean=46.9703; grad_norm_max=112.0676; emb_logits_mean=0.5084; emb_logits_std=1.1583; emb_logits_pre_mean=0.4181; emb_logits_pre_std=0.9383; override_ratio=0.036721; local_items_per_user_mean=1504.86; local_items_per_user_std=541.48; delta_override_mean=2.9357; delta_override_std=2.4802; gate_mean=0.7897; gate_std=0.1158; gate_min=0.2268; gate_max=0.9991; gate_entropy_mean=0.4675; id_logits_mean=3.9726; id_logits_std=2.4091; user_norm_mean=4.9183; user_norm_std=0.4653; user_dispersion=1.0199e-02; item_loc_norm_mean=7.5106; item_loc_norm_std=0.5618; item_loc_dispersion=8.1820e-02; rhs_emb_norm_mean=15.2086; rhs_emb_norm_std=0.8541; rhs_emb_dispersion=9.9899e-01; supervised_edges_avg=417.5; supervised_edges_min=19; supervised_edges_max=953; cpu_mem_max=4.71GB, gpu_mem_max=15.47GB; epoch_time=233.33s; batch_time_avg=0.2498s
+2026-03-28 15:34:43.015759: I Epoch 9/999 eval_loss=81.46147
+2026-03-28 15:34:43.015994: I 
+2026-03-28 15:34:43.016242: I ******************************************
+2026-03-28 15:34:43.016510: I Validation Evaluation results
+2026-03-28 15:34:43.016741: I Cut-off: 20
+2026-03-28 15:34:43.016821: I Eval Time: 0.9172751903533936
+2026-03-28 15:34:43.016935: I Results
+2026-03-28 15:34:43.017066: I Recall	0.19733
+2026-03-28 15:34:43.017172: I nDCG	0.08661
+2026-03-28 15:34:43.532714: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=9).
+2026-03-28 15:38:36.811662: I [EPOCH 10/999] train_loss=81.25430; train_loss_min=11.54812; train_loss_max=247.31079; train_loss_std=32.19220; grad_norm_mean=43.7519; grad_norm_max=88.5164; emb_logits_mean=0.3257; emb_logits_std=1.2507; emb_logits_pre_mean=0.2400; emb_logits_pre_std=1.0494; override_ratio=0.036718; local_items_per_user_mean=1504.72; local_items_per_user_std=540.83; delta_override_mean=2.8222; delta_override_std=2.5701; gate_mean=0.7750; gate_std=0.1248; gate_min=0.2059; gate_max=0.9993; gate_entropy_mean=0.4830; id_logits_mean=3.8620; id_logits_std=2.4976; user_norm_mean=4.7439; user_norm_std=0.4562; user_dispersion=1.1200e-02; item_loc_norm_mean=7.6190; item_loc_norm_std=0.5711; item_loc_dispersion=8.5708e-02; rhs_emb_norm_mean=15.1349; rhs_emb_norm_std=0.8518; rhs_emb_dispersion=9.9933e-01; supervised_edges_avg=417.5; supervised_edges_min=11; supervised_edges_max=988; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.28s; batch_time_avg=0.2498s
+2026-03-28 15:41:18.891832: I 
+2026-03-28 15:41:18.891685: I Epoch 10/999 eval_loss=81.25430
+2026-03-28 15:41:18.892102: I ******************************************
+2026-03-28 15:41:18.892186: I Validation Evaluation results
+2026-03-28 15:41:18.892280: I Cut-off: 20
+2026-03-28 15:41:18.892543: I Eval Time: 0.9213201999664307
+2026-03-28 15:41:18.892689: I Results
+2026-03-28 15:41:18.892843: I Recall	0.19747
+2026-03-28 15:41:18.893048: I nDCG	0.08696
+2026-03-28 15:41:19.390813: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=10).
+2026-03-28 15:45:12.637214: I [EPOCH 11/999] train_loss=81.04538; train_loss_min=23.38518; train_loss_max=259.87494; train_loss_std=32.01145; grad_norm_mean=39.4317; grad_norm_max=93.9421; emb_logits_mean=0.2090; emb_logits_std=1.3305; emb_logits_pre_mean=0.1276; emb_logits_pre_std=1.1432; override_ratio=0.036726; local_items_per_user_mean=1505.08; local_items_per_user_std=541.03; delta_override_mean=2.7239; delta_override_std=2.5888; gate_mean=0.7698; gate_std=0.1306; gate_min=0.2062; gate_max=0.9995; gate_entropy_mean=0.4854; id_logits_mean=3.8375; id_logits_std=2.5160; user_norm_mean=4.5658; user_norm_std=0.4618; user_dispersion=1.2126e-02; item_loc_norm_mean=7.5875; item_loc_norm_std=0.6007; item_loc_dispersion=8.9866e-02; rhs_emb_norm_mean=15.0489; rhs_emb_norm_std=0.8497; rhs_emb_dispersion=9.9951e-01; supervised_edges_avg=417.5; supervised_edges_min=44; supervised_edges_max=1029; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.25s; batch_time_avg=0.2497s
+2026-03-28 15:47:54.960933: I 
+2026-03-28 15:47:54.960792: I Epoch 11/999 eval_loss=81.04538
+2026-03-28 15:47:54.961205: I ******************************************
+2026-03-28 15:47:54.961448: I Validation Evaluation results
+2026-03-28 15:47:54.961668: I Cut-off: 20
+2026-03-28 15:47:54.961794: I Eval Time: 0.9029371738433838
+2026-03-28 15:47:54.961935: I Results
+2026-03-28 15:47:54.962086: I Recall	0.19918
+2026-03-28 15:47:54.962164: I nDCG	0.08527
+2026-03-28 15:47:55.452171: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=11).
+2026-03-28 15:51:48.714924: I [EPOCH 12/999] train_loss=81.12581; train_loss_min=23.91517; train_loss_max=287.42029; train_loss_std=33.87280; grad_norm_mean=38.5282; grad_norm_max=84.1536; emb_logits_mean=0.0498; emb_logits_std=1.4180; emb_logits_pre_mean=-0.0251; emb_logits_pre_std=1.2476; override_ratio=0.036721; local_items_per_user_mean=1504.84; local_items_per_user_std=540.22; delta_override_mean=2.5548; delta_override_std=2.6855; gate_mean=0.7534; gate_std=0.1403; gate_min=0.1990; gate_max=0.9996; gate_entropy_mean=0.4996; id_logits_mean=3.7082; id_logits_std=2.6169; user_norm_mean=4.3550; user_norm_std=0.4624; user_dispersion=1.2851e-02; item_loc_norm_mean=7.5754; item_loc_norm_std=0.6087; item_loc_dispersion=9.4077e-02; rhs_emb_norm_mean=14.9605; rhs_emb_norm_std=0.8469; rhs_emb_dispersion=9.9970e-01; supervised_edges_avg=417.4; supervised_edges_min=16; supervised_edges_max=1153; cpu_mem_max=4.71GB, gpu_mem_max=15.47GB; epoch_time=233.26s; batch_time_avg=0.2497s
+2026-03-28 15:54:31.125728: I 
+2026-03-28 15:54:31.125574: I Epoch 12/999 eval_loss=81.12581
+2026-03-28 15:54:31.125971: I ******************************************
+2026-03-28 15:54:31.126170: I Validation Evaluation results
+2026-03-28 15:54:31.126435: I Cut-off: 20
+2026-03-28 15:54:31.126583: I Eval Time: 0.9433948993682861
+2026-03-28 15:54:31.126730: I Results
+2026-03-28 15:54:31.126829: I Recall	0.20031
+2026-03-28 15:54:31.126924: I nDCG	0.09016
+2026-03-28 15:54:31.615802: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=12).
+2026-03-28 15:58:24.948032: I [EPOCH 13/999] train_loss=80.40394; train_loss_min=7.27884; train_loss_max=236.24283; train_loss_std=32.22220; grad_norm_mean=35.0922; grad_norm_max=86.7917; emb_logits_mean=-0.1575; emb_logits_std=1.5386; emb_logits_pre_mean=-0.2305; emb_logits_pre_std=1.3777; override_ratio=0.036716; local_items_per_user_mean=1504.66; local_items_per_user_std=540.11; delta_override_mean=2.5733; delta_override_std=2.7939; gate_mean=0.7291; gate_std=0.1475; gate_min=0.1921; gate_max=0.9996; gate_entropy_mean=0.5209; id_logits_mean=3.7223; id_logits_std=2.7095; user_norm_mean=4.2441; user_norm_std=0.4797; user_dispersion=1.3763e-02; item_loc_norm_mean=7.6135; item_loc_norm_std=0.6315; item_loc_dispersion=9.5374e-02; rhs_emb_norm_mean=14.8473; rhs_emb_norm_std=0.8447; rhs_emb_dispersion=1.0000e+00; supervised_edges_avg=417.5; supervised_edges_min=9; supervised_edges_max=940; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.33s; batch_time_avg=0.2498s
+2026-03-28 16:01:06.952081: I 
+2026-03-28 16:01:06.951940: I Epoch 13/999 eval_loss=80.40394
+2026-03-28 16:01:06.952262: I Validation Evaluation results
+2026-03-28 16:01:06.952499: I ******************************************
+2026-03-28 16:01:06.952585: I Cut-off: 20
+2026-03-28 16:01:06.952860: I Eval Time: 0.8967404365539551
+2026-03-28 16:01:06.953029: I Results
+2026-03-28 16:01:06.953141: I Recall	0.20447
+2026-03-28 16:01:06.953273: I nDCG	0.09175
+2026-03-28 16:01:07.466366: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=13).
+2026-03-28 16:05:00.660722: I [EPOCH 14/999] train_loss=80.37793; train_loss_min=23.62512; train_loss_max=263.95343; train_loss_std=33.27910; grad_norm_mean=30.8489; grad_norm_max=113.2239; emb_logits_mean=-0.2821; emb_logits_std=1.6147; emb_logits_pre_mean=-0.3515; emb_logits_pre_std=1.4660; override_ratio=0.036729; local_items_per_user_mean=1505.20; local_items_per_user_std=541.66; delta_override_mean=2.5592; delta_override_std=2.9027; gate_mean=0.6929; gate_std=0.1494; gate_min=0.1813; gate_max=0.9996; gate_entropy_mean=0.5576; id_logits_mean=3.7318; id_logits_std=2.7881; user_norm_mean=4.0884; user_norm_std=0.4791; user_dispersion=1.3808e-02; item_loc_norm_mean=7.5461; item_loc_norm_std=0.6716; item_loc_dispersion=1.0189e-01; rhs_emb_norm_mean=14.7639; rhs_emb_norm_std=0.8425; rhs_emb_dispersion=1.0004e+00; supervised_edges_avg=417.5; supervised_edges_min=27; supervised_edges_max=1059; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.19s; batch_time_avg=0.2497s
+2026-03-28 16:07:43.113262: I 
+2026-03-28 16:07:43.113115: I Epoch 14/999 eval_loss=80.37793
+2026-03-28 16:07:43.113719: I Validation Evaluation results
+2026-03-28 16:07:43.113854: I Cut-off: 20
+2026-03-28 16:07:43.113986: I Eval Time: 0.9119892120361328
+2026-03-28 16:07:43.164209: I Results
+2026-03-28 16:07:43.164312: I Recall	0.19928
+2026-03-28 16:07:43.164526: I nDCG	0.0868
+2026-03-28 16:07:43.396382: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=14).
+2026-03-28 16:07:43.397222: I EarlyStopping: current=0.19928, best=0.20447, bad_epochs=1/10
+2026-03-28 16:11:36.777509: I [EPOCH 15/999] train_loss=79.80269; train_loss_min=4.46516; train_loss_max=198.16522; train_loss_std=31.00627; grad_norm_mean=29.6333; grad_norm_max=79.4973; emb_logits_mean=-0.5109; emb_logits_std=1.6945; emb_logits_pre_mean=-0.5808; emb_logits_pre_std=1.5516; override_ratio=0.036739; local_items_per_user_mean=1505.62; local_items_per_user_std=541.26; delta_override_mean=2.6832; delta_override_std=2.9316; gate_mean=0.6626; gate_std=0.1536; gate_min=0.1839; gate_max=0.9997; gate_entropy_mean=0.5789; id_logits_mean=3.7490; id_logits_std=2.7763; user_norm_mean=3.9274; user_norm_std=0.4976; user_dispersion=1.4107e-02; item_loc_norm_mean=7.4897; item_loc_norm_std=0.6864; item_loc_dispersion=1.0317e-01; rhs_emb_norm_mean=14.6988; rhs_emb_norm_std=0.8411; rhs_emb_dispersion=1.0010e+00; supervised_edges_avg=417.5; supervised_edges_min=7; supervised_edges_max=883; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.38s; batch_time_avg=0.2499s
+2026-03-28 16:14:19.219795: I 
+2026-03-28 16:14:19.219646: I Epoch 15/999 eval_loss=79.80269
+2026-03-28 16:14:19.220256: I Validation Evaluation results
+2026-03-28 16:14:19.220448: I Cut-off: 20
+2026-03-28 16:14:19.220599: I Eval Time: 0.9162771701812744
+2026-03-28 16:14:19.267721: I Results
+2026-03-28 16:14:19.267817: I Recall	0.2037
+2026-03-28 16:14:19.267984: I nDCG	0.08924
+2026-03-28 16:14:19.493390: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=15).
+2026-03-28 16:14:19.494260: I EarlyStopping: current=0.20370, best=0.20447, bad_epochs=2/10
+2026-03-28 16:18:12.650314: I [EPOCH 16/999] train_loss=79.73081; train_loss_min=20.84684; train_loss_max=200.26625; train_loss_std=31.10103; grad_norm_mean=26.7963; grad_norm_max=67.0254; emb_logits_mean=-0.6384; emb_logits_std=1.7535; emb_logits_pre_mean=-0.7042; emb_logits_pre_std=1.6179; override_ratio=0.036720; local_items_per_user_mean=1504.82; local_items_per_user_std=540.57; delta_override_mean=2.6141; delta_override_std=3.0415; gate_mean=0.6555; gate_std=0.1612; gate_min=0.1740; gate_max=0.9997; gate_entropy_mean=0.5780; id_logits_mean=3.6670; id_logits_std=2.9038; user_norm_mean=3.7632; user_norm_std=0.4853; user_dispersion=1.3665e-02; item_loc_norm_mean=7.5524; item_loc_norm_std=0.6945; item_loc_dispersion=1.0990e-01; rhs_emb_norm_mean=14.6385; rhs_emb_norm_std=0.8406; rhs_emb_dispersion=1.0014e+00; supervised_edges_avg=417.5; supervised_edges_min=26; supervised_edges_max=872; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.16s; batch_time_avg=0.2496s
+2026-03-28 16:20:54.707238: I 
+2026-03-28 16:20:54.707080: I Epoch 16/999 eval_loss=79.73081
+2026-03-28 16:20:54.707719: I Validation Evaluation results
+2026-03-28 16:20:54.707856: I Cut-off: 20
+2026-03-28 16:20:54.756464: I Eval Time: 0.9165046215057373
+2026-03-28 16:20:54.756742: I Results
+2026-03-28 16:20:54.756843: I Recall	0.20246
+2026-03-28 16:20:54.757118: I nDCG	0.08834
+2026-03-28 16:20:54.985113: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=16).
+2026-03-28 16:20:54.986883: I EarlyStopping: current=0.20246, best=0.20447, bad_epochs=3/10
+2026-03-28 16:24:48.139876: I [EPOCH 17/999] train_loss=80.46520; train_loss_min=19.84460; train_loss_max=937.37164; train_loss_std=39.27917; grad_norm_mean=28.6489; grad_norm_max=99.7856; emb_logits_mean=-0.6231; emb_logits_std=1.7934; emb_logits_pre_mean=-0.6881; emb_logits_pre_std=1.6623; override_ratio=0.036726; local_items_per_user_mean=1505.05; local_items_per_user_std=540.05; delta_override_mean=2.6075; delta_override_std=3.0609; gate_mean=0.6330; gate_std=0.1629; gate_min=0.1611; gate_max=0.9998; gate_entropy_mean=0.5904; id_logits_mean=3.7325; id_logits_std=2.9029; user_norm_mean=3.6559; user_norm_std=0.4996; user_dispersion=1.3791e-02; item_loc_norm_mean=7.4588; item_loc_norm_std=0.7306; item_loc_dispersion=1.0997e-01; rhs_emb_norm_mean=14.5834; rhs_emb_norm_std=0.8402; rhs_emb_dispersion=1.0019e+00; supervised_edges_avg=417.4; supervised_edges_min=212; supervised_edges_max=1320; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.15s; batch_time_avg=0.2496s
+2026-03-28 16:27:30.414243: I 
+2026-03-28 16:27:30.414062: I Epoch 17/999 eval_loss=80.46520
+2026-03-28 16:27:30.414566: I ******************************************
+2026-03-28 16:27:30.414679: I Validation Evaluation results
+2026-03-28 16:27:30.414778: I Cut-off: 20
+2026-03-28 16:27:30.415061: I Eval Time: 0.8986790180206299
+2026-03-28 16:27:30.415236: I Results
+2026-03-28 16:27:30.415381: I Recall	0.20805
+2026-03-28 16:27:30.415525: I nDCG	0.09291
+2026-03-28 16:27:30.927427: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=17).
+2026-03-28 16:31:24.242934: I [EPOCH 18/999] train_loss=79.68918; train_loss_min=20.99269; train_loss_max=225.65610; train_loss_std=32.00468; grad_norm_mean=25.0557; grad_norm_max=55.3096; emb_logits_mean=-0.7038; emb_logits_std=1.8536; emb_logits_pre_mean=-0.7715; emb_logits_pre_std=1.7230; override_ratio=0.036733; local_items_per_user_mean=1505.37; local_items_per_user_std=541.14; delta_override_mean=2.7252; delta_override_std=2.9552; gate_mean=0.6058; gate_std=0.1816; gate_min=0.1164; gate_max=0.9998; gate_entropy_mean=0.5877; id_logits_mean=3.8359; id_logits_std=2.7565; user_norm_mean=3.4779; user_norm_std=0.5072; user_dispersion=1.3205e-02; item_loc_norm_mean=7.4219; item_loc_norm_std=0.6861; item_loc_dispersion=1.0456e-01; rhs_emb_norm_mean=14.5213; rhs_emb_norm_std=0.8395; rhs_emb_dispersion=1.0022e+00; supervised_edges_avg=417.5; supervised_edges_min=64; supervised_edges_max=984; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.31s; batch_time_avg=0.2498s
+2026-03-28 16:34:06.448531: I Epoch 18/999 eval_loss=79.68918
+2026-03-28 16:34:06.448985: I 
+2026-03-28 16:34:06.449140: I Validation Evaluation results
+2026-03-28 16:34:06.449264: I Cut-off: 20
+2026-03-28 16:34:06.496388: I Eval Time: 0.9222850799560547
+2026-03-28 16:34:06.496650: I Results
+2026-03-28 16:34:06.496870: I Recall	0.19844
+2026-03-28 16:34:06.497081: I nDCG	0.08636
+2026-03-28 16:34:06.730737: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=18).
+2026-03-28 16:34:06.731635: I EarlyStopping: current=0.19844, best=0.20805, bad_epochs=1/10
+2026-03-28 16:37:59.901041: I [EPOCH 19/999] train_loss=79.28018; train_loss_min=20.58686; train_loss_max=303.25189; train_loss_std=32.95467; grad_norm_mean=24.6573; grad_norm_max=64.5121; emb_logits_mean=-0.8777; emb_logits_std=1.9166; emb_logits_pre_mean=-0.9424; emb_logits_pre_std=1.7889; override_ratio=0.036724; local_items_per_user_mean=1505.01; local_items_per_user_std=540.66; delta_override_mean=2.6742; delta_override_std=3.1706; gate_mean=0.6375; gate_std=0.1707; gate_min=0.1537; gate_max=0.9998; gate_entropy_mean=0.5821; id_logits_mean=3.7046; id_logits_std=2.9982; user_norm_mean=3.3488; user_norm_std=0.5186; user_dispersion=1.3214e-02; item_loc_norm_mean=7.4518; item_loc_norm_std=0.7375; item_loc_dispersion=1.1764e-01; rhs_emb_norm_mean=14.4696; rhs_emb_norm_std=0.8400; rhs_emb_dispersion=1.0025e+00; supervised_edges_avg=417.5; supervised_edges_min=68; supervised_edges_max=1231; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.17s; batch_time_avg=0.2496s
+2026-03-28 16:40:42.127987: I 
+2026-03-28 16:40:42.127827: I Epoch 19/999 eval_loss=79.28018
+2026-03-28 16:40:42.128486: I Validation Evaluation results
+2026-03-28 16:40:42.128626: I Cut-off: 20
+2026-03-28 16:40:42.128789: I Eval Time: 0.9278383255004883
+2026-03-28 16:40:42.128907: I Results
+2026-03-28 16:40:42.176931: I Recall	0.20199
+2026-03-28 16:40:42.177246: I nDCG	0.08735
+2026-03-28 16:40:42.428175: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=19).
+2026-03-28 16:40:42.429005: I EarlyStopping: current=0.20199, best=0.20805, bad_epochs=2/10
+2026-03-28 16:44:35.590212: I [EPOCH 20/999] train_loss=79.77907; train_loss_min=20.36697; train_loss_max=228.02100; train_loss_std=34.23253; grad_norm_mean=22.1650; grad_norm_max=56.5224; emb_logits_mean=-0.9817; emb_logits_std=1.9657; emb_logits_pre_mean=-1.0460; emb_logits_pre_std=1.8415; override_ratio=0.036723; local_items_per_user_mean=1504.93; local_items_per_user_std=540.27; delta_override_mean=2.6967; delta_override_std=3.1704; gate_mean=0.6161; gate_std=0.1774; gate_min=0.1158; gate_max=0.9998; gate_entropy_mean=0.5902; id_logits_mean=3.7054; id_logits_std=2.9824; user_norm_mean=3.2265; user_norm_std=0.5163; user_dispersion=1.3116e-02; item_loc_norm_mean=7.4535; item_loc_norm_std=0.7249; item_loc_dispersion=1.1947e-01; rhs_emb_norm_mean=14.4221; rhs_emb_norm_std=0.8405; rhs_emb_dispersion=1.0028e+00; supervised_edges_avg=417.5; supervised_edges_min=32; supervised_edges_max=997; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.16s; batch_time_avg=0.2496s
+2026-03-28 16:47:17.746512: I 
+2026-03-28 16:47:17.746368: I Epoch 20/999 eval_loss=79.77907
+2026-03-28 16:47:17.746955: I Validation Evaluation results
+2026-03-28 16:47:17.747122: I Cut-off: 20
+2026-03-28 16:47:17.747222: I Eval Time: 0.9100468158721924
+2026-03-28 16:47:17.795651: I Results
+2026-03-28 16:47:17.795919: I Recall	0.20531
+2026-03-28 16:47:17.796126: I nDCG	0.09097
+2026-03-28 16:47:18.013803: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=20).
+2026-03-28 16:47:18.014656: I EarlyStopping: current=0.20531, best=0.20805, bad_epochs=3/10
+2026-03-28 16:51:11.206046: I [EPOCH 21/999] train_loss=78.48559; train_loss_min=6.85210; train_loss_max=205.01178; train_loss_std=30.60550; grad_norm_mean=20.6031; grad_norm_max=65.0414; emb_logits_mean=-1.0369; emb_logits_std=2.0043; emb_logits_pre_mean=-1.1008; emb_logits_pre_std=1.8832; override_ratio=0.036721; local_items_per_user_mean=1504.85; local_items_per_user_std=540.42; delta_override_mean=2.7042; delta_override_std=3.2086; gate_mean=0.6016; gate_std=0.1688; gate_min=0.1250; gate_max=0.9999; gate_entropy_mean=0.6051; id_logits_mean=3.7298; id_logits_std=2.9972; user_norm_mean=3.1249; user_norm_std=0.5180; user_dispersion=1.2986e-02; item_loc_norm_mean=7.5027; item_loc_norm_std=0.7435; item_loc_dispersion=1.2592e-01; rhs_emb_norm_mean=14.3865; rhs_emb_norm_std=0.8418; rhs_emb_dispersion=1.0032e+00; supervised_edges_avg=417.4; supervised_edges_min=8; supervised_edges_max=897; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.19s; batch_time_avg=0.2497s
+2026-03-28 16:53:53.370870: I 
+2026-03-28 16:53:53.370696: I Epoch 21/999 eval_loss=78.48559
+2026-03-28 16:53:53.371283: I Validation Evaluation results
+2026-03-28 16:53:53.371430: I Cut-off: 20
+2026-03-28 16:53:53.371540: I Eval Time: 0.9112298488616943
+2026-03-28 16:53:53.371671: I Results
+2026-03-28 16:53:53.417410: I Recall	0.20226
+2026-03-28 16:53:53.417672: I nDCG	0.08786
+2026-03-28 16:53:53.653847: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=21).
+2026-03-28 16:53:53.654658: I EarlyStopping: current=0.20226, best=0.20805, bad_epochs=4/10
+2026-03-28 16:57:46.968492: I [EPOCH 22/999] train_loss=79.11760; train_loss_min=20.36861; train_loss_max=197.55414; train_loss_std=32.96067; grad_norm_mean=19.1260; grad_norm_max=38.2561; emb_logits_mean=-1.0843; emb_logits_std=2.0533; emb_logits_pre_mean=-1.1462; emb_logits_pre_std=1.9372; override_ratio=0.036728; local_items_per_user_mean=1505.14; local_items_per_user_std=540.91; delta_override_mean=2.6611; delta_override_std=3.2426; gate_mean=0.5927; gate_std=0.1691; gate_min=0.1255; gate_max=0.9999; gate_entropy_mean=0.6086; id_logits_mean=3.7291; id_logits_std=3.0224; user_norm_mean=3.0498; user_norm_std=0.5231; user_dispersion=1.3289e-02; item_loc_norm_mean=7.4441; item_loc_norm_std=0.7411; item_loc_dispersion=1.2603e-01; rhs_emb_norm_mean=14.3586; rhs_emb_norm_std=0.8432; rhs_emb_dispersion=1.0035e+00; supervised_edges_avg=417.4; supervised_edges_min=16; supervised_edges_max=888; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.31s; batch_time_avg=0.2498s
+2026-03-28 17:00:29.072536: I 
+2026-03-28 17:00:29.072393: I Epoch 22/999 eval_loss=79.11760
+2026-03-28 17:00:29.072992: I Validation Evaluation results
+2026-03-28 17:00:29.073287: I Cut-off: 20
+2026-03-28 17:00:29.118823: I Eval Time: 0.9160208702087402
+2026-03-28 17:00:29.119086: I Results
+2026-03-28 17:00:29.119301: I Recall	0.20212
+2026-03-28 17:00:29.119528: I nDCG	0.08637
+2026-03-28 17:00:29.355851: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=22).
+2026-03-28 17:00:29.356674: I EarlyStopping: current=0.20212, best=0.20805, bad_epochs=5/10
+2026-03-28 17:04:22.610574: I [EPOCH 23/999] train_loss=77.78652; train_loss_min=16.70303; train_loss_max=188.11575; train_loss_std=29.14009; grad_norm_mean=20.0237; grad_norm_max=43.4064; emb_logits_mean=-1.1784; emb_logits_std=2.0748; emb_logits_pre_mean=-1.2409; emb_logits_pre_std=1.9582; override_ratio=0.036727; local_items_per_user_mean=1505.10; local_items_per_user_std=540.24; delta_override_mean=2.7233; delta_override_std=3.2766; gate_mean=0.5875; gate_std=0.1664; gate_min=0.1286; gate_max=0.9999; gate_entropy_mean=0.6124; id_logits_mean=3.7428; id_logits_std=3.0488; user_norm_mean=2.9323; user_norm_std=0.5144; user_dispersion=1.2737e-02; item_loc_norm_mean=7.4738; item_loc_norm_std=0.7363; item_loc_dispersion=1.3264e-01; rhs_emb_norm_mean=14.3247; rhs_emb_norm_std=0.8444; rhs_emb_dispersion=1.0037e+00; supervised_edges_avg=417.5; supervised_edges_min=15; supervised_edges_max=851; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.25s; batch_time_avg=0.2497s
+2026-03-28 17:07:04.965294: I Epoch 23/999 eval_loss=77.78652
+2026-03-28 17:07:04.965811: I 
+2026-03-28 17:07:05.011903: I Validation Evaluation results
+2026-03-28 17:07:05.012163: I Cut-off: 20
+2026-03-28 17:07:05.012297: I Eval Time: 0.9119517803192139
+2026-03-28 17:07:05.012490: I Results
+2026-03-28 17:07:05.012674: I Recall	0.20433
+2026-03-28 17:07:05.012816: I nDCG	0.09055
+2026-03-28 17:07:05.241011: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=23).
+2026-03-28 17:07:05.241791: I EarlyStopping: current=0.20433, best=0.20805, bad_epochs=6/10
+2026-03-28 17:10:58.526830: I [EPOCH 24/999] train_loss=77.76213; train_loss_min=14.21194; train_loss_max=192.48953; train_loss_std=29.38044; grad_norm_mean=21.2687; grad_norm_max=58.4299; emb_logits_mean=-1.2562; emb_logits_std=2.1152; emb_logits_pre_mean=-1.3180; emb_logits_pre_std=2.0011; override_ratio=0.036718; local_items_per_user_mean=1504.72; local_items_per_user_std=540.74; delta_override_mean=2.7222; delta_override_std=3.3165; gate_mean=0.5767; gate_std=0.1653; gate_min=0.1210; gate_max=0.9999; gate_entropy_mean=0.6167; id_logits_mean=3.7342; id_logits_std=3.0793; user_norm_mean=2.8448; user_norm_std=0.5097; user_dispersion=1.2596e-02; item_loc_norm_mean=7.4950; item_loc_norm_std=0.7598; item_loc_dispersion=1.3499e-01; rhs_emb_norm_mean=14.2839; rhs_emb_norm_std=0.8460; rhs_emb_dispersion=1.0040e+00; supervised_edges_avg=417.5; supervised_edges_min=14; supervised_edges_max=870; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.28s; batch_time_avg=0.2498s
+2026-03-28 17:13:40.807840: I 
+2026-03-28 17:13:40.807706: I Epoch 24/999 eval_loss=77.76213
+2026-03-28 17:13:40.808248: I Validation Evaluation results
+2026-03-28 17:13:40.808347: I Cut-off: 20
+2026-03-28 17:13:40.808653: I Eval Time: 0.9512503147125244
+2026-03-28 17:13:40.854501: I Results
+2026-03-28 17:13:40.854743: I Recall	0.20798
+2026-03-28 17:13:40.854996: I nDCG	0.0942
+2026-03-28 17:13:41.086158: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=24).
+2026-03-28 17:13:41.087083: I EarlyStopping: current=0.20798, best=0.20805, bad_epochs=7/10
+2026-03-28 17:17:34.414650: I [EPOCH 25/999] train_loss=78.27651; train_loss_min=19.30862; train_loss_max=240.17772; train_loss_std=31.92216; grad_norm_mean=17.5333; grad_norm_max=50.9087; emb_logits_mean=-1.3424; emb_logits_std=2.1616; emb_logits_pre_mean=-1.4025; emb_logits_pre_std=2.0507; override_ratio=0.036723; local_items_per_user_mean=1504.95; local_items_per_user_std=540.93; delta_override_mean=2.7011; delta_override_std=3.4238; gate_mean=0.5710; gate_std=0.1658; gate_min=0.1048; gate_max=0.9999; gate_entropy_mean=0.6193; id_logits_mean=3.7027; id_logits_std=3.1795; user_norm_mean=2.7888; user_norm_std=0.5309; user_dispersion=1.2851e-02; item_loc_norm_mean=7.6053; item_loc_norm_std=0.7562; item_loc_dispersion=1.4387e-01; rhs_emb_norm_mean=14.2522; rhs_emb_norm_std=0.8476; rhs_emb_dispersion=1.0043e+00; supervised_edges_avg=417.5; supervised_edges_min=22; supervised_edges_max=986; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.33s; batch_time_avg=0.2498s
+2026-03-28 17:20:16.547582: I 
+2026-03-28 17:20:16.547439: I Epoch 25/999 eval_loss=78.27651
+2026-03-28 17:20:16.547995: I Validation Evaluation results
+2026-03-28 17:20:16.548191: I Cut-off: 20
+2026-03-28 17:20:16.596310: I Eval Time: 0.9165818691253662
+2026-03-28 17:20:16.596489: I Results
+2026-03-28 17:20:16.596683: I Recall	0.20591
+2026-03-28 17:20:16.596820: I nDCG	0.09301
+2026-03-28 17:20:16.818413: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=25).
+2026-03-28 17:20:16.819168: I EarlyStopping: current=0.20591, best=0.20805, bad_epochs=8/10
+2026-03-28 17:24:10.056358: I [EPOCH 26/999] train_loss=77.71782; train_loss_min=22.21308; train_loss_max=219.92305; train_loss_std=30.53783; grad_norm_mean=18.5688; grad_norm_max=43.8246; emb_logits_mean=-1.4157; emb_logits_std=2.1644; emb_logits_pre_mean=-1.4742; emb_logits_pre_std=2.0548; override_ratio=0.036722; local_items_per_user_mean=1504.92; local_items_per_user_std=540.64; delta_override_mean=2.7296; delta_override_std=3.4607; gate_mean=0.5568; gate_std=0.1687; gate_min=0.0920; gate_max=0.9999; gate_entropy_mean=0.6212; id_logits_mean=3.6866; id_logits_std=3.2491; user_norm_mean=2.6855; user_norm_std=0.5196; user_dispersion=1.2504e-02; item_loc_norm_mean=7.7278; item_loc_norm_std=0.7814; item_loc_dispersion=1.5122e-01; rhs_emb_norm_mean=14.2369; rhs_emb_norm_std=0.8495; rhs_emb_dispersion=1.0045e+00; supervised_edges_avg=417.5; supervised_edges_min=35; supervised_edges_max=980; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.24s; batch_time_avg=0.2497s
+2026-03-28 17:26:52.520891: I Epoch 26/999 eval_loss=77.71782
+2026-03-28 17:26:52.521081: I 
+2026-03-28 17:26:52.521333: I ******************************************
+2026-03-28 17:26:52.521433: I Validation Evaluation results
+2026-03-28 17:26:52.521642: I Cut-off: 20
+2026-03-28 17:26:52.521879: I Eval Time: 0.9103677272796631
+2026-03-28 17:26:52.521971: I Results
+2026-03-28 17:26:52.522147: I Recall	0.20882
+2026-03-28 17:26:52.522377: I nDCG	0.09464
+2026-03-28 17:26:53.020180: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=26).
+2026-03-28 17:30:46.175136: I [EPOCH 27/999] train_loss=77.75477; train_loss_min=7.41362; train_loss_max=196.87912; train_loss_std=31.25954; grad_norm_mean=18.1184; grad_norm_max=43.6323; emb_logits_mean=-1.5598; emb_logits_std=2.2582; emb_logits_pre_mean=-1.6195; emb_logits_pre_std=2.1503; override_ratio=0.036707; local_items_per_user_mean=1504.30; local_items_per_user_std=539.95; delta_override_mean=2.8174; delta_override_std=3.5654; gate_mean=0.5576; gate_std=0.1708; gate_min=0.0780; gate_max=0.9999; gate_entropy_mean=0.6187; id_logits_mean=3.7409; id_logits_std=3.2968; user_norm_mean=2.5959; user_norm_std=0.5269; user_dispersion=1.2570e-02; item_loc_norm_mean=7.8607; item_loc_norm_std=0.7904; item_loc_dispersion=1.6015e-01; rhs_emb_norm_mean=14.2080; rhs_emb_norm_std=0.8519; rhs_emb_dispersion=1.0048e+00; supervised_edges_avg=417.5; supervised_edges_min=9; supervised_edges_max=886; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.15s; batch_time_avg=0.2496s
+2026-03-28 17:33:28.642639: I Epoch 27/999 eval_loss=77.75477
+2026-03-28 17:33:28.643077: I 
+2026-03-28 17:33:28.643313: I Validation Evaluation results
+2026-03-28 17:33:28.689234: I Cut-off: 20
+2026-03-28 17:33:28.689522: I Eval Time: 0.908527135848999
+2026-03-28 17:33:28.689635: I Results
+2026-03-28 17:33:28.689700: I Recall	0.20427
+2026-03-28 17:33:28.689945: I nDCG	0.09058
+2026-03-28 17:33:28.917736: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=27).
+2026-03-28 17:33:28.919755: I EarlyStopping: current=0.20427, best=0.20882, bad_epochs=1/10
+2026-03-28 17:37:22.030938: I [EPOCH 28/999] train_loss=77.24782; train_loss_min=8.23130; train_loss_max=209.39685; train_loss_std=30.76174; grad_norm_mean=16.3481; grad_norm_max=41.4091; emb_logits_mean=-1.5734; emb_logits_std=2.2703; emb_logits_pre_mean=-1.6333; emb_logits_pre_std=2.1636; override_ratio=0.036714; local_items_per_user_mean=1504.58; local_items_per_user_std=539.16; delta_override_mean=2.8877; delta_override_std=3.5703; gate_mean=0.5261; gate_std=0.1613; gate_min=0.0749; gate_max=1.0000; gate_entropy_mean=0.6324; id_logits_mean=3.8396; id_logits_std=3.2979; user_norm_mean=2.5495; user_norm_std=0.5346; user_dispersion=1.2580e-02; item_loc_norm_mean=7.9006; item_loc_norm_std=0.7618; item_loc_dispersion=1.6273e-01; rhs_emb_norm_mean=14.1819; rhs_emb_norm_std=0.8538; rhs_emb_dispersion=1.0050e+00; supervised_edges_avg=417.5; supervised_edges_min=10; supervised_edges_max=925; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.11s; batch_time_avg=0.2496s
+2026-03-28 17:40:04.117818: I 
+2026-03-28 17:40:04.117663: I Epoch 28/999 eval_loss=77.24782
+2026-03-28 17:40:04.118132: I ******************************************
+2026-03-28 17:40:04.118375: I Validation Evaluation results
+2026-03-28 17:40:04.118527: I Cut-off: 20
+2026-03-28 17:40:04.118664: I Eval Time: 0.9175810813903809
+2026-03-28 17:40:04.118766: I Results
+2026-03-28 17:40:04.118960: I Recall	0.21043
+2026-03-28 17:40:04.119088: I nDCG	0.09489
+2026-03-28 17:40:04.606554: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=28).
+2026-03-28 17:43:58.084103: I [EPOCH 29/999] train_loss=77.47387; train_loss_min=21.34218; train_loss_max=199.42755; train_loss_std=30.91417; grad_norm_mean=16.8060; grad_norm_max=42.7730; emb_logits_mean=-1.6643; emb_logits_std=2.2825; emb_logits_pre_mean=-1.7243; emb_logits_pre_std=2.1761; override_ratio=0.036739; local_items_per_user_mean=1505.61; local_items_per_user_std=540.03; delta_override_mean=2.9526; delta_override_std=3.6429; gate_mean=0.5226; gate_std=0.1648; gate_min=0.0653; gate_max=1.0000; gate_entropy_mean=0.6301; id_logits_mean=3.8429; id_logits_std=3.3705; user_norm_mean=2.4690; user_norm_std=0.5276; user_dispersion=1.2139e-02; item_loc_norm_mean=7.9071; item_loc_norm_std=0.8176; item_loc_dispersion=1.7065e-01; rhs_emb_norm_mean=14.1655; rhs_emb_norm_std=0.8569; rhs_emb_dispersion=1.0052e+00; supervised_edges_avg=417.5; supervised_edges_min=23; supervised_edges_max=915; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.48s; batch_time_avg=0.2500s
+2026-03-28 17:46:40.345089: I Epoch 29/999 eval_loss=77.47387
+2026-03-28 17:46:40.345564: I 
+2026-03-28 17:46:40.345714: I Validation Evaluation results
+2026-03-28 17:46:40.345798: I Cut-off: 20
+2026-03-28 17:46:40.346007: I Eval Time: 0.9163675308227539
+2026-03-28 17:46:40.394174: I Results
+2026-03-28 17:46:40.394248: I Recall	0.20698
+2026-03-28 17:46:40.394308: I nDCG	0.09216
+2026-03-28 17:46:40.635933: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=29).
+2026-03-28 17:46:40.636914: I EarlyStopping: current=0.20698, best=0.21043, bad_epochs=1/10
+2026-03-28 17:50:33.835656: I [EPOCH 30/999] train_loss=77.05396; train_loss_min=25.61436; train_loss_max=252.23190; train_loss_std=31.17076; grad_norm_mean=15.4079; grad_norm_max=28.7857; emb_logits_mean=-1.7837; emb_logits_std=2.3494; emb_logits_pre_mean=-1.8439; emb_logits_pre_std=2.2456; override_ratio=0.036727; local_items_per_user_mean=1505.12; local_items_per_user_std=541.28; delta_override_mean=3.0751; delta_override_std=3.7185; gate_mean=0.5023; gate_std=0.1627; gate_min=0.0507; gate_max=1.0000; gate_entropy_mean=0.6331; id_logits_mean=3.9197; id_logits_std=3.4131; user_norm_mean=2.4065; user_norm_std=0.5233; user_dispersion=1.2174e-02; item_loc_norm_mean=8.1270; item_loc_norm_std=0.8175; item_loc_dispersion=1.8470e-01; rhs_emb_norm_mean=14.1512; rhs_emb_norm_std=0.8592; rhs_emb_dispersion=1.0055e+00; supervised_edges_avg=417.4; supervised_edges_min=30; supervised_edges_max=1104; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.20s; batch_time_avg=0.2497s
+2026-03-28 17:53:15.987095: I Epoch 30/999 eval_loss=77.05396
+2026-03-28 17:53:15.987562: I 
+2026-03-28 17:53:15.987716: I Validation Evaluation results
+2026-03-28 17:53:15.987846: I Cut-off: 20
+2026-03-28 17:53:15.987916: I Eval Time: 0.9196550846099854
+2026-03-28 17:53:16.034559: I Results
+2026-03-28 17:53:16.034856: I Recall	0.20979
+2026-03-28 17:53:16.035046: I nDCG	0.09329
+2026-03-28 17:53:16.290082: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=30).
+2026-03-28 17:53:16.290945: I EarlyStopping: current=0.20979, best=0.21043, bad_epochs=2/10
+2026-03-28 17:57:09.863427: I [EPOCH 31/999] train_loss=77.76137; train_loss_min=19.18625; train_loss_max=1446.22656; train_loss_std=49.41894; grad_norm_mean=15.9738; grad_norm_max=86.6032; emb_logits_mean=-1.8646; emb_logits_std=2.3715; emb_logits_pre_mean=-1.9245; emb_logits_pre_std=2.2681; override_ratio=0.036731; local_items_per_user_mean=1505.28; local_items_per_user_std=541.44; delta_override_mean=3.1078; delta_override_std=3.7718; gate_mean=0.4914; gate_std=0.1602; gate_min=0.0435; gate_max=1.0000; gate_entropy_mean=0.6344; id_logits_mean=3.9362; id_logits_std=3.4650; user_norm_mean=2.3566; user_norm_std=0.5093; user_dispersion=1.2018e-02; item_loc_norm_mean=8.2058; item_loc_norm_std=0.8232; item_loc_dispersion=1.8922e-01; rhs_emb_norm_mean=14.1344; rhs_emb_norm_std=0.8612; rhs_emb_dispersion=1.0057e+00; supervised_edges_avg=417.5; supervised_edges_min=217; supervised_edges_max=928; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.57s; batch_time_avg=0.2501s
+2026-03-28 17:59:52.244212: I Epoch 31/999 eval_loss=77.76137
+2026-03-28 17:59:52.244691: I 
+2026-03-28 17:59:52.244890: I Validation Evaluation results
+2026-03-28 17:59:52.245062: I Cut-off: 20
+2026-03-28 17:59:52.293371: I Eval Time: 0.9287588596343994
+2026-03-28 17:59:52.293683: I Results
+2026-03-28 17:59:52.293899: I Recall	0.1981
+2026-03-28 17:59:52.294053: I nDCG	0.08564
+2026-03-28 17:59:52.534303: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=31).
+2026-03-28 17:59:52.535940: I EarlyStopping: current=0.19810, best=0.21043, bad_epochs=3/10
+2026-03-28 18:03:45.980744: I [EPOCH 32/999] train_loss=77.33565; train_loss_min=22.09609; train_loss_max=199.09161; train_loss_std=30.84097; grad_norm_mean=16.2247; grad_norm_max=38.7039; emb_logits_mean=-2.0418; emb_logits_std=2.3748; emb_logits_pre_mean=-2.1029; emb_logits_pre_std=2.2714; override_ratio=0.036740; local_items_per_user_mean=1505.63; local_items_per_user_std=541.40; delta_override_mean=3.2013; delta_override_std=3.7558; gate_mean=0.4940; gate_std=0.1570; gate_min=0.0453; gate_max=1.0000; gate_entropy_mean=0.6368; id_logits_mean=3.8584; id_logits_std=3.4132; user_norm_mean=2.2361; user_norm_std=0.5091; user_dispersion=1.1347e-02; item_loc_norm_mean=8.3989; item_loc_norm_std=0.8187; item_loc_dispersion=1.9239e-01; rhs_emb_norm_mean=14.1164; rhs_emb_norm_std=0.8632; rhs_emb_dispersion=1.0058e+00; supervised_edges_avg=417.5; supervised_edges_min=23; supervised_edges_max=894; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.45s; batch_time_avg=0.2499s
+2026-03-28 18:06:28.221614: I 
+2026-03-28 18:06:28.221751: I Validation Evaluation results
+2026-03-28 18:06:28.221828: I Cut-off: 20
+2026-03-28 18:06:28.221459: I Epoch 32/999 eval_loss=77.33565
+2026-03-28 18:06:28.222349: I Eval Time: 0.9100034236907959
+2026-03-28 18:06:28.222493: I Results
+2026-03-28 18:06:28.222707: I Recall	0.2049
+2026-03-28 18:06:28.272839: I nDCG	0.09402
+2026-03-28 18:06:28.522123: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=32).
+2026-03-28 18:06:28.522976: I EarlyStopping: current=0.20490, best=0.21043, bad_epochs=4/10
+2026-03-28 18:10:21.756013: I [EPOCH 33/999] train_loss=77.01432; train_loss_min=20.92343; train_loss_max=198.04773; train_loss_std=31.39901; grad_norm_mean=16.4856; grad_norm_max=38.3930; emb_logits_mean=-2.0671; emb_logits_std=2.3819; emb_logits_pre_mean=-2.1246; emb_logits_pre_std=2.2813; override_ratio=0.036717; local_items_per_user_mean=1504.69; local_items_per_user_std=540.37; delta_override_mean=3.2091; delta_override_std=3.9179; gate_mean=0.4780; gate_std=0.1618; gate_min=0.0335; gate_max=1.0000; gate_entropy_mean=0.6330; id_logits_mean=3.8898; id_logits_std=3.6488; user_norm_mean=2.2089; user_norm_std=0.5054; user_dispersion=1.1378e-02; item_loc_norm_mean=8.5139; item_loc_norm_std=0.8422; item_loc_dispersion=2.0597e-01; rhs_emb_norm_mean=14.0912; rhs_emb_norm_std=0.8648; rhs_emb_dispersion=1.0060e+00; supervised_edges_avg=417.5; supervised_edges_min=26; supervised_edges_max=907; cpu_mem_max=4.71GB, gpu_mem_max=15.47GB; epoch_time=233.23s; batch_time_avg=0.2497s
+2026-03-28 18:13:03.769651: I 
+2026-03-28 18:13:03.769495: I Epoch 33/999 eval_loss=77.01432
+2026-03-28 18:13:03.769820: I Validation Evaluation results
+2026-03-28 18:13:03.769910: I Cut-off: 20
+2026-03-28 18:13:03.770486: I Eval Time: 0.941399097442627
+2026-03-28 18:13:03.770674: I Results
+2026-03-28 18:13:03.770871: I Recall	0.20531
+2026-03-28 18:13:03.817260: I nDCG	0.0915
+2026-03-28 18:13:04.055043: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=33).
+2026-03-28 18:13:04.055946: I EarlyStopping: current=0.20531, best=0.21043, bad_epochs=5/10
+2026-03-28 18:16:57.320699: I [EPOCH 34/999] train_loss=76.80878; train_loss_min=13.75355; train_loss_max=263.01080; train_loss_std=31.51691; grad_norm_mean=15.5810; grad_norm_max=33.2557; emb_logits_mean=-2.0798; emb_logits_std=2.4072; emb_logits_pre_mean=-2.1367; emb_logits_pre_std=2.3096; override_ratio=0.036740; local_items_per_user_mean=1505.64; local_items_per_user_std=540.83; delta_override_mean=3.2238; delta_override_std=3.9510; gate_mean=0.4750; gate_std=0.1675; gate_min=0.0249; gate_max=1.0000; gate_entropy_mean=0.6285; id_logits_mean=3.9351; id_logits_std=3.6315; user_norm_mean=2.1644; user_norm_std=0.5118; user_dispersion=1.1383e-02; item_loc_norm_mean=8.6226; item_loc_norm_std=0.8135; item_loc_dispersion=2.1380e-01; rhs_emb_norm_mean=14.0810; rhs_emb_norm_std=0.8669; rhs_emb_dispersion=1.0062e+00; supervised_edges_avg=417.4; supervised_edges_min=14; supervised_edges_max=1102; cpu_mem_max=4.71GB, gpu_mem_max=15.47GB; epoch_time=233.26s; batch_time_avg=0.2497s
+2026-03-28 18:19:39.586371: I Epoch 34/999 eval_loss=76.80878
+2026-03-28 18:19:39.586824: I 
+2026-03-28 18:19:39.587021: I Validation Evaluation results
+2026-03-28 18:19:39.587173: I Cut-off: 20
+2026-03-28 18:19:39.631971: I Eval Time: 0.9012796878814697
+2026-03-28 18:19:39.632472: I Results
+2026-03-28 18:19:39.632820: I Recall	0.20889
+2026-03-28 18:19:39.632969: I nDCG	0.09437
+2026-03-28 18:19:39.854617: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=34).
+2026-03-28 18:19:39.856429: I EarlyStopping: current=0.20889, best=0.21043, bad_epochs=6/10
+2026-03-28 18:23:33.139996: I [EPOCH 35/999] train_loss=76.65862; train_loss_min=7.03031; train_loss_max=204.11154; train_loss_std=31.59408; grad_norm_mean=15.3890; grad_norm_max=45.9814; emb_logits_mean=-2.1983; emb_logits_std=2.4527; emb_logits_pre_mean=-2.2555; emb_logits_pre_std=2.3575; override_ratio=0.036741; local_items_per_user_mean=1505.67; local_items_per_user_std=541.54; delta_override_mean=3.4751; delta_override_std=4.0389; gate_mean=0.4493; gate_std=0.1720; gate_min=0.0116; gate_max=1.0000; gate_entropy_mean=0.6197; id_logits_mean=4.1200; id_logits_std=3.6877; user_norm_mean=2.1128; user_norm_std=0.5052; user_dispersion=1.1333e-02; item_loc_norm_mean=8.6905; item_loc_norm_std=0.8216; item_loc_dispersion=2.2124e-01; rhs_emb_norm_mean=14.0785; rhs_emb_norm_std=0.8689; rhs_emb_dispersion=1.0064e+00; supervised_edges_avg=417.5; supervised_edges_min=9; supervised_edges_max=942; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.28s; batch_time_avg=0.2498s
+2026-03-28 18:26:15.386466: I Epoch 35/999 eval_loss=76.65862
+2026-03-28 18:26:15.386942: I 
+2026-03-28 18:26:15.387139: I Validation Evaluation results
+2026-03-28 18:26:15.387304: I Cut-off: 20
+2026-03-28 18:26:15.433473: I Eval Time: 0.9242494106292725
+2026-03-28 18:26:15.433837: I Results
+2026-03-28 18:26:15.434110: I Recall	0.205
+2026-03-28 18:26:15.434247: I nDCG	0.08909
+2026-03-28 18:26:15.656842: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=35).
+2026-03-28 18:26:15.657761: I EarlyStopping: current=0.20500, best=0.21043, bad_epochs=7/10
+2026-03-28 18:30:08.861648: I [EPOCH 36/999] train_loss=76.60086; train_loss_min=19.02699; train_loss_max=215.01523; train_loss_std=31.68873; grad_norm_mean=16.4169; grad_norm_max=62.0357; emb_logits_mean=-2.3150; emb_logits_std=2.4614; emb_logits_pre_mean=-2.3734; emb_logits_pre_std=2.3652; override_ratio=0.036724; local_items_per_user_mean=1504.99; local_items_per_user_std=541.77; delta_override_mean=3.7027; delta_override_std=4.0738; gate_mean=0.4298; gate_std=0.1751; gate_min=0.0067; gate_max=1.0000; gate_entropy_mean=0.6118; id_logits_mean=4.2280; id_logits_std=3.7134; user_norm_mean=2.0486; user_norm_std=0.4828; user_dispersion=1.0805e-02; item_loc_norm_mean=8.7528; item_loc_norm_std=0.8221; item_loc_dispersion=2.2777e-01; rhs_emb_norm_mean=14.0711; rhs_emb_norm_std=0.8704; rhs_emb_dispersion=1.0066e+00; supervised_edges_avg=417.4; supervised_edges_min=32; supervised_edges_max=971; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.20s; batch_time_avg=0.2497s
+2026-03-28 18:32:51.028059: I Epoch 36/999 eval_loss=76.60086
+2026-03-28 18:32:51.028541: I 
+2026-03-28 18:32:51.028763: I Validation Evaluation results
+2026-03-28 18:32:51.028939: I Cut-off: 20
+2026-03-28 18:32:51.029017: I Eval Time: 0.9557688236236572
+2026-03-28 18:32:51.029103: I Results
+2026-03-28 18:32:51.076177: I Recall	0.20792
+2026-03-28 18:32:51.076490: I nDCG	0.0935
+2026-03-28 18:32:51.298804: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=36).
+2026-03-28 18:32:51.299823: I EarlyStopping: current=0.20792, best=0.21043, bad_epochs=8/10
+2026-03-28 18:36:44.621021: I [EPOCH 37/999] train_loss=76.20824; train_loss_min=4.60138; train_loss_max=191.41656; train_loss_std=30.59725; grad_norm_mean=14.1201; grad_norm_max=28.1394; emb_logits_mean=-2.4064; emb_logits_std=2.5303; emb_logits_pre_mean=-2.4624; emb_logits_pre_std=2.4393; override_ratio=0.036745; local_items_per_user_mean=1505.86; local_items_per_user_std=541.48; delta_override_mean=3.6946; delta_override_std=4.2503; gate_mean=0.4259; gate_std=0.1797; gate_min=0.0055; gate_max=1.0000; gate_entropy_mean=0.6071; id_logits_mean=4.2103; id_logits_std=3.8818; user_norm_mean=2.0256; user_norm_std=0.4863; user_dispersion=1.0999e-02; item_loc_norm_mean=8.8898; item_loc_norm_std=0.8084; item_loc_dispersion=2.3853e-01; rhs_emb_norm_mean=14.0664; rhs_emb_norm_std=0.8718; rhs_emb_dispersion=1.0068e+00; supervised_edges_avg=417.4; supervised_edges_min=7; supervised_edges_max=870; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.32s; batch_time_avg=0.2498s
+2026-03-28 18:39:26.952614: I Epoch 37/999 eval_loss=76.20824
+2026-03-28 18:39:26.953152: I 
+2026-03-28 18:39:26.953321: I Validation Evaluation results
+2026-03-28 18:39:26.953472: I Cut-off: 20
+2026-03-28 18:39:26.953609: I Eval Time: 0.9189798831939697
+2026-03-28 18:39:26.953745: I Results
+2026-03-28 18:39:26.953908: I Recall	0.20574
+2026-03-28 18:39:27.000240: I nDCG	0.0944
+2026-03-28 18:39:27.212598: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=37).
+2026-03-28 18:39:27.213660: I EarlyStopping: current=0.20574, best=0.21043, bad_epochs=9/10
+2026-03-28 18:43:20.394810: I [EPOCH 38/999] train_loss=75.17044; train_loss_min=19.92050; train_loss_max=182.50073; train_loss_std=27.96503; grad_norm_mean=15.3856; grad_norm_max=43.2937; emb_logits_mean=-2.5648; emb_logits_std=2.5610; emb_logits_pre_mean=-2.6198; emb_logits_pre_std=2.4712; override_ratio=0.036727; local_items_per_user_mean=1505.09; local_items_per_user_std=539.98; delta_override_mean=3.8202; delta_override_std=4.3548; gate_mean=0.4181; gate_std=0.1879; gate_min=0.0032; gate_max=1.0000; gate_entropy_mean=0.5963; id_logits_mean=4.1987; id_logits_std=4.0067; user_norm_mean=1.9777; user_norm_std=0.4730; user_dispersion=1.0585e-02; item_loc_norm_mean=9.0177; item_loc_norm_std=0.8078; item_loc_dispersion=2.5060e-01; rhs_emb_norm_mean=14.0640; rhs_emb_norm_std=0.8737; rhs_emb_dispersion=1.0069e+00; supervised_edges_avg=417.5; supervised_edges_min=16; supervised_edges_max=850; cpu_mem_max=4.72GB, gpu_mem_max=15.47GB; epoch_time=233.18s; batch_time_avg=0.2497s
+2026-03-28 18:46:02.780410: I 
+2026-03-28 18:46:02.780247: I Epoch 38/999 eval_loss=75.17044
+2026-03-28 18:46:02.780581: I Validation Evaluation results
+2026-03-28 18:46:02.780992: I Cut-off: 20
+2026-03-28 18:46:02.781101: I Eval Time: 0.9185104370117188
+2026-03-28 18:46:02.781163: I Results
+2026-03-28 18:46:02.781330: I Recall	0.19961
+2026-03-28 18:46:02.781615: I nDCG	0.08839
+2026-03-28 18:46:03.046750: I Resume checkpoint saved at '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/resume-state-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab.pt' (last_completed_epoch=38).
+2026-03-28 18:46:03.047628: I EarlyStopping: current=0.19961, best=0.21043, bad_epochs=10/10
+2026-03-28 18:46:03.047858: I Met Early Stopping conditions: logger: <Logger EarlyStopping (DEBUG)>, validation_metric: Recall, validation_k: 20, cutoffs: [20], simple_metrics: ['Recall', 'nDCG'], monitor: Recall@20, patience: 10, mode: max, metric_k: 20, metric: Recall, min_delta: 0, verbose: True, active: True, _best: 0.2104293656641436, _bad_epochs: 10
+2026-03-28 18:46:03.189748: I Best checkpoint correctly restored from '/kaggle/working/contextgnn-through-elliot/results/gowalla/weights/ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab/best-weights-ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab'
+2026-03-28 18:49:28.620469: I [BRANCH USAGE@20, mode=full] local_topk_share=0.9971; global_topk_share=0.0029
+2026-03-28 18:49:28.620717: I [GATE TOPK@20, mode=full] topk_local_gate_mean@20=0.8138; topk_local_with_gate_high_share@20=0.9996
+2026-03-28 18:49:28.622081: I 
+2026-03-28 18:49:28.622238: I Test Evaluation results
+2026-03-28 18:49:28.622356: I Cut-off: 20
+2026-03-28 18:49:28.623065: I Eval Time: 1.5726494789123535
+2026-03-28 18:49:28.623542: I Results
+2026-03-28 18:49:28.623991: I Recall	0.16887
+2026-03-28 18:49:28.624071: I nDCG	0.12773
+2026-03-28 18:52:27.939055: I [BRANCH USAGE@20, mode=global] local_topk_share=0.7175; global_topk_share=0.2825
+2026-03-28 18:52:27.940806: I 
+2026-03-28 18:52:27.941511: I Test Evaluation results
+2026-03-28 18:52:27.941610: I Cut-off: 20
+2026-03-28 18:52:27.941670: I Eval Time: 1.0341176986694336
+2026-03-28 18:52:27.941785: I Results
+2026-03-28 18:52:27.942021: I Recall	0.04876
+2026-03-28 18:52:27.945378: I nDCG	0.03465
+2026-03-28 18:55:28.270478: I 
+2026-03-28 18:55:28.270303: I [BRANCH USAGE@20, mode=local] local_topk_share=1.0000; global_topk_share=0.0000
+2026-03-28 18:55:28.270676: I Test Evaluation results
+2026-03-28 18:55:28.275937: I Cut-off: 20
+2026-03-28 18:55:28.281283: I Eval Time: 1.1083824634552002
+2026-03-28 18:55:28.287196: I Results
+2026-03-28 18:55:28.297973: I Recall	0.10668
+2026-03-28 18:55:28.308443: I nDCG	0.06515
+2026-03-28 18:55:29.818813: I [RANKING OVERLAP - TEST] Jaccard@20(Full, Local)=0.1933; Jaccard@20(Full, Global)=0.0900
+2026-03-28 18:55:29.900654: I Training ended for ContextGNN
+2026-03-28 18:55:29.901015: I Loss:	-0.2104293656641436
+2026-03-28 18:55:29.901110: I Best Model params:	{'meta': namespace(hyper_opt_alg='grid', verbose=False, save_weights=True, save_resume=True, validation_rate=1, validation_metric='Recall@20', restore=True, write_best_iterations=True), 'epochs': 999, 'max_steps': 2000, 'lr': 0.001, 'acc_steps': 4, 'batch_size': 32, 'eval_batch_size': 32, 'inference_for_ranking': 'full,global,local', 'seed': 0, 'early_stopping': {'monitor': 'Recall@20', 'min_delta': 0, 'patience': 10, 'verbose': True, 'mode': 'auto'}, 'gnn': 'GraphSAGE', 'loss': 'ce', 'n_layers': 4, 'aggr': 'sum', 'factors': 128, 'channels': 128, 'neigh': '(16,16,16,16)', 'fusion_gate_version': 'v1', 'lambda_entropy': '1e-5', 'fixed_gates': False, 'name': 'ContextGNN_gowalla_seed=0_fgv=v1_h=1435b60865ab', 'best_iteration': 28}
+2026-03-28 18:55:29.901234: I Best Model results:	{20: {'Recall': np.float64(0.1688684857998604), 'nDCG': np.float64(0.1277299374484952)}}
+2026-03-28 18:55:29.905345: I End experiment
