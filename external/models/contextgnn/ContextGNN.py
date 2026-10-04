@@ -126,10 +126,76 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                 "full",
                 _parse_inference_for_ranking,
                 lambda x: "-".join(x)
-            )
+            ),
+            (
+                "_cl_method",
+                "cl_method",
+                "clm",
+                "none",
+                lambda x: str(x).strip().lower(),
+                None
+            ),
+            ("_lambda_cl", "lambda_cl", "lcl", 0.0, float, None),
+            ("_tau_cl", "tau_cl", "taucl", 0.2, float, None),
+            ("_edge_drop_p", "edge_drop_p", "edrop", 0.1, float, None),
+            ("_xsim_eps", "xsim_eps", "xeps", 0.1, float, None),
+            ("_cl_layer", "cl_layer", "cll", 2, int, None),
+            (
+                "_cl_scope",
+                "cl_scope",
+                "clscope",
+                "user_item",
+                lambda x: str(x).strip().lower(),
+                None
+            ),
+            ("_cl_normalize", "cl_normalize", "clnorm", True, bool, None)
         ]
 
         self.autoset_params()
+
+        allowed_cl_methods = {"none", "sgl", "xsimgcl"}
+
+        if self._cl_method not in allowed_cl_methods:
+            raise ValueError(f"Unknown cl_method='{self._cl_method}'. Allowed: {sorted(allowed_cl_methods)}")
+
+        allowed_cl_scope = {"user", "item", "user_item"}
+
+        if self._cl_scope not in allowed_cl_scope:
+            raise ValueError(f"Unknown cl_scope='{self._cl_scope}'. Allowed: {sorted(allowed_cl_scope)}")
+
+        if self._cl_layer < 1:
+            raise ValueError("cl_layer must be >= 1")
+
+        if self._cl_layer > self._n_layers:
+            raise ValueError(
+                "cl_layer must be <= n_layers. "
+                "For GraphSAGE + XSimGCL, use the stronger condition cl_layer < n_layers."
+            )
+        
+        if self._cl_method == "xsimgcl" and str(self._gnn).lower() == "graphsage":
+            if self._n_layers < 2:
+                raise ValueError(
+                    "GraphSAGE + XSimGCL requires n_layers >= 2, "
+                    "otherwise the contrastive view at cl_layer cannot differ meaningfully from the final view."
+                )
+
+            if self._cl_layer >= self._n_layers:
+                raise ValueError(
+                    "GraphSAGE + XSimGCL requires cl_layer < n_layers, "
+                    "because cl_layer must refer to an intermediate propagation layer, not the final one."
+                )
+
+        if self._cl_method == "none" and self._lambda_cl != 0.0:
+            self.logger.warning("cl_method='none' but lambda_cl > 0: contrastive term will be ignored.")
+
+        if self._tau_cl <= 0.0:
+            raise ValueError("tau_cl must be > 0")
+
+        if not (0.0 <= self._edge_drop_p < 1.0):
+            raise ValueError("edge_drop_p must satisfy 0 <= edge_drop_p < 1")
+
+        if self._xsim_eps < 0.0:
+            raise ValueError("xsim_eps must be >= 0")
 
         if "full" in self._inference_for_ranking:
             self._primary_inference_mode = "full"
@@ -316,7 +382,15 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             torch_frame_model_kwargs={"channels": self._channels, "num_layers": self._n_layers},
             is_static=True,
             src_entity_table=SRC_ENTITY_TABLE,
-            num_src_nodes=NUM_SRC_NODES
+            num_src_nodes=NUM_SRC_NODES,
+            cl_method=self._cl_method,
+            lambda_cl=self._lambda_cl,
+            tau_cl=self._tau_cl,
+            edge_drop_p=self._edge_drop_p,
+            xsim_eps=self._xsim_eps,
+            cl_layer=self._cl_layer,
+            cl_scope=self._cl_scope,
+            cl_normalize=self._cl_normalize
         )
 
         self._save_resume = getattr(self._params.meta, "save_resume", True)
@@ -455,6 +529,115 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             value=val,
             sparse_sizes=(num_dst, num_src)
         ).coalesce()
+
+    def _build_sgl_edge_index_dict(
+        self,
+        kept_edge_index: torch.Tensor,
+        num_src: int,
+        num_dst: int
+    ):
+        edge_type = (SRC_ENTITY_TABLE, SRC_ENTITY_COL, DST_ENTITY_TABLE)
+        reverse_edge_type = (DST_ENTITY_TABLE, DST_ENTITY_COL, SRC_ENTITY_TABLE)
+
+        values = torch.ones(kept_edge_index.size(1), device=self.device, dtype=torch.float32)
+        src = kept_edge_index[0]
+        dst = kept_edge_index[1]
+
+        if self._is_sparse_gnn():
+            adj_t_dst_src = TSSparseTensor(
+                row=dst,
+                col=src,
+                value=values,
+                sparse_sizes=(num_dst, num_src)
+            ).coalesce()
+
+            adj_t_src_dst = TSSparseTensor(
+                row=src,
+                col=dst,
+                value=values,
+                sparse_sizes=(num_src, num_dst)
+            ).coalesce()
+
+            return {
+                edge_type: adj_t_dst_src,
+                reverse_edge_type: adj_t_src_dst
+            }
+
+        edge_type_sparse = torch.sparse_coo_tensor(
+            kept_edge_index.flip(0),
+            values,
+            size=(num_dst, num_src)
+        ).coalesce()
+
+        reverse_edge_type_sparse = torch.sparse_coo_tensor(
+            kept_edge_index,
+            values,
+            size=(num_src, num_dst)
+        ).coalesce()
+
+        return {
+            edge_type: edge_type_sparse,
+            reverse_edge_type: reverse_edge_type_sparse
+        }
+    
+    def _compute_sgl_isolated_users_ratio(
+        self,
+        kept_edge_index: torch.Tensor,
+        batch_size: int
+    ) -> float:
+        if batch_size <= 0:
+            return float("nan")
+
+        if kept_edge_index.numel() == 0:
+            return 1.0
+
+        src_seed = kept_edge_index[0]
+        src_seed = src_seed[src_seed < batch_size]
+
+        counts = torch.bincount(src_seed, minlength=batch_size)
+
+        return float((counts == 0).float().mean().item())
+    
+    def _prepare_sgl_cl_payload(
+        self,
+        edge_index_message_passing: torch.Tensor,
+        num_src: int,
+        num_dst: int,
+        batch_size: int
+    ):
+        num_edges = edge_index_message_passing.size(1)
+        device = edge_index_message_passing.device
+
+        keep_mask1 = (torch.rand(num_edges, device=device) > self._edge_drop_p)
+        keep_mask2 = (torch.rand(num_edges, device=device) > self._edge_drop_p)
+
+        kept_edge_index1 = edge_index_message_passing[:, keep_mask1]
+        kept_edge_index2 = edge_index_message_passing[:, keep_mask2]
+
+        inter = int((keep_mask1 & keep_mask2).sum().item())
+        union = int((keep_mask1 | keep_mask2).sum().item())
+        overlap = inter / union if union > 0 else 1.0
+
+        view1_edge_index_dict = self._build_sgl_edge_index_dict(kept_edge_index1, num_src=num_src, num_dst=num_dst)
+        view2_edge_index_dict = self._build_sgl_edge_index_dict(kept_edge_index2, num_src=num_src, num_dst=num_dst)
+
+        sgl_stats = {
+            "edge_drop_rate_view1": 1.0 - float(keep_mask1.float().mean().item()) if num_edges > 0 else 0.0,
+            "edge_drop_rate_view2": 1.0 - float(keep_mask2.float().mean().item()) if num_edges > 0 else 0.0,
+            "kept_edges_view1": float(keep_mask1.sum().item()),
+            "kept_edges_view2": float(keep_mask2.sum().item()),
+            "retained_edge_overlap_ratio": float(overlap),
+            "isolated_users_ratio_view1": self._compute_sgl_isolated_users_ratio(kept_edge_index1, batch_size),
+            "isolated_users_ratio_view2": self._compute_sgl_isolated_users_ratio(kept_edge_index2, batch_size),
+            "sgl_message_edges_count": float(num_edges),
+            "sgl_seed_users_count": float(batch_size)
+        }
+
+        return {
+            "view1_edge_index_dict": view1_edge_index_dict,
+            "view2_edge_index_dict": view2_edge_index_dict,
+            "sgl_stats": sgl_stats
+        }
 
     def _maybe_convert_eval_edges_to_torch_sparse(self, batch: HeteroData) -> None:
         if not self._is_sparse_gnn():
@@ -607,6 +790,24 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                     num_src = batch.num_nodes_dict[SRC_ENTITY_TABLE]
                     num_dst = batch.num_nodes_dict[DST_ENTITY_TABLE]
 
+                    cl_active = (self._cl_method != "none" and self._lambda_cl > 0.0)
+                    cl_override_payload = None
+                    cl_indices = None
+
+                    if cl_active:
+                        cl_indices = {
+                            "user_local_idx": torch.unique(edge_label_index[0]),
+                            "pos_item_global_idx": torch.unique(global_edge_label_index_sample[1])
+                        }
+
+                    if cl_active and self._cl_method == "sgl":
+                        cl_override_payload = self._prepare_sgl_cl_payload(
+                            edge_index_message_passing=edge_index_message_passing,
+                            num_src=num_src,
+                            num_dst=num_dst,
+                            batch_size=int(batch[SRC_ENTITY_TABLE].seed_time.size(0))
+                        )
+
                     src = edge_index_message_passing[0]
                     dst = edge_index_message_passing[1]
                     values_f32 = values.to(torch.float32)
@@ -633,8 +834,17 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
                         batch[edge_type].edge_index = edge_index_message_passing_reverse_sparse
                         batch[reverse_edge_type].edge_index = edge_index_message_passing_sparse
+                    
+                    forward_out = self._model.forward_with_cl(
+                        batch=batch,
+                        entity_table=SRC_ENTITY_TABLE,
+                        dst_table=DST_ENTITY_TABLE,
+                        score_mode="full",
+                        cl_override_payload=cl_override_payload,
+                        cl_indices=cl_indices
+                    )
 
-                    logits = self._model(batch, SRC_ENTITY_TABLE, DST_ENTITY_TABLE)
+                    logits = forward_out["logits"]
 
                     if self._loss == "ce":
                         loss = sparse_cross_entropy(logits, edge_label_index)
@@ -654,9 +864,22 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                     else:
                         raise NotImplementedError
 
-                    (loss / self._acc_steps).backward()
+                    loss_sup = loss
+                    cl_payload = forward_out.get("cl_payload", None)
 
-                    batch_loss_val = float(loss)
+                    if self._cl_method != "none" and cl_payload is not None and self._lambda_cl > 0.0:
+                        loss_cl, cl_monitor = self._model.compute_contrastive_loss(cl_payload)
+                    else:
+                        loss_cl = torch.zeros((), device=self.device)
+                        cl_monitor = {}
+                    
+                    loss_total = loss_sup + self._lambda_cl * loss_cl
+                    (loss_total / self._acc_steps).backward()
+
+                    batch_loss_val = float(loss_total)
+                    batch_loss_sup_val = float(loss_sup)
+                    batch_loss_cl_val = float(loss_cl)
+
                     loss_weight = max(int(num_supervised), 1)
 
                     loss_accum += batch_loss_val * loss_weight
@@ -706,6 +929,98 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                         self._weighted_add(metric_acc, "local_items_per_user_std", monitor.get("local_items_per_user_std", 0.0), user_weight)
                         self._weighted_add(metric_acc, "delta_override_mean", monitor.get("delta_override_mean", 0.0), local_item_weight)
                         self._weighted_add(metric_acc, "delta_override_std", monitor.get("delta_override_std", 0.0), local_item_weight)
+
+                    if cl_monitor:
+                        loss_weight = max(int(num_supervised), 1)
+
+                        self._weighted_add(metric_acc, "loss_sup", batch_loss_sup_val, loss_weight)
+                        self._weighted_add(metric_acc, "loss_cl", batch_loss_cl_val, loss_weight)
+                        self._weighted_add(metric_acc, "loss_total", batch_loss_val, loss_weight)
+
+                        ratio_val = ((self._lambda_cl * batch_loss_cl_val) / max(batch_loss_sup_val, 1e-12))
+                        self._weighted_add(metric_acc, "cl_to_sup_ratio", ratio_val, loss_weight)
+
+                        user_cl_weight = int(cl_monitor.get("user_cl_count", 0))
+                        item_cl_weight = int(cl_monitor.get("item_cl_count", 0))
+                        total_cl_weight = int(cl_monitor.get("cl_total_count", user_cl_weight + item_cl_weight))
+
+                        self._weighted_add(metric_acc, "user_cl_count_mean", cl_monitor.get("user_cl_count", 0), 1)
+                        self._weighted_add(metric_acc, "item_cl_count_mean", cl_monitor.get("item_cl_count", 0), 1)
+                        self._weighted_add(metric_acc, "item_cl_coverage", cl_monitor.get("item_cl_coverage", 0.0), 1)
+                        self._weighted_add(metric_acc, "batches_with_empty_item_cl_ratio", cl_monitor.get("empty_item_cl_batch", 0.0), 1)
+
+                        common_cl_keys = [
+                            "pos_sim_mean",
+                            "pos_sim_std",
+                            "neg_sim_mean",
+                            "neg_sim_std",
+                            "hardest_neg_sim_mean",
+                            "alignment_mean",
+                            "uniformity_mean"
+                        ]
+
+                        if total_cl_weight > 0:
+                            for key in common_cl_keys:
+                                if key in cl_monitor:
+                                    self._weighted_add(metric_acc, key, cl_monitor[key], total_cl_weight)
+
+                        if user_cl_weight > 0 and "user_emb_std_per_dim_mean" in cl_monitor:
+                            self._weighted_add(
+                                metric_acc,
+                                "user_emb_std_per_dim_mean",
+                                cl_monitor["user_emb_std_per_dim_mean"],
+                                user_cl_weight
+                            )
+
+                        if item_cl_weight > 0 and "item_emb_std_per_dim_mean" in cl_monitor:
+                            self._weighted_add(
+                                metric_acc,
+                                "item_emb_std_per_dim_mean",
+                                cl_monitor["item_emb_std_per_dim_mean"],
+                                item_cl_weight
+                            )
+                        
+                        if self._cl_method == "sgl":
+                            sgl_edge_weight = int(cl_monitor.get("sgl_message_edges_count", 0))
+                            sgl_user_weight = int(cl_monitor.get("sgl_seed_users_count", 0))
+
+                            edge_based_sgl_keys = [
+                                "edge_drop_rate_view1",
+                                "edge_drop_rate_view2",
+                                "kept_edges_view1",
+                                "kept_edges_view2",
+                                "retained_edge_overlap_ratio"
+                            ]
+
+                            user_based_sgl_keys = [
+                                "isolated_users_ratio_view1",
+                                "isolated_users_ratio_view2"
+                            ]
+
+                            if sgl_edge_weight > 0:
+                                for key in edge_based_sgl_keys:
+                                    if key in cl_monitor:
+                                        self._weighted_add(metric_acc, key, cl_monitor[key], sgl_edge_weight)
+
+                            if sgl_user_weight > 0:
+                                for key in user_based_sgl_keys:
+                                    if key in cl_monitor:
+                                        self._weighted_add(metric_acc, key, cl_monitor[key], sgl_user_weight)
+                        elif self._cl_method == "xsimgcl":
+                            xsimgcl_keys = [
+                                "noise_norm_mean",
+                                "noise_norm_std",
+                                "noise_to_signal_ratio_mean",
+                                "clean_noisy_cos_mean",
+                                "cl_layer",
+                                "cl_layer_pos_sim_mean",
+                                "cl_layer_neg_sim_mean"
+                            ]
+
+                            if total_cl_weight > 0:
+                                for key in xsimgcl_keys:
+                                    if key in cl_monitor:
+                                        self._weighted_add(metric_acc, key, cl_monitor[key], total_cl_weight)
 
                     if ((i + 1) % self._acc_steps == 0) or ((i + 1) == len(self.loader_dict["train"])):
                         total_norm_sq = 0.0
@@ -776,6 +1091,82 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             delta_override_mean_avg = self._weighted_mean(metric_acc, "delta_override_mean")
             delta_override_std_avg = self._weighted_mean(metric_acc, "delta_override_std")
 
+            cl_active = (self._cl_method != "none" and self._lambda_cl > 0.0)
+
+            cl_common_log = ""
+            cl_specific_log = ""
+
+            if cl_active:
+                loss_sup_avg = self._weighted_mean(metric_acc, "loss_sup")
+                loss_cl_avg = self._weighted_mean(metric_acc, "loss_cl")
+                loss_total_avg = self._weighted_mean(metric_acc, "loss_total")
+                cl_to_sup_ratio_avg = self._weighted_mean(metric_acc, "cl_to_sup_ratio")
+                user_cl_count_mean_avg = self._weighted_mean(metric_acc, "user_cl_count_mean")
+                item_cl_count_mean_avg = self._weighted_mean(metric_acc, "item_cl_count_mean")
+                item_cl_coverage_avg = self._weighted_mean(metric_acc, "item_cl_coverage")
+                batches_with_empty_item_cl_ratio_avg = self._weighted_mean(metric_acc, "batches_with_empty_item_cl_ratio")
+                pos_sim_mean_avg = self._weighted_mean(metric_acc, "pos_sim_mean")
+                pos_sim_std_avg = self._weighted_mean(metric_acc, "pos_sim_std")
+                neg_sim_mean_avg = self._weighted_mean(metric_acc, "neg_sim_mean")
+                neg_sim_std_avg = self._weighted_mean(metric_acc, "neg_sim_std")
+                hardest_neg_sim_mean_avg = self._weighted_mean(metric_acc, "hardest_neg_sim_mean")
+                alignment_mean_avg = self._weighted_mean(metric_acc, "alignment_mean")
+                uniformity_mean_avg = self._weighted_mean(metric_acc, "uniformity_mean")
+                user_emb_std_per_dim_mean_avg = self._weighted_mean(metric_acc, "user_emb_std_per_dim_mean")
+                item_emb_std_per_dim_mean_avg = self._weighted_mean(metric_acc, "item_emb_std_per_dim_mean")
+
+                cl_common_log = (
+                    f"loss_sup={loss_sup_avg:.5f}; loss_cl={loss_cl_avg:.5f}; loss_total={loss_total_avg:.5f}; "
+                    f"cl_to_sup_ratio={cl_to_sup_ratio_avg:.5f}; "
+                    f"user_cl_count_mean={user_cl_count_mean_avg:.5f}; "
+                    f"item_cl_count_mean={item_cl_count_mean_avg:.5f}; "
+                    f"item_cl_coverage={item_cl_coverage_avg:.5f}; "
+                    f"batches_with_empty_item_cl_ratio={batches_with_empty_item_cl_ratio_avg:.5f}; "
+                    f"pos_sim_mean={pos_sim_mean_avg:.5f}; pos_sim_std={pos_sim_std_avg:.5f}; "
+                    f"neg_sim_mean={neg_sim_mean_avg:.5f}; neg_sim_std={neg_sim_std_avg:.5f}; "
+                    f"hardest_neg_sim_mean={hardest_neg_sim_mean_avg:.5f}; "
+                    f"alignment_mean={alignment_mean_avg:.5f}; uniformity_mean={uniformity_mean_avg:.5f}; "
+                    f"user_emb_std_per_dim_mean={user_emb_std_per_dim_mean_avg:.5f}; "
+                    f"item_emb_std_per_dim_mean={item_emb_std_per_dim_mean_avg:.5f}; "
+                )
+
+                if self._cl_method == "sgl":
+                    edge_drop_rate_view1_avg = self._weighted_mean(metric_acc, "edge_drop_rate_view1")
+                    edge_drop_rate_view2_avg = self._weighted_mean(metric_acc, "edge_drop_rate_view2")
+                    kept_edges_view1_avg = self._weighted_mean(metric_acc, "kept_edges_view1")
+                    kept_edges_view2_avg = self._weighted_mean(metric_acc, "kept_edges_view2")
+                    retained_edge_overlap_ratio_avg = self._weighted_mean(metric_acc, "retained_edge_overlap_ratio")
+                    isolated_users_ratio_view1_avg = self._weighted_mean(metric_acc, "isolated_users_ratio_view1")
+                    isolated_users_ratio_view2_avg = self._weighted_mean(metric_acc, "isolated_users_ratio_view2")
+
+                    cl_specific_log = (
+                        f"edge_drop_rate_view1={edge_drop_rate_view1_avg:.5f}; "
+                        f"edge_drop_rate_view2={edge_drop_rate_view2_avg:.5f}; "
+                        f"kept_edges_view1={kept_edges_view1_avg:.1f}; "
+                        f"kept_edges_view2={kept_edges_view2_avg:.1f}; "
+                        f"retained_edge_overlap_ratio={retained_edge_overlap_ratio_avg:.5f}; "
+                        f"isolated_users_ratio_view1={isolated_users_ratio_view1_avg:.5f}; "
+                        f"isolated_users_ratio_view2={isolated_users_ratio_view2_avg:.5f}; "
+                    )
+                elif self._cl_method == "xsimgcl":
+                    noise_norm_mean_avg = self._weighted_mean(metric_acc, "noise_norm_mean")
+                    noise_norm_std_avg = self._weighted_mean(metric_acc, "noise_norm_std")
+                    noise_to_signal_ratio_mean_avg = self._weighted_mean(metric_acc, "noise_to_signal_ratio_mean")
+                    clean_noisy_cos_mean_avg = self._weighted_mean(metric_acc, "clean_noisy_cos_mean")
+                    cl_layer_avg = self._weighted_mean(metric_acc, "cl_layer")
+                    cl_layer_pos_sim_mean_avg = self._weighted_mean(metric_acc, "cl_layer_pos_sim_mean")
+                    cl_layer_neg_sim_mean_avg = self._weighted_mean(metric_acc, "cl_layer_neg_sim_mean")
+
+                    cl_specific_log = (
+                        f"noise_norm_mean={noise_norm_mean_avg:.5f}; "
+                        f"noise_norm_std={noise_norm_std_avg:.5f}; "
+                        f"noise_to_signal_ratio_mean={noise_to_signal_ratio_mean_avg:.5f}; "
+                        f"clean_noisy_cos_mean={clean_noisy_cos_mean_avg:.5f}; "
+                        f"cl_layer={cl_layer_avg:.1f}; "
+                        f"cl_layer_pos_sim_mean={cl_layer_pos_sim_mean_avg:.5f}; "
+                        f"cl_layer_neg_sim_mean={cl_layer_neg_sim_mean_avg:.5f}; "
+                    )
+
             grad_norm_mean = grad_norm_sum / grad_norm_steps if grad_norm_steps > 0 else float("nan")
             avg_supervised_edges = supervised_edges_sum / max(steps, 1) if supervised_edges_sum > 0 else 0.0
 
@@ -803,6 +1194,7 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                 f"offset_id_mean={offset_id_mean_avg:.4f}; offset_id_std={offset_id_std_avg:.4f}; "
                 f"supervised_edges_avg={avg_supervised_edges:.1f}; "
                 f"supervised_edges_min={supervised_edges_min}; supervised_edges_max={supervised_edges_max}; "
+                f"{cl_common_log}{cl_specific_log}"
                 f"cpu_mem_max={max_cpu_mem:.2f}GB, gpu_mem_max={max_gpu_mem:.2f}GB; "
                 f"epoch_time={epoch_time:.2f}s; batch_time_avg={avg_batch_time:.4f}s"
             )
