@@ -37,7 +37,6 @@ from relbench.modeling.loader import SparseTensor
 from torch_geometric.seed import seed_everything
 from torch_geometric.utils import sort_edge_index
 from relbench.modeling.utils import to_unix_time
-from torch_frame.utils import infer_df_stype
 from torch import Tensor
 from torch_frame import stype
 from torch_geometric.utils.cross_entropy import sparse_cross_entropy
@@ -49,6 +48,9 @@ import numpy as np
 from ast import literal_eval as make_tuple
 
 from contextlib import nullcontext
+
+from collections import defaultdict
+from torch_geometric.nn import Node2Vec
 
 PSEUDO_TIME = "pseudo_time"
 SRC_ENTITY_TABLE = "user_table"
@@ -88,6 +90,15 @@ def _parse_inference_for_ranking(val):
 
     return out
 
+def _parse_feature_type(val):
+    s = str(val).strip().lower()
+    allowed = {"const_original", "const_unified", "random", "informative"}
+
+    if s not in allowed:
+        raise ValueError(f"feature_type='{s}' not valid. Admitted: {sorted(allowed)}")
+
+    return s
+
 class ContextGNN(RecMixin, BaseRecommenderModel):
     r"""
     ContextGNN: Beyond Two-Tower Recommendation Systems (https://arxiv.org/abs/2411.19513)
@@ -126,6 +137,14 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                 "full",
                 _parse_inference_for_ranking,
                 lambda x: "-".join(x)
+            ),
+            (
+                "_feature_type",
+                "feature_type",
+                "feat",
+                "const_original",
+                _parse_feature_type,
+                None
             )
         ]
 
@@ -163,24 +182,27 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
         NUM_SRC_NODES = len(src_df)
         self.NUM_DST_NODES = len(dst_df)
 
+        src_feat_df, dst_feat_df = self._build_node_feature_tables(
+            src_df=src_df,
+            dst_df=dst_df,
+            train_df=train_df
+        )
+
+        feature_table_dict = {
+            SRC_ENTITY_TABLE: src_feat_df,
+            DST_ENTITY_TABLE: dst_feat_df
+        }
+
+        col_to_stype_dict = {
+            SRC_ENTITY_TABLE: {col: stype.numerical for col in src_feat_df.columns},
+            DST_ENTITY_TABLE: {col: stype.numerical for col in dst_feat_df.columns}
+        }
+
         table_dict = {
             SRC_ENTITY_TABLE: src_df,
             DST_ENTITY_TABLE: dst_df,
             TRANSACTION_TABLE: target_df
         }
-
-        def get_static_stype_proposal(
-            table_dict: Dict[str, pd.DataFrame]
-        ) -> Dict[str, Dict[str, stype]]:
-            inferred_col_to_stype_dict = {}
-
-            for table_name, df in table_dict.items():
-                df = df.sample(min(1_000, len(df)))
-                inferred_col_to_stype_dict[table_name] = infer_df_stype(df)
-            
-            return inferred_col_to_stype_dict
-
-        col_to_stype_dict = get_static_stype_proposal(table_dict)
 
         def static_data_make_pkey_fkey_graph(
             table_dict: Dict[str, pd.DataFrame],
@@ -189,23 +211,41 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             data = HeteroData()
             col_stats_dict = dict()
 
-            src_col_to_stype = {"__const__": stype.numerical}
-            src_df_const = pd.DataFrame({"__const__": np.ones(len(table_dict[SRC_ENTITY_TABLE]))})
-            src_dataset = Dataset(df=src_df_const, col_to_stype=src_col_to_stype).materialize()
+            if self._feature_type == "const_original":
+                src_dataset = Dataset(
+                    df=feature_table_dict[SRC_ENTITY_TABLE],
+                    col_to_stype=col_to_stype_dict[SRC_ENTITY_TABLE]
+                ).materialize()
 
-            data[SRC_ENTITY_TABLE].tf = src_dataset.tensor_frame
+                data[SRC_ENTITY_TABLE].tf = src_dataset.tensor_frame
+                col_stats_dict[SRC_ENTITY_TABLE] = src_dataset.col_stats
+            else:
+                src_x = np.ascontiguousarray(feature_table_dict[SRC_ENTITY_TABLE].to_numpy(dtype=np.float32, copy=True))
+
+                data[SRC_ENTITY_TABLE].x_dense = torch.from_numpy(src_x)
+                data[SRC_ENTITY_TABLE].num_nodes = src_x.shape[0]
+
+                col_stats_dict[SRC_ENTITY_TABLE] = {}
+
             data[SRC_ENTITY_TABLE].time = torch.from_numpy(to_unix_time(table_dict[SRC_ENTITY_TABLE][PSEUDO_TIME]))
-            
-            col_stats_dict[SRC_ENTITY_TABLE] = src_dataset.col_stats
 
-            dst_col_to_stype = {"__const__": stype.numerical}
-            dst_df_const = pd.DataFrame({"__const__": np.ones(len(table_dict[DST_ENTITY_TABLE]))})
-            dst_dataset = Dataset(df=dst_df_const, col_to_stype=dst_col_to_stype).materialize()
+            if self._feature_type == "const_original":
+                dst_dataset = Dataset(
+                    df=feature_table_dict[DST_ENTITY_TABLE],
+                    col_to_stype=col_to_stype_dict[DST_ENTITY_TABLE]
+                ).materialize()
 
-            data[DST_ENTITY_TABLE].tf = dst_dataset.tensor_frame
+                data[DST_ENTITY_TABLE].tf = dst_dataset.tensor_frame
+                col_stats_dict[DST_ENTITY_TABLE] = dst_dataset.col_stats
+            else:
+                dst_x = np.ascontiguousarray(feature_table_dict[DST_ENTITY_TABLE].to_numpy(dtype=np.float32, copy=True))
+
+                data[DST_ENTITY_TABLE].x_dense = torch.from_numpy(dst_x)
+                data[DST_ENTITY_TABLE].num_nodes = dst_x.shape[0]
+
+                col_stats_dict[DST_ENTITY_TABLE] = {}
+
             data[DST_ENTITY_TABLE].time = torch.from_numpy(to_unix_time(table_dict[DST_ENTITY_TABLE][PSEUDO_TIME]))
-            
-            col_stats_dict[DST_ENTITY_TABLE] = dst_dataset.col_stats
             
             fkey_index = torch.from_numpy(table_dict[TRANSACTION_TABLE][SRC_ENTITY_COL].astype(int).values)
             pkey_index = torch.from_numpy(table_dict[TRANSACTION_TABLE][DST_ENTITY_COL].astype(int).values)
@@ -268,6 +308,11 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             "test": test_df
         }
 
+        self._split_positive_sets = {
+            "validation": self._build_split_positive_sets(val_df),
+            "test": self._build_split_positive_sets(test_df)
+        }
+
         self._eval_batch_size = getattr(self._params, "eval_batch_size", self._batch_size)
 
         for split, table in split_to_table.items():
@@ -316,7 +361,8 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             torch_frame_model_kwargs={"channels": self._channels, "num_layers": self._n_layers},
             is_static=True,
             src_entity_table=SRC_ENTITY_TABLE,
-            num_src_nodes=NUM_SRC_NODES
+            num_src_nodes=NUM_SRC_NODES,
+            feature_type=self._feature_type
         )
 
         self._save_resume = getattr(self._params.meta, "save_resume", True)
@@ -395,6 +441,299 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
             mask = negs == positives
 
         return torch.stack([users, negs], dim=0)
+    
+    def _build_split_positive_sets(self, split_df: pd.DataFrame) -> Dict[int, set]:
+        out = defaultdict(set)
+
+        for _, row in split_df.iterrows():
+            user = int(row[SRC_ENTITY_COL])
+            items = row[DST_ENTITY_COL]
+
+            if isinstance(items, (list, tuple, np.ndarray, pd.Series)):
+                for item in items:
+                    if pd.notna(item):
+                        out[user].add(int(item))
+            else:
+                if pd.notna(items):
+                    out[user].add(int(items))
+
+        return dict(out)
+
+    def _get_split_fixed_feature_seed(
+        self,
+        train_df: pd.DataFrame,
+        namespace: str
+    ) -> int:
+        hasher = hashlib.sha1()
+
+        hasher.update(str(self._config.dataset).encode("utf-8"))
+        hasher.update(str(namespace).encode("utf-8"))
+
+        user_to_items = defaultdict(list)
+
+        for _, row in train_df.iterrows():
+            user = int(row[SRC_ENTITY_COL])
+            items = row[DST_ENTITY_COL]
+
+            if isinstance(items, (list, tuple, np.ndarray, pd.Series)):
+                valid_items = [int(x) for x in items if pd.notna(x)]
+            else:
+                valid_items = [int(items)] if pd.notna(items) else []
+
+            user_to_items[user].extend(valid_items)
+
+        for user in sorted(user_to_items):
+            hasher.update(f"user={user}|".encode("utf-8"))
+
+            for item in sorted(user_to_items[user]):
+                hasher.update(f"{item},".encode("utf-8"))
+
+            hasher.update(b";")
+
+        return int(hasher.hexdigest()[:8], 16)
+
+    def _get_informative_n2v_dim(self) -> int:
+        return 16
+
+    def _get_informative_total_dim(self) -> int:
+        # 1 constant + 2 structural features + Node2Vec
+        return 1 + 2 + self._get_informative_n2v_dim()
+
+    def _build_random_feature_tables(
+        self,
+        src_df: pd.DataFrame,
+        dst_df: pd.DataFrame,
+        train_df: pd.DataFrame
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        total_dim = self._get_informative_total_dim()
+        rand_dim = total_dim - 1
+
+        seed_base = self._get_split_fixed_feature_seed(
+            train_df=train_df,
+            namespace="random_features"
+        )
+
+        rng_user = np.random.default_rng(seed_base + 11)
+        rng_item = np.random.default_rng(seed_base + 29)
+
+        src_random = rng_user.standard_normal((len(src_df), rand_dim)).astype(np.float32)
+        dst_random = rng_item.standard_normal((len(dst_df), rand_dim)).astype(np.float32)
+
+        src_feat_df = pd.DataFrame({"__const__": np.ones(len(src_df), dtype=np.float32)})
+
+        for j in range(rand_dim):
+            src_feat_df[f"rand_{j}"] = src_random[:, j]
+
+        dst_feat_df = pd.DataFrame({"__const__": np.ones(len(dst_df), dtype=np.float32)})
+        
+        for j in range(rand_dim):
+            dst_feat_df[f"rand_{j}"] = dst_random[:, j]
+
+        return src_feat_df, dst_feat_df
+
+    def _percentile_from_dense_values(self, values: np.ndarray) -> np.ndarray:
+        s = pd.Series(values)
+        pct = s.rank(method="average", pct=True).fillna(0.0).astype(np.float32)
+
+        return pct.to_numpy(dtype=np.float32)
+
+    def _compute_train_degree_features(
+        self,
+        num_users: int,
+        num_items: int,
+        train_df: pd.DataFrame
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        user_degree = np.zeros(num_users, dtype=np.float32)
+        item_degree = np.zeros(num_items, dtype=np.float32)
+
+        for _, row in train_df.iterrows():
+            user = int(row[SRC_ENTITY_COL])
+            items = row[DST_ENTITY_COL]
+
+            if isinstance(items, (list, tuple, np.ndarray, pd.Series)):
+                valid_items = [int(x) for x in items if pd.notna(x)]
+            else:
+                valid_items = [int(items)] if pd.notna(items) else []
+
+            user_degree[user] += len(valid_items)
+
+            for item in valid_items:
+                item_degree[item] += 1.0
+
+        user_degree_log = np.log1p(user_degree).astype(np.float32)
+        item_degree_log = np.log1p(item_degree).astype(np.float32)
+
+        user_activity_percentile = self._percentile_from_dense_values(user_degree)
+        item_popularity_percentile = self._percentile_from_dense_values(item_degree)
+
+        return (
+            user_degree_log,
+            user_activity_percentile,
+            item_degree_log,
+            item_popularity_percentile
+        )
+
+    def _compute_train_node2vec_features(
+        self,
+        num_users: int,
+        num_items: int,
+        train_df: pd.DataFrame,
+        emb_dim: int = 16,
+        walk_length: int = 20,
+        context_size: int = 10,
+        walks_per_node: int = 10,
+        num_negative_samples: int = 1,
+        p: float = 1.0,
+        q: float = 1.0,
+        sparse: bool = True,
+        epochs: int = 20,
+        batch_size: int = 256,
+        lr: float = 0.01
+    ) -> Tuple[np.ndarray, np.ndarray]:
+        rows = []
+        cols = []
+
+        for _, row in train_df.iterrows():
+            user = int(row[SRC_ENTITY_COL])
+            items = row[DST_ENTITY_COL]
+
+            if isinstance(items, (list, tuple, np.ndarray, pd.Series)):
+                valid_items = [int(x) for x in items if pd.notna(x)]
+            else:
+                valid_items = [int(items)] if pd.notna(items) else []
+
+            for item in valid_items:
+                item_offset = num_users + item
+                rows.extend([user, item_offset])
+                cols.extend([item_offset, user])
+
+        edge_index = torch.tensor([rows, cols], dtype=torch.long)
+
+        seed_base = int(hashlib.sha1(f"{self._config.dataset}|node2vec_features".encode("utf-8")).hexdigest()[:8], 16)
+
+        cpu_state = torch.random.get_rng_state()
+        np_state = np.random.get_state()
+        py_state = random.getstate()
+
+        torch.manual_seed(seed_base)
+        np.random.seed(seed_base % (2**32 - 1))
+        random.seed(seed_base)
+
+        try:
+            node2vec = Node2Vec(
+                edge_index=edge_index,
+                embedding_dim=emb_dim,
+                walk_length=walk_length,
+                context_size=context_size,
+                walks_per_node=walks_per_node,
+                num_negative_samples=num_negative_samples,
+                p=p,
+                q=q,
+                sparse=sparse
+            ).to(self.device)
+
+            loader = node2vec.loader(batch_size=batch_size, shuffle=True, num_workers=0)
+
+            if sparse:
+                optimizer = torch.optim.SparseAdam(list(node2vec.parameters()), lr=lr)
+            else:
+                optimizer = torch.optim.Adam(list(node2vec.parameters()), lr=lr)
+
+            node2vec.train()
+
+            for _ in range(epochs):
+                for pos_rw, neg_rw in loader:
+                    pos_rw = pos_rw.to(self.device)
+                    neg_rw = neg_rw.to(self.device)
+
+                    optimizer.zero_grad()
+                    loss = node2vec.loss(pos_rw, neg_rw)
+                    loss.backward()
+                    optimizer.step()
+
+            z = node2vec.embedding.weight.detach().cpu().numpy().astype(np.float32)
+        finally:
+            torch.random.set_rng_state(cpu_state)
+            np.random.set_state(np_state)
+            random.setstate(py_state)
+
+        user_n2v = z[:num_users]
+        item_n2v = z[num_users:]
+
+        return user_n2v, item_n2v
+
+    def _build_informative_feature_tables(
+        self,
+        src_df: pd.DataFrame,
+        dst_df: pd.DataFrame,
+        train_df: pd.DataFrame
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        num_users = len(src_df)
+        num_items = len(dst_df)
+
+        (
+            user_degree_log,
+            user_activity_percentile,
+            item_degree_log,
+            item_popularity_percentile
+        ) = self._compute_train_degree_features(
+            num_users=num_users,
+            num_items=num_items,
+            train_df=train_df
+        )
+
+        n2v_dim = self._get_informative_n2v_dim()
+
+        user_n2v, item_n2v = self._compute_train_node2vec_features(
+            num_users=num_users,
+            num_items=num_items,
+            train_df=train_df,
+            emb_dim=n2v_dim
+        )
+
+        src_feat_df = pd.DataFrame({
+            "__const__": np.ones(num_users, dtype=np.float32),
+            "user_degree_log": user_degree_log,
+            "user_activity_percentile": user_activity_percentile
+        })
+
+        for j in range(user_n2v.shape[1]):
+            src_feat_df[f"user_n2v_{j}"] = user_n2v[:, j]
+
+        dst_feat_df = pd.DataFrame({
+            "__const__": np.ones(num_items, dtype=np.float32),
+            "item_degree_log": item_degree_log,
+            "item_popularity_percentile": item_popularity_percentile
+        })
+
+        for j in range(item_n2v.shape[1]):
+            dst_feat_df[f"item_n2v_{j}"] = item_n2v[:, j]
+
+        return src_feat_df, dst_feat_df
+
+    def _build_node_feature_tables(
+        self,
+        src_df: pd.DataFrame,
+        dst_df: pd.DataFrame,
+        train_df: pd.DataFrame
+    ) -> Tuple[pd.DataFrame, pd.DataFrame]:
+        if self._feature_type in {"const_original", "const_unified"}:
+            src_feat_df = pd.DataFrame({"__const__": np.ones(len(src_df), dtype=np.float32)})
+            dst_feat_df = pd.DataFrame({"__const__": np.ones(len(dst_df), dtype=np.float32)})
+
+            return src_feat_df, dst_feat_df
+
+        if self._feature_type == "random":
+            return self._build_random_feature_tables(
+                src_df=src_df,
+                dst_df=dst_df,
+                train_df=train_df
+            )
+
+        if self._feature_type == "informative":
+            return self._build_informative_feature_tables(src_df, dst_df, train_df)
+
+        raise ValueError(f"Unknown feature_type='{self._feature_type}'")
 
     def _mask_seen_items_inplace(self, preds: torch.Tensor, user_idx_np: np.ndarray, split_name: str) -> bool:
         split_name = str(split_name).lower().strip()
@@ -613,7 +952,6 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
                     if self._is_sparse_gnn():
                         adj_t_dst_src = TSSparseTensor(row=dst, col=src, value=values_f32, sparse_sizes=(num_dst, num_src)).coalesce()
-
                         adj_t_src_dst = TSSparseTensor(row=src, col=dst, value=values_f32, sparse_sizes=(num_src, num_dst)).coalesce()
 
                         batch[edge_type].edge_index = adj_t_dst_src
@@ -829,6 +1167,8 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
         self._usage_local_hits = 0
         self._usage_total = 0
 
+        self._reset_candidate_diagnostics()
+
         self._model.eval()
 
         use_cuda = torch.cuda.is_available()
@@ -859,6 +1199,13 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                     )
 
                     global_batch_src_ids = batch[SRC_ENTITY_TABLE].n_id[:batch_size]
+
+                    if split_name in {"validation", "test"}:
+                        self._update_candidate_diagnostics(
+                            split_name=split_name,
+                            batch_user_ids=global_batch_src_ids.detach().cpu().numpy(),
+                            k=k
+                        )
 
                     mask = self.get_candidate_mask(validation=(split_name == "validation"))
 
@@ -986,6 +1333,87 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
                 jaccard_scores.append(len(a & b) / len(union))
 
         return float(np.mean(jaccard_scores))
+    
+    def _reset_candidate_diagnostics(self):
+        self._diag_local_items_sum = 0.0
+        self._diag_local_user_count = 0
+        self._diag_pos_total = 0
+        self._diag_pos_covered = 0
+        self._diag_users_zero_pos_coverage = 0
+        self._diag_users_total = 0
+        self._diag_ub_hits = 0
+        self._diag_ub_total = 0
+
+    def _update_candidate_diagnostics(
+        self,
+        split_name: str,
+        batch_user_ids: np.ndarray,
+        k: int
+    ):
+        local_assign = getattr(self._model, "_last_local_assign", None)
+
+        if local_assign is None:
+            return
+
+        lhs_b, rhs_idx, bsz = local_assign
+
+        if bsz != len(batch_user_ids):
+            return
+
+        local_sets = [set() for _ in range(bsz)]
+
+        for u_pos, item in zip(lhs_b.tolist(), rhs_idx.tolist()):
+            local_sets[u_pos].add(int(item))
+
+        split_pos_dict = self._split_positive_sets.get(split_name, {})
+
+        for u_pos, user_id in enumerate(batch_user_ids.tolist()):
+            local_items = local_sets[u_pos]
+            pos_items = split_pos_dict.get(int(user_id), set())
+
+            self._diag_local_items_sum += len(local_items)
+            self._diag_local_user_count += 1
+
+            if len(pos_items) == 0:
+                continue
+
+            covered = len(local_items & pos_items)
+
+            self._diag_pos_covered += covered
+            self._diag_pos_total += len(pos_items)
+
+            if covered == 0:
+                self._diag_users_zero_pos_coverage += 1
+
+            self._diag_users_total += 1
+
+            self._diag_ub_hits += min(k, covered)
+            self._diag_ub_total += min(k, len(pos_items))
+
+    def _finalize_candidate_diagnostics(self, k: int) -> Dict[str, float]:
+        out = {}
+
+        out["local_items_per_user_mean"] = (
+            self._diag_local_items_sum / self._diag_local_user_count
+            if self._diag_local_user_count > 0 else float("nan")
+        )
+
+        out["pos_coverage"] = (
+            self._diag_pos_covered / self._diag_pos_total
+            if self._diag_pos_total > 0 else float("nan")
+        )
+
+        out["users_with_zero_pos_coverage_ratio"] = (
+            self._diag_users_zero_pos_coverage / self._diag_users_total
+            if self._diag_users_total > 0 else float("nan")
+        )
+
+        out[f"UB@{k}"] = (
+            self._diag_ub_hits / self._diag_ub_total
+            if self._diag_ub_total > 0 else float("nan")
+        )
+
+        return out
 
     def _rng_snapshot(self):
         snap = {
@@ -1187,6 +1615,16 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
             result_dict = self.evaluator.eval_validation(val_recs)
 
+            diag = self._finalize_candidate_diagnostics(k_need)
+
+            self.logger.info(
+                f"[CANDIDATE DIAGNOSTICS - VALIDATION@{k_need}] "
+                f"local_items_per_user_mean={diag['local_items_per_user_mean']:.2f}; "
+                f"pos_coverage={diag['pos_coverage']:.4f}; "
+                f"users_with_zero_pos_coverage_ratio={diag['users_with_zero_pos_coverage_ratio']:.4f}; "
+                f"UB@{k_need}={diag[f'UB@{k_need}']:.4f}"
+            )
+
             self._losses.append(loss)
             self._results.append(result_dict)
 
@@ -1230,6 +1668,23 @@ class ContextGNN(RecMixin, BaseRecommenderModel):
 
             if not self._inference_for_ranking:
                 raise ValueError("inference_for_ranking must contain at least one mode for final test.")
+
+            _ = self._collect_recommendations_for_split(
+                "test",
+                k_need,
+                inference_mode="full",
+                count_usage=False
+            )
+
+            diag = self._finalize_candidate_diagnostics(k_need)
+
+            self.logger.info(
+                f"[CANDIDATE DIAGNOSTICS - TEST@{k_need}] "
+                f"local_items_per_user_mean={diag['local_items_per_user_mean']:.2f}; "
+                f"pos_coverage={diag['pos_coverage']:.4f}; "
+                f"users_with_zero_pos_coverage_ratio={diag['users_with_zero_pos_coverage_ratio']:.4f}; "
+                f"UB@{k_need}={diag[f'UB@{k_need}']:.4f}"
+            )
 
             for mode in self._inference_for_ranking:
                 test_recs = self._collect_recommendations_for_split(

@@ -50,3 +50,5 @@ experiment:
       factors: 128
       channels: 128
       neigh: (16,16,16,16)
+
+      feature_type: const_original # const_original | const_unified | random | informative

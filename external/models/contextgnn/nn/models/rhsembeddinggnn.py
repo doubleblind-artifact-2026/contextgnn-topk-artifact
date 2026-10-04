@@ -31,42 +31,52 @@ class RHSEmbeddingGNN(torch.nn.Module):
         num_nodes: int,
         embedding_dim: int,
         num_src_nodes: Optional[int] = None,
-        src_entity_table: Optional[str] = None
+        src_entity_table: Optional[str] = None,
+        build_lhs_embedding: bool = True
     ):
         super().__init__()
 
-        stype_encoder_dict = {
-            k: v[0]() for k, v in DEFAULT_STYPE_ENCODER_DICT.items() if k in data[dst_entity_table]["tf"].col_names_dict.keys()
-        }
+        def build_rhs_module(node_table: str, n_nodes: int) -> RHSEmbedding:
+            store = data[node_table]
 
-        self.rhs_embedding = RHSEmbedding(
-            emb_mode=rhs_emb_mode,
-            embedding_dim=embedding_dim,
-            num_nodes=num_nodes,
-            col_stats=col_stats_dict[dst_entity_table],
-            col_names_dict=data[dst_entity_table]["tf"].col_names_dict,
-            stype_encoder_dict=stype_encoder_dict,
-            feat=data[dst_entity_table]["tf"]
-        )
+            if "tf" in store.keys():
+                stype_encoder_dict = {
+                    k: v[0]()
+                    for k, v in DEFAULT_STYPE_ENCODER_DICT.items()
+                    if k in store["tf"].col_names_dict.keys()
+                }
 
+                return RHSEmbedding(
+                    emb_mode=rhs_emb_mode,
+                    embedding_dim=embedding_dim,
+                    num_nodes=n_nodes,
+                    col_stats=col_stats_dict[node_table],
+                    col_names_dict=store["tf"].col_names_dict,
+                    stype_encoder_dict=stype_encoder_dict,
+                    feat=store["tf"],
+                    dense_feat=None
+                )
+
+            if "x_dense" in store.keys():
+                return RHSEmbedding(
+                    emb_mode=rhs_emb_mode,
+                    embedding_dim=embedding_dim,
+                    num_nodes=n_nodes,
+                    col_stats=None,
+                    col_names_dict=None,
+                    stype_encoder_dict=None,
+                    feat=None,
+                    dense_feat=store["x_dense"]
+                )
+
+            raise KeyError(f"Neither 'tf' nor 'x_dense' found for node table '{node_table}'")
+
+        self.rhs_embedding = build_rhs_module(dst_entity_table, num_nodes)
         self.lhs_embedding = None
 
-        if num_src_nodes is not None:
+        if build_lhs_embedding and num_src_nodes is not None:
             assert src_entity_table is not None
-
-            src_stype_encoder_dict = {
-                k: v[0]() for k, v in DEFAULT_STYPE_ENCODER_DICT.items() if k in data[src_entity_table]["tf"].col_names_dict.keys()
-            }
-
-            self.lhs_embedding = RHSEmbedding(
-                emb_mode=rhs_emb_mode,
-                embedding_dim=embedding_dim,
-                num_nodes=num_src_nodes,
-                col_stats=col_stats_dict[src_entity_table],
-                col_names_dict=data[src_entity_table]["tf"].col_names_dict,
-                stype_encoder_dict=src_stype_encoder_dict,
-                feat=data[src_entity_table]["tf"]
-            )
+            self.lhs_embedding = build_rhs_module(src_entity_table, num_src_nodes)
 
     def reset_parameters(self):
         self.rhs_embedding.reset_parameters()

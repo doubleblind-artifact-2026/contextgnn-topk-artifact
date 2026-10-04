@@ -29,37 +29,44 @@ class RHSEmbedding(torch.nn.Module):
         emb_mode: RHSEmbeddingMode,
         embedding_dim: int,
         num_nodes: int,
-        col_stats: dict,
-        col_names_dict: dict,
-        stype_encoder_dict: dict,
-        feat: Optional[TensorFrame] = None
+        col_stats: Optional[dict] = None,
+        col_names_dict: Optional[dict] = None,
+        stype_encoder_dict: Optional[dict] = None,
+        feat: Optional[TensorFrame] = None,
+        dense_feat: Optional[Tensor] = None
     ):
         super().__init__()
 
         self.emb_mode = emb_mode
         self.encoder: Optional[StypeWiseFeatureEncoder] = None
+        self.dense_encoder: Optional[torch.nn.Linear] = None
         self.projector: Optional[torch.nn.Sequential] = None
         self._feat = feat
+        self._dense_feat = dense_feat
 
         if self.emb_mode in [RHSEmbeddingMode.FEATURE, RHSEmbeddingMode.FUSION]:
-            self.encoder = StypeWiseFeatureEncoder(
-                out_channels=embedding_dim,
-                col_stats=col_stats,
-                col_names_dict=col_names_dict,
-                stype_encoder_dict=stype_encoder_dict
-            )
-
             seqs: List[torch.nn.Module] = []
 
-            if feat is None:
-                raise ValueError(f"RHSEmbedding mode {self.emb_mode} requires feat data")
-            
+            if feat is not None:
+                if col_stats is None or col_names_dict is None or stype_encoder_dict is None:
+                    raise ValueError("TensorFrame backend requires col_stats, col_names_dict and stype_encoder_dict")
+
+                self.encoder = StypeWiseFeatureEncoder(
+                    out_channels=embedding_dim,
+                    col_stats=col_stats,
+                    col_names_dict=col_names_dict,
+                    stype_encoder_dict=stype_encoder_dict
+                )
+            elif dense_feat is not None:
+                self.dense_encoder = torch.nn.Linear(dense_feat.size(-1), embedding_dim)
+            else:
+                raise ValueError(f"RHSEmbedding mode {self.emb_mode} requires feat or dense_feat")
+
             seqs += [
                 FCResidualBlock(embedding_dim, embedding_dim),
-                FCResidualBlock(embedding_dim, embedding_dim)
+                FCResidualBlock(embedding_dim, embedding_dim),
+                torch.nn.LayerNorm(embedding_dim, eps=1e-7)
             ]
-
-            seqs += [torch.nn.LayerNorm(embedding_dim, eps=1e-7)]
 
             self.projector = torch.nn.Sequential(*seqs)
 
@@ -78,6 +85,9 @@ class RHSEmbedding(torch.nn.Module):
 
         if self.encoder is not None:
             self.encoder.reset_parameters()
+        
+        if self.dense_encoder is not None:
+            self.dense_encoder.reset_parameters()
             
         if self.projector is not None:
             for child in self.projector.children():
@@ -106,8 +116,14 @@ class RHSEmbedding(torch.nn.Module):
 
             out = self.encoder(self._feat)[0]
             out = self.projector(out)
-
             out = torch.sum(out, dim=1)
+
+            outs.append(out)
+        elif self.dense_encoder is not None and self.projector is not None:
+            assert self._dense_feat is not None
+
+            out = self.dense_encoder(self._dense_feat)
+            out = self.projector(out)
 
             outs.append(out)
         
@@ -128,16 +144,25 @@ class RHSEmbedding(torch.nn.Module):
         if self._feat is not None:
             self._feat = self._feat.to(*args, **kwargs)
         
+        if self._dense_feat is not None:
+            self._dense_feat = self._dense_feat.to(*args, **kwargs)
+        
         return super().to(*args, **kwargs)
 
     def cpu(self) -> Self:
         if self._feat is not None:
             self._feat = self._feat.cpu()
         
+        if self._dense_feat is not None:
+            self._dense_feat = self._dense_feat.cpu()
+        
         return super().cpu()
 
     def cuda(self, *args, **kwargs) -> Self:
         if self._feat is not None:
             self._feat = self._feat.cuda(*args, **kwargs)
+        
+        if self._dense_feat is not None:
+            self._dense_feat = self._dense_feat.cuda(*args, **kwargs)
         
         return super().cuda(*args, **kwargs)
