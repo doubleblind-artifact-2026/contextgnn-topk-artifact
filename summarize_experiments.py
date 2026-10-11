@@ -70,7 +70,7 @@ FUSION_GATE_DIAGNOSTICS_NO_TEMP = (
 )
 
 FUSION_GATE_TEMPERATURE_DIAGNOSTIC = (
-    "gate_temperature"
+    "gate_temperature",
 )
 
 FUSION_TOPK_DIAGNOSTICS = (
