@@ -1,6 +1,6 @@
-# Beyond Two-Tower, Back to Local: Revisiting ContextGNN for Top-K Recommendation
+# Beyond Two-Tower, Back to Local: Reproducing and Benchmarking ContextGNN for Top-K Recommendation
 
-This repository accompanies the paper **Beyond Two-Tower, Back to Local: Revisiting ContextGNN for Top-K Recommendation**, available at: \<TODO: link>.
+This repository accompanies the paper **Beyond Two-Tower, Back to Local: Reproducing and Benchmarking ContextGNN for Top-K Recommendation**, available at: \<TODO: link>.
 
 Its purpose is to support the reproducibility of the experimental results reported in the paper by documenting the code origin and software requirements, describing the data format and preprocessing workflow, explaining how to configure and launch experiments, linking each experimental grid to its aggregated result file, and exposing the logs, diagnostics, and auxiliary execution notes that are not fully included in the paper.
 
