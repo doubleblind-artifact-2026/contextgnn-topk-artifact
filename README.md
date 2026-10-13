@@ -1,8 +1,8 @@
 # Beyond Two-Tower, Back to Local: Reproducing and Benchmarking ContextGNN for Top-K Recommendation
 
-This repository accompanies the paper **Beyond Two-Tower, Back to Local: Reproducing and Benchmarking ContextGNN for Top-K Recommendation**, available at: \<TODO: link>.
+This repository accompanies the paper **Beyond Two-Tower, Back to Local: Reproducing and Benchmarking ContextGNN for Top-K Recommendation**.
 
-Its purpose is to support the reproducibility of the experimental results reported in the paper by documenting the code origin and software requirements, describing the data format and preprocessing workflow, explaining how to configure and launch experiments, linking each experimental grid to its aggregated result file, and exposing the logs, diagnostics, and auxiliary execution notes that are not fully included in the paper.
+Its purpose is to support the reproducibility of the experimental results reported in the paper by documenting the code origin and software requirements, describing the data format and preprocessing workflow, explaining how to configure and launch experiments, and providing access to the corresponding experiment logs and aggregated results.
 
 ## Code Origin
 
@@ -117,16 +117,16 @@ git checkout <branch_name>
 
 Experimental blocks and branches, ordered as in the paper:
 
-| Branch                 | Experimental block                                                                                                |
-| ---------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| `main`                 | Reproduced baseline                                                                                               |
-| `structural-analysis`  | Candidate-set bottleneck under neighbor sampling; Gowalla unified constant-encoding sanity check; feature ablations with constant, random, and informative inputs |
-| `main`                 | GNN-backbone analysis                                                                                             |
-| `fusion-gate`          | Learned and fixed local-global fusion gates                                                                       |
-| `contrastive-learning` | SGL-style and XSimGCL-style contrastive learning                                                                  |
-| `hard-negatives`       | BCE training and hard negative mining                                                                             |
-| `main`                 | K-sensitivity analysis                                                                                            |
-| `low-degree-analysis`     | User-degree-stratified analysis                                                                                    |
+| RQ  | Branch                 | Experimental block                         | Datasets reported               |
+| --- | ---------------------- | ------------------------------------------ | ------------------------------- |
+| RQ1 | `main`                 | Reproduced baseline                        | Amazon-Book, Yelp2018, Gowalla  |
+| RQ2 | `structural-analysis`  | Neighbor sampling and GNN depth            | Amazon-Book, Yelp2018           |
+| RQ3 | `structural-analysis`  | Input-feature ablations                    | Amazon-Book, Gowalla            |
+| RQ4 | `main`                 | GNN backbones                              | Yelp2018, Gowalla               |
+| RQ5 | `fusion-gate`          | Learned fusion gates                       | Amazon-Book, Yelp2018           |
+| RQ6 | `contrastive-learning` | Graph contrastive learning                 | Yelp2018, Gowalla               |
+| RQ6 | `hard-negatives`       | BCE training and hard negative mining      | Amazon-Book, Gowalla            |
+| RQ7 | `low-degree-analysis`  | User-degree-stratified evaluation          | Amazon-Book, Gowalla            |
 
 The original baseline configurations are stored in `config_files/` on the `main` branch. The grids below report only the hyperparameters that must be changed with respect to those baseline YAML files in order to reproduce each experimental block. Unless explicitly stated otherwise, all other settings, including data split, gradient accumulation, early stopping, and Full, Global, and Local evaluation setup, follow the baseline configuration.
 
@@ -138,7 +138,7 @@ The baseline runs use the original dataset-specific YAML files in `config_files/
 
 **Multi-seed protocol:** direct multi-seed evaluation with `seed ∈ {0,1,2,3,4}`.
 
-Aggregated value tables and diagnostic definitions: `experiment_results/baseline.md`.
+Aggregated ranking results: `experiment_results/baseline.md`.
 
 ### Candidate-set / neighbor-sampling grid
 
@@ -150,11 +150,11 @@ Aggregated value tables and diagnostic definitions: `experiment_results/baseline
 | `n_layers`                       | `2`, `4`                                                      |
 | `neigh`, 2 layers                | `(4,4)`, `(8,8)`, `(16,16)`                                   |
 | `neigh`, 4 layers                | `(4,4,4,4)`, `(8,8,8,8)`, plus the baseline-width setting     |
-| Baseline-width `neigh`, 4 layers | Amazon-Book: `(16,16,8,8)`; Yelp2018/Gowalla: `(16,16,16,16)` |
+| Baseline-width `neigh`, 4 layers | Amazon-Book: `(16,16,8,8)`; Yelp2018: `(16,16,16,16)` |
 
 **Multi-seed protocol:** direct multi-seed evaluation with `seed ∈ {0,1,2,3,4}`.
 
-Aggregated value tables and diagnostic definitions: `experiment_results/structure.md`.
+Aggregated ranking results: `experiment_results/structure.md`.
 
 ### Feature-ablation grid
 
@@ -166,11 +166,9 @@ Aggregated value tables and diagnostic definitions: `experiment_results/structur
 
 For `feature_type=informative`, the additional fixed `Node2Vec` hyperparameters are `embedding_dim=16`, `walk_length=20`, `context_size=10`, `walks_per_node=10`, `num_negative_samples=1`, `p=1.0`, and `q=1.0`. These values correspond to the branch defaults and therefore do not need to be explicitly specified in the YAML configuration.
 
-**Multi-seed protocol:** direct multi-seed evaluation with `seed ∈ {0,1,2,3,4}` for the main feature-ablation rows (`const_unified`, `random`, and `informative`) reported in the paper table.
+**Multi-seed protocol:** direct multi-seed evaluation with `seed ∈ {0,1,2,3,4}` for the feature-ablation variants (`const_unified`, `random`, and `informative`) reported in the paper table.
 
-**Gowalla unified constant-encoding sanity check:** `experiment_results/structure.md` also reports a separate Gowalla sanity-check table comparing the original baseline constant-feature path and the unified dense constant-feature path under narrow and wide neighbor-sampling regimes. The additional narrow unified-constant run uses `feature_type=const_unified`, `n_layers=2`, `neigh=(16,16)`, and seeds `{0,1,2}`; the other rows in the sanity-check table reuse the corresponding five-seed neighbor-sampling, baseline-width, and feature-ablation logs.
-
-Aggregated value tables and diagnostic definitions: `experiment_results/structure.md`.
+Aggregated ranking results: `experiment_results/structure.md`.
 
 ### GNN-backbone grid
 
@@ -183,34 +181,26 @@ Aggregated value tables and diagnostic definitions: `experiment_results/structur
 | `n_layers`        | `1`, `2`, `3`, `4`                                            |
 | `neigh`, 1 layer  | `(16,)`                                                       |
 | `neigh`, 2 layers | `(16,16)`                                                     |
-| `neigh`, 3 layers | Amazon-Book: `(16,16,8)`; Yelp2018/Gowalla: `(16,16,16)`      |
-| `neigh`, 4 layers | Amazon-Book: `(16,16,8,8)`; Yelp2018/Gowalla: `(16,16,16,16)` |
+| `neigh`, 3 layers | Yelp2018/Gowalla: `(16,16,16)`                              |
+| `neigh`, 4 layers | Yelp2018/Gowalla: `(16,16,16,16)`                           |
 
 **Multi-seed protocol:** seed-0 screening for `LightGCN` and `NGCF`, followed by re-evaluation of the selected best configuration with `seed ∈ {0,1,2,3,4}`. The `GraphSAGE` baseline row reported in the paper table is reused from the five-seed baseline evaluation.
 
-Aggregated value tables and diagnostic definitions: `experiment_results/backbone.md`.
+Aggregated ranking results: `experiment_results/backbone.md`.
 
 ### Fusion-gate grid
 
 **Branch:** `fusion-gate`
 
-| Hyperparameter             | Values                                                                                                               |
-| -------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| `fusion_gate_version`      | `v1`, `v2`, `v3`                                                                                                     |
-| `lambda_entropy`           | `1e-5`                                                                                                               |
-| `gate_temperature`         | `1.0` (used only when `fusion_gate_version=v3`)                                                                      |
-| `fixed_gates`              | `False` for learned-gate training; `True` for fixed-gate inference-only tests                                        |
-| `fixed_gates_weights_name` | Filename of the best checkpoint selected from the corresponding learned-gate run (used only when `fixed_gates=True`) |
+| Hyperparameter        | Values                                                  |
+| --------------------- | ------------------------------------------------------- |
+| `fusion_gate_version` | `v1`, `v2`, `v3`                                        |
+| `lambda_entropy`      | `1e-5`                                                  |
+| `gate_temperature`    | `1.0` (used only when `fusion_gate_version=v3`)         |
 
-For fixed-gate inference-only tests, `fixed_gates_weights_name` expects only the checkpoint filename, not a full path. The corresponding file must be present under Elliot's weight directory, `results/weights/`, for example `results/weights/<fixed_gates_weights_name>`.
+**Multi-seed protocol:** direct multi-seed learned-gate evaluation with `seed ∈ {0,1,2,3,4}`.
 
-The fixed-gate checkpoints are provided in [`best-weights.zip`](https://github.com/doubleblind-artifact-2026/contextgnn-topk-artifact/releases/download/v1.0.0/best-weights.zip), available from the GitHub release assets. Extract the archive and place the checkpoint files in `results/weights/` before running the fixed-gate inference-only tests.
-
-The fixed-gate runs are inference-only evaluations over saved learned-gate checkpoints, not additional model-training runs. The branch evaluates the fixed gate values `0.25`, `0.50`, and `0.75` during those inference-only tests.
-
-**Multi-seed protocol:** direct multi-seed learned-gate evaluation with `seed ∈ {0,1,2,3,4}`; fixed-gate inference-only tests are then run on the corresponding five selected learned-gate checkpoints.
-
-Aggregated learned-gate and fixed-gate value tables and diagnostic definitions: `experiment_results/fusion.md`.
+Aggregated learned-gate ranking results: `experiment_results/fusion.md`.
 
 ### Contrastive-learning grid
 
@@ -224,7 +214,7 @@ Aggregated learned-gate and fixed-gate value tables and diagnostic definitions: 
 
 **Multi-seed protocol:** seed-0 screening for SGL and XSimGCL, followed by re-evaluation of the selected best configuration with `seed ∈ {0,1,2,3,4}`.
 
-Aggregated value tables and diagnostic definitions: `experiment_results/contrastive.md`.
+Aggregated ranking results: `experiment_results/contrastive.md`.
 
 ### Hard negative mining grid
 
@@ -236,30 +226,11 @@ Aggregated value tables and diagnostic definitions: `experiment_results/contrast
 | Global model-aware hard negatives | `loss=bce`, `negative_sampling_strategy=global_model_aware`, `hard_ratio ∈ {0.25, 0.75}`, `warmup_epochs=5` |
 | Local model-aware hard negatives  | `loss=bce`, `negative_sampling_strategy=local_model_aware`, `hard_ratio ∈ {0.25, 0.75}`, `warmup_epochs=5`  |
 
-The branch uses internal mining pool limits `global_hard_pool_topk=50` and `local_hard_pool_topk=20`. If `hard_ratio_applied=0` at the selected best epoch, the validation criterion selected a checkpoint still in the warmup/uniform regime. This is treated as an experimental outcome rather than as a parser error; mining-specific aggregated diagnostics are reported as unavailable when at least one seed has an undefined value.
+The branch uses internal mining pool limits `global_hard_pool_topk=50` and `local_hard_pool_topk=20`. Model-aware hard negative mining starts after a five-epoch warmup. The best checkpoint is selected using the same validation criterion as the reproduced baseline.
 
 **Multi-seed protocol:** seed-0 screening for global model-aware and local model-aware negative sampling, followed by re-evaluation of the selected best configuration with `seed ∈ {0,1,2,3,4}`. The BCE-uniform reference is evaluated directly with `seed ∈ {0,1,2,3,4}`.
 
-Aggregated value tables and diagnostic definitions: `experiment_results/negatives.md`.
-
-### K-sensitivity analysis
-
-**Branch:** `main`
-
-The K-sensitivity analysis evaluates the selected checkpoint at multiple recommendation-list cutoffs while preserving the baseline model-selection criterion.
-
-| Hyperparameter / setting | Values |
-| ------------------------ | ------ |
-| `evaluation.cutoffs` | `[5,10,20,50]` |
-| `n_layers` | `4` |
-| Baseline-width `neigh` | Amazon-Book: `(16,16,8,8)`; Yelp2018/Gowalla: `(16,16,16,16)` |
-| Narrow `neigh` | `(4,4,4,4)` for all datasets |
-
-Model selection and early stopping continue to use `Recall@20`; the selected checkpoint is evaluated at `K ∈ {5,10,20,50}` under Full, Global, and Local inference.
-
-**Multi-seed protocol:** direct multi-seed evaluation with `seed ∈ {0,1,2,3,4}` for both neighbor-sampling regimes.
-
-Aggregated value tables and diagnostic definitions: `experiment_results/k_sensitivity.md`.
+Aggregated ranking results: `experiment_results/negatives.md`.
 
 ### Low-degree-user analysis
 
@@ -271,7 +242,7 @@ No additional training hyperparameter is introduced for this block; the dedicate
 
 **Multi-seed protocol:** direct multi-seed evaluation with `seed ∈ {0,1,2,3,4}`.
 
-Aggregated value tables and diagnostic definitions: `experiment_results/low_degree_users.md`.
+Aggregated ranking results: `experiment_results/low_degree_users.md`.
 
 ## Experiment Logs and Result Aggregation
 
@@ -283,7 +254,7 @@ experiment_logs/
 
 The directory is organized by experimental block and dataset, so that the raw logs corresponding to each group of experiments can be inspected separately.
 
-The `experiment_logs/` accounts for **471 model-training runs** and **45 additional fixed-gate inference-only runs**, for a total of **516 experimental executions**.
+The analyses and datasets reported in the paper account for **297 model-training runs**, including preliminary configuration screening and final multi-seed evaluations.
 
 The repository also provides the script:
 
@@ -291,19 +262,18 @@ The repository also provides the script:
 summarize_experiments.py
 ```
 
-This script reads the `.txt` log files stored in `experiment_logs/` and aggregates both ranking metrics and diagnostic logs as mean and standard deviation over the seeds used for each final evaluation. The aggregated Markdown result files are stored separately in `experiment_results/`.
+This script reads the `.txt` log files stored in `experiment_logs/` and computes the mean and standard deviation of the reported ranking metrics, Recall@20 and nDCG@20, across the evaluation seeds. The aggregated Markdown result files are stored separately in `experiment_results/`.
 
 The script accepts the following experiment-block identifiers as input:
 
 | Argument      | Block                                           |
 | ------------- | ----------------------------------------------- |
 | `baseline`         | Reproduced ContextGNN baseline                  |
-| `backbone`         | GNN-backbone analysis                           |
 | `structure`        | Neighbor-sampling and feature-ablation analysis |
+| `backbone`         | GNN-backbone analysis                           |
 | `fusion`           | Fusion-gate analysis                            |
 | `contrastive`      | Contrastive-learning analysis                   |
 | `negatives`        | Hard negative mining analysis                   |
-| `k_sensitivity`    | K-sensitivity analysis                          |
 | `low_degree_users` | Low-degree-user analysis                        |
 
 For example, to aggregate the logs for the reproduced ContextGNN baseline, run:
